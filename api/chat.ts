@@ -318,11 +318,15 @@ ATURAN WAJIB:
       history: formattedHistory,
     });
 
-    let result = await chat.sendMessage([{ text: message }]);
+    let result = await chat.sendMessage(message);
     
-    // 7. Check if Gemini wants to call a function
-    const functionCalls = result.response.functionCalls();
-    if (functionCalls && functionCalls.length > 0) {
+    // 7. Handle Function Calls in a loop
+    let functionCalls = result.response.functionCalls();
+    let loopCount = 0;
+    const MAX_LOOPS = 5;
+
+    while (functionCalls && functionCalls.length > 0 && loopCount < MAX_LOOPS) {
+      loopCount++;
       const call = functionCalls[0];
       const fnName = call.name;
       const args = call.args;
@@ -346,9 +350,16 @@ ATURAN WAJIB:
           response: dataResponse as any
         }
       }]);
+
+      functionCalls = result.response.functionCalls();
     }
 
-    const responseText = result.response.text();
+    let responseText = '';
+    try {
+      responseText = result.response.text();
+    } catch (e) {
+      responseText = "Maaf, permintaan ini memerlukan terlalu banyak pemrosesan data.";
+    }
 
     // 8. Return response
     return res.status(200).json({ reply: responseText });
