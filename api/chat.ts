@@ -29,7 +29,7 @@ async function get_budget_summary(supabase: any, args: { year?: number, jenis_an
   
   filtered.forEach((a: any) => {
     total_anggaran += Number(a.nominal_anggaran);
-    a.realisasi_anggaran.forEach((r: any) => {
+    (a.realisasi_anggaran || []).forEach((r: any) => {
       total_realisasi += Number(r.nominal);
       jumlah_transaksi++;
     });
@@ -61,7 +61,7 @@ async function get_lecturer_summary(supabase: any, args: { year?: number, jenis_
   if (error) throw error;
   
   const result = data.map((dosen: any) => {
-    let alokasi = dosen.alokasi_anggaran;
+    let alokasi = dosen.alokasi_anggaran || [];
     if (args.year) alokasi = alokasi.filter((a: any) => a.tahun === args.year);
     if (args.jenis_anggaran) {
       const jenis = String(args.jenis_anggaran ?? '').toUpperCase();
@@ -76,7 +76,7 @@ async function get_lecturer_summary(supabase: any, args: { year?: number, jenis_
     
     alokasi.forEach((a: any) => {
       total_anggaran += Number(a.nominal_anggaran);
-      a.realisasi_anggaran.forEach((r: any) => {
+      (a.realisasi_anggaran || []).forEach((r: any) => {
         total_realisasi += Number(r.nominal);
         jumlah_transaksi++;
       });
@@ -117,7 +117,7 @@ async function get_allocation_status(supabase: any, args: { year?: number, statu
   }
   
   const mapped = filtered.map((a: any) => {
-    const total_realisasi = a.realisasi_anggaran.reduce((sum: number, r: any) => sum + Number(r.nominal), 0);
+    const total_realisasi = (a.realisasi_anggaran || []).reduce((sum: number, r: any) => sum + Number(r.nominal), 0);
     let status = 'NORMAL';
     if (total_realisasi > a.nominal_anggaran) status = 'OVER BUDGET';
     else if (total_realisasi >= a.nominal_anggaran * 0.8) status = 'NEAR LIMIT';
@@ -330,9 +330,9 @@ ATURAN WAJIB:
       let dataResponse = null;
       try {
         if (fnName === 'get_budget_summary') dataResponse = await get_budget_summary(supabase, args as any);
-        else if (fnName === 'get_lecturer_summary') dataResponse = await get_lecturer_summary(supabase, args as any);
-        else if (fnName === 'get_allocation_status') dataResponse = await get_allocation_status(supabase, args as any);
-        else if (fnName === 'get_monthly_realization') dataResponse = await get_monthly_realization(supabase, args as any);
+        else if (fnName === 'get_lecturer_summary') dataResponse = { data: await get_lecturer_summary(supabase, args as any) };
+        else if (fnName === 'get_allocation_status') dataResponse = { data: await get_allocation_status(supabase, args as any) };
+        else if (fnName === 'get_monthly_realization') dataResponse = { data: await get_monthly_realization(supabase, args as any) };
         else dataResponse = { error: 'Unknown function' };
       } catch (err: any) {
         console.error("Tool execution error:", err);
