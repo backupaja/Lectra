@@ -39,23 +39,32 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
       ]);
 
       if (yearly) {
-        setYearlyData(yearly);
-        const currentYearData = yearly.find((y: any) => y.tahun === year);
+        const mappedYearly = yearly.map((y: any) => ({
+          tahun: y.tahun,
+          totalAnggaran: y.total_anggaran || 0,
+          totalRealisasi: y.total_realisasi || 0,
+          opex: y.opex || 0,
+          opexRealisasi: y.opex_realisasi || 0,
+          capex: y.capex || 0,
+          capexRealisasi: y.capex_realisasi || 0
+        }));
+        setYearlyData(mappedYearly);
+        const currentYearData = mappedYearly.find((y: any) => y.tahun === year);
         if (currentYearData) {
           setStats({
-            totalAnggaran: currentYearData.total_anggaran || 0,
-            totalRealisasi: currentYearData.total_realisasi || 0,
+            totalAnggaran: currentYearData.totalAnggaran || 0,
+            totalRealisasi: currentYearData.totalRealisasi || 0,
             opex: currentYearData.opex || 0,
-            opexRealisasi: currentYearData.opex_realisasi || 0,
+            opexRealisasi: currentYearData.opexRealisasi || 0,
             capex: currentYearData.capex || 0,
-            capexRealisasi: currentYearData.capex_realisasi || 0
+            capexRealisasi: currentYearData.capexRealisasi || 0
           });
         } else {
           setStats({ totalAnggaran: 0, totalRealisasi: 0, opex: 0, opexRealisasi: 0, capex: 0, capexRealisasi: 0 });
         }
         
-        if (yearly.length > 0) {
-          const years = yearly.map((y: any) => y.tahun).sort((a: number, b: number) => a - b);
+        if (mappedYearly.length > 0) {
+          const years = mappedYearly.map((y: any) => y.tahun).sort((a: number, b: number) => a - b);
           setMinYear(years[0]);
           setMaxYear(years[years.length - 1]);
           if (chartStartYear === null) setChartStartYear(years[0]);
