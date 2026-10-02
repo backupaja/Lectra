@@ -17,6 +17,7 @@ export interface AlokasiAnggaran {
   dosenId: string;
   tahun: number;
   keperluan: string;
+  pertanggungan?: string;
   jenis: BudgetType;
   nominal: number;
   keterangan: string;
