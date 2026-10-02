@@ -23,6 +23,7 @@ export const AnggaranService = {
       fakultas: d.fakultas,
       programStudi: d.program_studi,
       jabatanAkademik: d.jabatan_fungsional,
+      targetJabatanAkademik: d.target_jabatan_fungsional,
       statusDosen: d.status,
       shareToken: d.share_token
     }));
@@ -38,6 +39,7 @@ export const AnggaranService = {
         fakultas: data.fakultas,
         program_studi: data.programStudi,
         jabatan_fungsional: data.jabatanAkademik,
+        target_jabatan_fungsional: data.targetJabatanAkademik,
         status: data.statusDosen
       })
       .select()
@@ -52,6 +54,7 @@ export const AnggaranService = {
       fakultas: result.fakultas,
       programStudi: result.program_studi,
       jabatanAkademik: result.jabatan_fungsional,
+      targetJabatanAkademik: result.target_jabatan_fungsional,
       statusDosen: result.status,
       shareToken: result.share_token
     };

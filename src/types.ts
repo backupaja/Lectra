@@ -9,6 +9,7 @@ export interface Dosen {
   fakultas: string;
   programStudi: string;
   jabatanAkademik: string;
+  targetJabatanAkademik?: string;
   statusDosen: string;
   shareToken: string;
 }

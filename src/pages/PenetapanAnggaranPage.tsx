@@ -35,7 +35,7 @@ export function PenetapanAnggaranPage() {
   const [shareDosen, setShareDosen] = useState<Dosen | null>(null);
 
   const [dosenForm, setDosenForm] = useState({
-    nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', statusDosen: 'Aktif'
+    nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', targetJabatanAkademik: 'Lektor Kepala', statusDosen: 'Aktif'
   });
   const [alokasiForm, setAlokasiForm] = useState({
     tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], nominal: '', keterangan: ''
@@ -87,7 +87,7 @@ export function PenetapanAnggaranPage() {
     setSelectedDosenId('');
     setNewDosen(false);
     setEditingAlokasiId(null);
-    setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', statusDosen: 'Aktif' });
+    setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', targetJabatanAkademik: 'Lektor Kepala', statusDosen: 'Aktif' });
     setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], nominal: '', keterangan: '' });
     setDosenSearchQuery('');
   };
@@ -328,7 +328,7 @@ export function PenetapanAnggaranPage() {
                       </td>
                       <td className="px-3 py-2.5">
                         <p className="text-[#667085] whitespace-nowrap">{dosen.fakultas}</p>
-                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{dosen.jabatanAkademik}</p>
+                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{dosen.jabatanAkademik}{dosen.targetJabatanAkademik ? ` → ${dosen.targetJabatanAkademik}` : ''}</p>
                       </td>
                       <td className="px-3 py-2.5">
                         {(() => {
@@ -489,7 +489,7 @@ export function PenetapanAnggaranPage() {
                       { l: 'NIP', v: selectedDosen.nip },
                       { l: 'Fakultas', v: selectedDosen.fakultas },
                       { l: 'Prodi', v: selectedDosen.programStudi },
-                      { l: 'Jabatan', v: selectedDosen.jabatanAkademik },
+                      { l: 'Jabatan', v: selectedDosen.jabatanAkademik + (selectedDosen.targetJabatanAkademik ? ` → ${selectedDosen.targetJabatanAkademik}` : '') },
                       { l: 'Status', v: selectedDosen.statusDosen },
                     ].map(f => (
                       <div key={f.l}>
@@ -523,7 +523,7 @@ export function PenetapanAnggaranPage() {
                       <FormField label="Prodi"><Input placeholder="Contoh: TI" value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} /></FormField>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
-                      <FormField label="Jabatan Akademik">
+                      <FormField label="Jabatan Awal">
                         <Select value={dosenForm.jabatanAkademik} onChange={e => setDosenForm({ ...dosenForm, jabatanAkademik: e.target.value })}>
                           <option>Asisten Ahli</option>
                           <option>Lektor</option>
@@ -531,6 +531,16 @@ export function PenetapanAnggaranPage() {
                           <option>Guru Besar</option>
                         </Select>
                     </FormField>
+                    <FormField label="Target Jabatan">
+                        <Select value={dosenForm.targetJabatanAkademik || ''} onChange={e => setDosenForm({ ...dosenForm, targetJabatanAkademik: e.target.value })}>
+                          <option value="">- Tanpa Target -</option>
+                          <option value="Lektor">Lektor</option>
+                          <option value="Lektor Kepala">Lektor Kepala</option>
+                          <option value="Guru Besar">Guru Besar</option>
+                        </Select>
+                    </FormField>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
                     <FormField label="Status Dosen">
                       <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
                     </FormField>
