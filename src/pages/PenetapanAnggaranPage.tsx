@@ -38,7 +38,7 @@ export function PenetapanAnggaranPage() {
     nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif'
   });
   const [alokasiForm, setAlokasiForm] = useState({
-    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala'
+    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala'
   });
   const [viewKeperluanList, setViewKeperluanList] = useState<{items: string[], name: string} | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -88,7 +88,7 @@ export function PenetapanAnggaranPage() {
     setNewDosen(false);
     setEditingAlokasiId(null);
     setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
-    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], pertanggunganList: [''], nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala' });
+    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala' });
     setDosenSearchQuery('');
   };
 
@@ -123,6 +123,7 @@ export function PenetapanAnggaranPage() {
       jenis: alok.jenis,
       keperluanList: parsedKeperluan.length > 0 ? parsedKeperluan : [''],
       pertanggunganList: parsedPertanggungan.length > 0 && parsedPertanggungan[0] !== '' ? parsedPertanggungan : [''],
+      kelompokKeahlian: alok.kelompokKeahlian || '',
       nominal: alok.nominal ? 'Rp ' + alok.nominal.toLocaleString('id-ID') : '',
       keterangan: alok.keterangan || '',
       jabatanAwal: alok.jabatanAwal || 'Lektor',
@@ -163,6 +164,7 @@ export function PenetapanAnggaranPage() {
           jenis: alokasiForm.jenis,
           keperluan: stringifiedKeperluan,
           pertanggungan: stringifiedPertanggungan || undefined,
+          kelompokKeahlian: alokasiForm.kelompokKeahlian,
           nominal: nominalNum,
           keterangan: alokasiForm.keterangan,
           jabatanAwal: alokasiForm.jabatanAwal,
@@ -176,6 +178,7 @@ export function PenetapanAnggaranPage() {
           jenis: alokasiForm.jenis,
           keperluan: stringifiedKeperluan,
           pertanggungan: stringifiedPertanggungan || undefined,
+          kelompokKeahlian: alokasiForm.kelompokKeahlian,
           nominal: nominalNum,
           keterangan: alokasiForm.keterangan,
           jabatanAwal: alokasiForm.jabatanAwal,
@@ -330,7 +333,7 @@ export function PenetapanAnggaranPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-[#E4E7EC] bg-[#F7F7F8]">
-                  {['No', 'Nama Dosen', 'Fakultas', 'Keperluan', 'Pertanggungan', 'Jenis', 'Nominal', 'Realisasi', 'Status', 'Aksi'].map(h => (
+                  {['No', 'Nama Dosen', 'Fakultas / KK', 'Keperluan', 'Pertanggungan (OPEX)', 'Jenis', 'Nominal', 'Realisasi', 'Status', 'Aksi'].map(h => (
                     <th key={h} className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -349,7 +352,10 @@ export function PenetapanAnggaranPage() {
                       </td>
                       <td className="px-3 py-2.5">
                         <p className="text-[#667085] whitespace-nowrap">{dosen.fakultas}</p>
-                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
+                        {alok.jenis === 'CAPEX' && alok.kelompokKeahlian && (
+                          <p className="text-[10px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
+                        )}
+                        <p className="text-[10px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
                       </td>
                       <td className="px-3 py-2.5">
                         {(() => {
@@ -377,7 +383,9 @@ export function PenetapanAnggaranPage() {
                         })()}
                       </td>
                       <td className="px-3 py-2.5">
-                        {(() => {
+                        {alok.jenis === 'CAPEX' ? (
+                          <p className="text-[10px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
+                        ) : (() => {
                           let items = [alok.pertanggungan || '-'];
                           try {
                             const parsed = JSON.parse(alok.pertanggungan || '[]');
@@ -669,78 +677,91 @@ export function PenetapanAnggaranPage() {
                   </button>
                 </div>
               </div>
-              <div className="flex flex-col gap-1.5 mt-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-semibold text-[#344054]">Kebutuhan Pertanggungan</label>
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      const MAPPING: Record<string, string[]> = {
-                        'langganan tools': ['Softcopy Publikasi Jurnal untuk syarat khusus pengajuan JAD', 'Pembayaran dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi/bukti subscribe tools', 'Kwitansi'],
-                        'proofreading': ['Softcopy Publikasi Jurnal untuk syarat khusus pengajuan JAD', 'Pembayaran dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi jasa proofreading', 'Kwitansi untuk setiap transaksi'],
-                        'barang habis pakai': ['Invoice pembelian barang'],
-                        'desain, editing': ['Draft buku yang diterbitkan', 'Keterangan pembayaran setiap jasa dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi jasa desain, editing dan penerbitan', 'Kwitansi untuk setiap transaksi'],
-                        'penerbitan': ['Draft buku yang diterbitkan', 'Keterangan pembayaran setiap jasa dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi jasa desain, editing dan penerbitan', 'Kwitansi untuk setiap transaksi'],
-                        'tabulasi data': ['Invoice resmi jasa pendukung tabulasi data', 'Kwitansi']
-                      };
-                      const newSet = new Set<string>();
-                      alokasiForm.keperluanList.forEach(k => {
-                        const lower = k.toLowerCase();
-                        for (const [key, items] of Object.entries(MAPPING)) {
-                          if (lower.includes(key)) items.forEach(i => newSet.add(i));
+              {alokasiForm.jenis === 'OPEX' ? (
+                <div className="flex flex-col gap-1.5 mt-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-semibold text-[#344054]">Kebutuhan Pertanggungan</label>
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        const MAPPING: Record<string, string[]> = {
+                          'langganan tools': ['Softcopy Publikasi Jurnal untuk syarat khusus pengajuan JAD', 'Pembayaran dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi/bukti subscribe tools', 'Kwitansi'],
+                          'proofreading': ['Softcopy Publikasi Jurnal untuk syarat khusus pengajuan JAD', 'Pembayaran dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi jasa proofreading', 'Kwitansi untuk setiap transaksi'],
+                          'barang habis pakai': ['Invoice pembelian barang'],
+                          'desain, editing': ['Draft buku yang diterbitkan', 'Keterangan pembayaran setiap jasa dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi jasa desain, editing dan penerbitan', 'Kwitansi untuk setiap transaksi'],
+                          'penerbitan': ['Draft buku yang diterbitkan', 'Keterangan pembayaran setiap jasa dari rekening bersangkutan (Transfer, kartu kredit dll)', 'Invoice resmi jasa desain, editing dan penerbitan', 'Kwitansi untuk setiap transaksi'],
+                          'tabulasi data': ['Invoice resmi jasa pendukung tabulasi data', 'Kwitansi']
+                        };
+                        const newSet = new Set<string>();
+                        alokasiForm.keperluanList.forEach(k => {
+                          const lower = k.toLowerCase();
+                          for (const [key, items] of Object.entries(MAPPING)) {
+                            if (lower.includes(key)) items.forEach(i => newSet.add(i));
+                          }
+                        });
+                        if (newSet.size > 0) {
+                          setAlokasiForm(f => ({ ...f, pertanggunganList: Array.from(newSet) }));
+                          showToast('Berhasil generate pertanggungan otomatis');
+                        } else {
+                          showToast('Tidak ada kecocokan referensi otomatis', 'error');
                         }
-                      });
-                      if (newSet.size > 0) {
-                        setAlokasiForm(f => ({ ...f, pertanggunganList: Array.from(newSet) }));
-                        showToast('Berhasil generate pertanggungan otomatis');
-                      } else {
-                        showToast('Tidak ada kecocokan referensi otomatis', 'error');
-                      }
-                    }}
-                    className="text-[10px] font-medium text-[#8F2438] bg-[#FDECEC] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors"
-                  >
-                    ✨ Auto-Generate
-                  </button>
-                </div>
-                <div className="flex flex-col gap-2">
-                  {alokasiForm.pertanggunganList.map((k, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#F7F7F8] border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0">
-                        {i + 1}
-                      </div>
-                      <input 
-                        type="text"
-                        placeholder={i === 0 ? "Contoh: Kwitansi Pembayaran" : "Pertanggungan lainnya..."}
-                        value={k}
-                        onChange={e => {
-                          const newList = [...alokasiForm.pertanggunganList];
-                          newList[i] = e.target.value;
-                          setAlokasiForm({ ...alokasiForm, pertanggunganList: newList });
-                        }}
-                        className="flex-1 px-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
-                      />
-                      {alokasiForm.pertanggunganList.length > 1 && (
-                        <button 
-                          onClick={() => {
-                            const newList = alokasiForm.pertanggunganList.filter((_, idx) => idx !== i);
+                      }}
+                      className="text-[10px] font-medium text-[#8F2438] bg-[#FDECEC] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors"
+                    >
+                      ✨ Auto-Generate
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {alokasiForm.pertanggunganList.map((k, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#F7F7F8] border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0">
+                          {i + 1}
+                        </div>
+                        <input 
+                          type="text"
+                          placeholder={i === 0 ? "Contoh: Kwitansi Pembayaran" : "Pertanggungan lainnya..."}
+                          value={k}
+                          onChange={e => {
+                            const newList = [...alokasiForm.pertanggunganList];
+                            newList[i] = e.target.value;
                             setAlokasiForm({ ...alokasiForm, pertanggunganList: newList });
                           }}
-                          className="p-1.5 text-[#98A2B3] hover:text-[#B42318] hover:bg-[#FDECEC] rounded-md transition-colors"
-                          title="Hapus baris"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                  <button 
-                    onClick={() => setAlokasiForm({ ...alokasiForm, pertanggunganList: [...alokasiForm.pertanggunganList, ''] })}
-                    className="self-start text-[11px] font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 mt-1"
-                  >
-                    <span>+ Tambah Pertanggungan Lain</span>
-                  </button>
+                          className="flex-1 px-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
+                        />
+                        {alokasiForm.pertanggunganList.length > 1 && (
+                          <button 
+                            onClick={() => {
+                              const newList = alokasiForm.pertanggunganList.filter((_, idx) => idx !== i);
+                              setAlokasiForm({ ...alokasiForm, pertanggunganList: newList });
+                            }}
+                            className="p-1.5 text-[#98A2B3] hover:text-[#B42318] hover:bg-[#FDECEC] rounded-md transition-colors"
+                            title="Hapus baris"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                    <button 
+                      onClick={() => setAlokasiForm({ ...alokasiForm, pertanggunganList: [...alokasiForm.pertanggunganList, ''] })}
+                      className="self-start text-[11px] font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 mt-1"
+                    >
+                      <span>+ Tambah Pertanggungan Lain</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="flex flex-col gap-1.5 mt-2">
+                  <label className="text-[11px] font-semibold text-[#344054]">Kelompok Keahlian / Lab (Hanya CAPEX)</label>
+                  <input 
+                    type="text"
+                    placeholder="Contoh: Intelligent Systems / Big Data"
+                    value={alokasiForm.kelompokKeahlian}
+                    onChange={e => setAlokasiForm({ ...alokasiForm, kelompokKeahlian: e.target.value })}
+                    className="px-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
+                  />
+                </div>
+              )}
               <FormField label="Nominal Anggaran">
                 <Input placeholder="Rp 0" type="text" value={alokasiForm.nominal} onChange={handleNominalChange} />
               </FormField>

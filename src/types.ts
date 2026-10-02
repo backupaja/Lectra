@@ -18,6 +18,7 @@ export interface AlokasiAnggaran {
   tahun: number;
   keperluan: string;
   pertanggungan?: string;
+  kelompokKeahlian?: string;
   jenis: BudgetType;
   nominal: number;
   keterangan: string;

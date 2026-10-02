@@ -81,6 +81,7 @@ export const AnggaranService = {
         tahun: a.tahun,
         keperluan: a.keperluan,
         pertanggungan: a.pertanggungan,
+        kelompokKeahlian: a.kelompok_keahlian,
         jenis: a.jenis_anggaran,
         nominal: nominalAnggaran,
         keterangan: a.keterangan || '',
@@ -102,6 +103,7 @@ export const AnggaranService = {
         jenis_anggaran: data.jenis,
         keperluan: data.keperluan,
         pertanggungan: data.pertanggungan || null,
+        kelompok_keahlian: data.kelompokKeahlian || null,
         nominal_anggaran: data.nominal,
         keterangan: data.keterangan || null,
         jabatan_awal: data.jabatanAwal || null,
@@ -119,6 +121,7 @@ export const AnggaranService = {
     if (data.jenis !== undefined) updates.jenis_anggaran = data.jenis;
     if (data.keperluan !== undefined) updates.keperluan = data.keperluan;
     if (data.pertanggungan !== undefined) updates.pertanggungan = data.pertanggungan;
+    if (data.kelompokKeahlian !== undefined) updates.kelompok_keahlian = data.kelompokKeahlian;
     if (data.nominal !== undefined) updates.nominal_anggaran = data.nominal;
     if (data.keterangan !== undefined) updates.keterangan = data.keterangan;
     if (data.jabatanAwal !== undefined) updates.jabatan_awal = data.jabatanAwal;
