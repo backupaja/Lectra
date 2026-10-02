@@ -33,7 +33,7 @@ export function ShareLinkModal({ open, onClose, dosen }: ShareLinkModalProps) {
           </div>
           <div>
             <p className="text-sm font-semibold text-[#1F2937]">{dosen.nama}</p>
-            <p className="text-xs text-[#667085]">{dosen.jabatanAkademik} · {dosen.fakultas}</p>
+            <p className="text-xs text-[#667085]">{dosen.fakultas} · {dosen.programStudi}</p>
           </div>
         </div>
 

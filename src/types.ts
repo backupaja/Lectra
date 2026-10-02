@@ -8,8 +8,6 @@ export interface Dosen {
   nip: string;
   fakultas: string;
   programStudi: string;
-  jabatanAkademik: string;
-  targetJabatanAkademik?: string;
   statusDosen: string;
   shareToken: string;
 }
@@ -22,6 +20,8 @@ export interface AlokasiAnggaran {
   jenis: BudgetType;
   nominal: number;
   keterangan: string;
+  jabatanAwal?: string;
+  targetJabatan?: string;
   status: BudgetStatus;
 }
 

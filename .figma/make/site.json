@@ -1,0 +1,11 @@
+{
+  "title": "LECTRA — Sistem Anggaran Dosen",
+  "description": "Manage lecturer budget allocations and realizations efficiently with an intuitive interface designed for university administrative staff.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

@@ -50,7 +50,6 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
           nip: data.nip,
           fakultas: data.fakultas,
           programStudi: data.program_studi,
-          jabatanAkademik: data.jabatan_fungsional,
           statusDosen: data.status,
           shareToken: data.share_token
         };
@@ -248,7 +247,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-[#1F2937]">{dosen.nama}</h1>
-                <p className="text-sm text-[#667085] mt-0.5">{dosen.jabatanAkademik} · {dosen.fakultas}</p>
+                <p className="text-sm text-[#667085] mt-0.5">{dosen.fakultas} · {dosen.programStudi}</p>
                 <p className="text-xs text-[#98A2B3] mt-0.5">{dosen.programStudi}</p>
               </div>
             </div>

@@ -22,8 +22,6 @@ export const AnggaranService = {
       nip: d.nip,
       fakultas: d.fakultas,
       programStudi: d.program_studi,
-      jabatanAkademik: d.jabatan_fungsional,
-      targetJabatanAkademik: d.target_jabatan_fungsional,
       statusDosen: d.status,
       shareToken: d.share_token
     }));
@@ -38,8 +36,6 @@ export const AnggaranService = {
         nip: data.nip,
         fakultas: data.fakultas,
         program_studi: data.programStudi,
-        jabatan_fungsional: data.jabatanAkademik,
-        target_jabatan_fungsional: data.targetJabatanAkademik,
         status: data.statusDosen
       })
       .select()
@@ -53,8 +49,6 @@ export const AnggaranService = {
       nip: result.nip,
       fakultas: result.fakultas,
       programStudi: result.program_studi,
-      jabatanAkademik: result.jabatan_fungsional,
-      targetJabatanAkademik: result.target_jabatan_fungsional,
       statusDosen: result.status,
       shareToken: result.share_token
     };
@@ -89,6 +83,8 @@ export const AnggaranService = {
         jenis: a.jenis_anggaran,
         nominal: nominalAnggaran,
         keterangan: a.keterangan || '',
+        jabatanAwal: a.jabatan_awal,
+        targetJabatan: a.target_jabatan,
         status,
         totalRealisasi
       };
@@ -105,7 +101,9 @@ export const AnggaranService = {
         jenis_anggaran: data.jenis,
         keperluan: data.keperluan,
         nominal_anggaran: data.nominal,
-        keterangan: data.keterangan || null
+        keterangan: data.keterangan || null,
+        jabatan_awal: data.jabatanAwal || null,
+        target_jabatan: data.targetJabatan || null
       });
       
     if (error) throw error;
@@ -120,6 +118,8 @@ export const AnggaranService = {
     if (data.keperluan !== undefined) updates.keperluan = data.keperluan;
     if (data.nominal !== undefined) updates.nominal_anggaran = data.nominal;
     if (data.keterangan !== undefined) updates.keterangan = data.keterangan;
+    if (data.jabatanAwal !== undefined) updates.jabatan_awal = data.jabatanAwal;
+    if (data.targetJabatan !== undefined) updates.target_jabatan = data.targetJabatan;
 
     const { error } = await supabase
       .from('alokasi_anggaran')

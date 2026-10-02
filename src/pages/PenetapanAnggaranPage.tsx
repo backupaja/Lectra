@@ -35,10 +35,10 @@ export function PenetapanAnggaranPage() {
   const [shareDosen, setShareDosen] = useState<Dosen | null>(null);
 
   const [dosenForm, setDosenForm] = useState({
-    nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', targetJabatanAkademik: 'Lektor Kepala', statusDosen: 'Aktif'
+    nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif'
   });
   const [alokasiForm, setAlokasiForm] = useState({
-    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], nominal: '', keterangan: ''
+    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala'
   });
   const [viewKeperluanList, setViewKeperluanList] = useState<{items: string[], name: string} | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -87,8 +87,8 @@ export function PenetapanAnggaranPage() {
     setSelectedDosenId('');
     setNewDosen(false);
     setEditingAlokasiId(null);
-    setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', targetJabatanAkademik: 'Lektor Kepala', statusDosen: 'Aktif' });
-    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], nominal: '', keterangan: '' });
+    setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
+    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala' });
     setDosenSearchQuery('');
   };
 
@@ -114,7 +114,9 @@ export function PenetapanAnggaranPage() {
       jenis: alok.jenis,
       keperluanList: parsedKeperluan.length > 0 ? parsedKeperluan : [''],
       nominal: alok.nominal ? 'Rp ' + alok.nominal.toLocaleString('id-ID') : '',
-      keterangan: alok.keterangan || ''
+      keterangan: alok.keterangan || '',
+      jabatanAwal: alok.jabatanAwal || 'Lektor',
+      targetJabatan: alok.targetJabatan || 'Lektor Kepala'
     });
     setModalOpen(true);
   };
@@ -148,7 +150,9 @@ export function PenetapanAnggaranPage() {
           jenis: alokasiForm.jenis,
           keperluan: stringifiedKeperluan,
           nominal: nominalNum,
-          keterangan: alokasiForm.keterangan
+          keterangan: alokasiForm.keterangan,
+          jabatanAwal: alokasiForm.jabatanAwal,
+          targetJabatan: alokasiForm.targetJabatan
         });
         showToast('Data berhasil diperbarui.');
       } else {
@@ -158,7 +162,9 @@ export function PenetapanAnggaranPage() {
           jenis: alokasiForm.jenis,
           keperluan: stringifiedKeperluan,
           nominal: nominalNum,
-          keterangan: alokasiForm.keterangan
+          keterangan: alokasiForm.keterangan,
+          jabatanAwal: alokasiForm.jabatanAwal,
+          targetJabatan: alokasiForm.targetJabatan
         });
         showToast('Penetapan anggaran berhasil ditambahkan.');
       }
@@ -328,7 +334,7 @@ export function PenetapanAnggaranPage() {
                       </td>
                       <td className="px-3 py-2.5">
                         <p className="text-[#667085] whitespace-nowrap">{dosen.fakultas}</p>
-                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{dosen.jabatanAkademik}{dosen.targetJabatanAkademik ? ` → ${dosen.targetJabatanAkademik}` : ''}</p>
+                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
                       </td>
                       <td className="px-3 py-2.5">
                         {(() => {
@@ -489,7 +495,6 @@ export function PenetapanAnggaranPage() {
                       { l: 'NIP', v: selectedDosen.nip },
                       { l: 'Fakultas', v: selectedDosen.fakultas },
                       { l: 'Prodi', v: selectedDosen.programStudi },
-                      { l: 'Jabatan', v: selectedDosen.jabatanAkademik + (selectedDosen.targetJabatanAkademik ? ` → ${selectedDosen.targetJabatanAkademik}` : '') },
                       { l: 'Status', v: selectedDosen.statusDosen },
                     ].map(f => (
                       <div key={f.l}>
@@ -522,30 +527,12 @@ export function PenetapanAnggaranPage() {
                       <FormField label="Fakultas"><Input placeholder="Contoh: Teknik" value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} /></FormField>
                       <FormField label="Prodi"><Input placeholder="Contoh: TI" value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} /></FormField>
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <FormField label="Jabatan Awal">
-                        <Select value={dosenForm.jabatanAkademik} onChange={e => setDosenForm({ ...dosenForm, jabatanAkademik: e.target.value })}>
-                          <option>Asisten Ahli</option>
-                          <option>Lektor</option>
-                          <option>Lektor Kepala</option>
-                          <option>Guru Besar</option>
-                        </Select>
-                    </FormField>
-                    <FormField label="Target Jabatan">
-                        <Select value={dosenForm.targetJabatanAkademik || ''} onChange={e => setDosenForm({ ...dosenForm, targetJabatanAkademik: e.target.value })}>
-                          <option value="">- Tanpa Target -</option>
-                          <option value="Lektor">Lektor</option>
-                          <option value="Lektor Kepala">Lektor Kepala</option>
-                          <option value="Guru Besar">Guru Besar</option>
-                        </Select>
-                    </FormField>
+                    <div className="grid grid-cols-1 gap-2">
+                      <FormField label="Status Dosen">
+                        <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
+                      </FormField>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-1 gap-2">
-                    <FormField label="Status Dosen">
-                      <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
-                    </FormField>
-                  </div>
-                </div>
                 </div>
               </div>
             )}
@@ -581,6 +568,24 @@ export function PenetapanAnggaranPage() {
                     buttonClassName="text-xs font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all w-full focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
                     dropdownClassName="w-full mt-1 left-0"
                   />
+                </FormField>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <FormField label="Jabatan Awal">
+                  <Select value={alokasiForm.jabatanAwal} onChange={e => setAlokasiForm({ ...alokasiForm, jabatanAwal: e.target.value })}>
+                    <option>Asisten Ahli</option>
+                    <option>Lektor</option>
+                    <option>Lektor Kepala</option>
+                    <option>Guru Besar</option>
+                  </Select>
+                </FormField>
+                <FormField label="Target Jabatan">
+                  <Select value={alokasiForm.targetJabatan || ''} onChange={e => setAlokasiForm({ ...alokasiForm, targetJabatan: e.target.value })}>
+                    <option value="">- Tanpa Target -</option>
+                    <option value="Lektor">Lektor</option>
+                    <option value="Lektor Kepala">Lektor Kepala</option>
+                    <option value="Guru Besar">Guru Besar</option>
+                  </Select>
                 </FormField>
               </div>
               <div className="flex flex-col gap-1.5">
