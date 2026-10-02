@@ -3,7 +3,11 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
-import siteConfiguration from './.figma/make/site.json' with { type: 'json' }
+const siteConfiguration = {
+  title: "LECTRA - Sistem Informasi Anggaran",
+  description: "Dashboard monitoring dan pengelolaan anggaran untuk dosen dan pimpinan",
+  language: "id"
+};
 
 
 // Vite config — https://vitejs.dev/config/
