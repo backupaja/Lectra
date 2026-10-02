@@ -10,7 +10,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { AnggaranService } from '../services/anggaranService';
 import { RealisasiService } from '../services/realisasiService';
-import type { Dosen, AlokasiAnggaran, RealisasiAnggaran } from '../types';
+import type { Dosen, AlokasiAnggaran, RealisasiAnggaran, BudgetStatus } from '../types';
 
 interface DosenDashboardProps {
   token: string;
