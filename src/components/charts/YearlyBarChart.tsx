@@ -63,8 +63,8 @@ export function YearlyBarChart({ data, filter }: YearlyBarChartProps) {
       Anggaran = d.capex;
       Realisasi = d.capexRealisasi;
     } else {
-      Anggaran = d.totalAnggaran || d.total_anggaran || 0;
-      Realisasi = d.totalRealisasi || d.total_realisasi || 0;
+      Anggaran = d.totalAnggaran || 0;
+      Realisasi = d.totalRealisasi || 0;
     }
 
     let growth = 0;
@@ -75,7 +75,7 @@ export function YearlyBarChart({ data, filter }: YearlyBarChartProps) {
       let prevRealisasi = 0;
       if (filter === 'opex') prevRealisasi = prev.opexRealisasi;
       else if (filter === 'capex') prevRealisasi = prev.capexRealisasi;
-      else prevRealisasi = prev.totalRealisasi || prev.total_realisasi || 0;
+      else prevRealisasi = prev.totalRealisasi || 0;
       
       if (prevRealisasi > 0) {
         growth = ((Realisasi - prevRealisasi) / prevRealisasi) * 100;

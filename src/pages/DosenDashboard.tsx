@@ -101,10 +101,14 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
               tahun: year,
               jenis: a.jenis_anggaran,
               keperluan: a.keperluan,
+              pertanggungan: a.pertanggungan || undefined,
+              kelompokKeahlian: a.kelompok_keahlian || undefined,
               nominal: nominalAnggaran,
               keterangan: a.keterangan || '',
+              jabatanAwal: a.jabatan_awal || undefined,
+              targetJabatan: a.target_jabatan || undefined,
               totalRealisasi,
-              status
+              status: status as BudgetStatus
             };
           });
           if (mounted) setAllAlokasi(myAlokasi);
