@@ -1,0 +1,664 @@
+import React, { useState, useEffect } from 'react';
+import { Button } from '../components/ui/Button';
+import { Modal } from '../components/ui/Modal';
+import { BudgetTypeBadge, StatusBadge } from '../components/ui/Badge';
+import { FormField, Input, Select, Textarea } from '../components/ui/FormField';
+import { EmptyState } from '../components/ui/EmptyState';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { Toast } from '../components/ui/Toast';
+import { ShareLinkModal } from '../components/ui/ShareLinkModal';
+import { YEARLY_DATA, formatRupiah } from '../data/mockData';
+import { AnggaranService } from '../services/anggaranService';
+import { CustomSelect } from '../components/ui/CustomSelect';
+import type { AlokasiAnggaran, Dosen, BudgetType } from '../types';
+
+type BudgetFilter = 'all' | 'OPEX' | 'CAPEX';
+type StatusFilter = 'all' | 'OVER_BUDGET' | 'TERSEDIA';
+
+export function PenetapanAnggaranPage() {
+  const [year, setYear] = useState(2026);
+  const [dosenList, setDosenList] = useState<Dosen[]>([]);
+  const [alokasiList, setAlokasiList] = useState<(AlokasiAnggaran & { totalRealisasi: number })[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const [search, setSearch] = useState('');
+  const [budgetFilter, setBudgetFilter] = useState<BudgetFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [modalOpen, setModalOpen] = useState(false);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const [selectedDosenId, setSelectedDosenId] = useState('');
+  const [dosenSearchQuery, setDosenSearchQuery] = useState('');
+  const [isDosenDropdownOpen, setIsDosenDropdownOpen] = useState(false);
+  const [newDosen, setNewDosen] = useState(false);
+  const [shareDosen, setShareDosen] = useState<Dosen | null>(null);
+
+  const [dosenForm, setDosenForm] = useState({
+    nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', statusDosen: 'Aktif'
+  });
+  const [alokasiForm, setAlokasiForm] = useState({
+    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], nominal: '', keterangan: ''
+  });
+  const [viewKeperluanList, setViewKeperluanList] = useState<{items: string[], name: string} | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [editingAlokasiId, setEditingAlokasiId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleNominalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, '');
+    if (!val) {
+      setAlokasiForm({ ...alokasiForm, nominal: '' });
+      return;
+    }
+    const formatted = 'Rp ' + parseInt(val, 10).toLocaleString('id-ID');
+    setAlokasiForm({ ...alokasiForm, nominal: formatted });
+  };
+
+  const fetchData = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const [dosen, alokasi] = await Promise.all([
+        AnggaranService.getDosen(),
+        AnggaranService.getAlokasi(year)
+      ]);
+      setDosenList(dosen);
+      setAlokasiList(alokasi);
+    } catch (err: any) {
+      setError(err.message || 'Gagal memuat data dari Supabase.');
+      showToast(err.message || 'Gagal memuat data', 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [year]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedDosenId('');
+    setNewDosen(false);
+    setEditingAlokasiId(null);
+    setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', jabatanAkademik: 'Lektor', statusDosen: 'Aktif' });
+    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], nominal: '', keterangan: '' });
+    setDosenSearchQuery('');
+  };
+
+  const openEditModal = (alok: AlokasiAnggaran) => {
+    setEditingAlokasiId(alok.id);
+    setSelectedDosenId(alok.dosenId);
+    setNewDosen(false);
+    
+    const d = dosenList.find(dosen => dosen.id === alok.dosenId);
+    setDosenSearchQuery(d ? `${d.nama} — ${d.nip}` : '');
+
+    let parsedKeperluan = [''];
+    try {
+      const parsed = JSON.parse(alok.keperluan);
+      if (Array.isArray(parsed)) parsedKeperluan = parsed;
+      else parsedKeperluan = [alok.keperluan];
+    } catch {
+      parsedKeperluan = [alok.keperluan];
+    }
+    
+    setAlokasiForm({
+      tahun: alok.tahun,
+      jenis: alok.jenis,
+      keperluanList: parsedKeperluan.length > 0 ? parsedKeperluan : [''],
+      nominal: alok.nominal ? 'Rp ' + alok.nominal.toLocaleString('id-ID') : '',
+      keterangan: alok.keterangan || ''
+    });
+    setModalOpen(true);
+  };
+
+  const handleSubmit = async () => {
+    const nominalNum = Number(alokasiForm.nominal.toString().replace(/[^0-9]/g, ''));
+    const validKeperluan = alokasiForm.keperluanList.filter(k => k.trim());
+
+    if (validKeperluan.length === 0 || nominalNum <= 0) {
+      showToast('Minimal 1 keperluan dan Nominal wajib diisi dengan benar.', 'error');
+      return;
+    }
+    
+    const stringifiedKeperluan = validKeperluan.length === 1 ? validKeperluan[0] : JSON.stringify(validKeperluan);
+
+    setIsSaving(true);
+    try {
+      let finalDosenId = selectedDosenId;
+      if (newDosen) {
+        if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP dosen wajib diisi.');
+        const created = await AnggaranService.createDosen(dosenForm);
+        finalDosenId = created.id;
+      } else if (!finalDosenId) {
+        throw new Error('Silakan pilih dosen.');
+      }
+
+      if (editingAlokasiId) {
+        await AnggaranService.updateAlokasi(editingAlokasiId, {
+          dosenId: finalDosenId,
+          tahun: alokasiForm.tahun,
+          jenis: alokasiForm.jenis,
+          keperluan: stringifiedKeperluan,
+          nominal: nominalNum,
+          keterangan: alokasiForm.keterangan
+        });
+        showToast('Data berhasil diperbarui.');
+      } else {
+        await AnggaranService.createAlokasi({
+          dosenId: finalDosenId,
+          tahun: alokasiForm.tahun,
+          jenis: alokasiForm.jenis,
+          keperluan: stringifiedKeperluan,
+          nominal: nominalNum,
+          keterangan: alokasiForm.keterangan
+        });
+        showToast('Penetapan anggaran berhasil ditambahkan.');
+      }
+      
+      closeModal();
+      fetchData();
+    } catch (err: any) {
+      showToast(err.message || 'Gagal menyimpan data.', 'error');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirmId) return;
+    setIsDeleting(true);
+    try {
+      await AnggaranService.deleteAlokasi(confirmId);
+      showToast('Data berhasil dihapus.');
+      fetchData();
+    } catch (err: any) {
+      showToast(err.message || 'Gagal menghapus data.', 'error');
+    } finally {
+      setIsDeleting(false);
+      setConfirmId(null);
+    }
+  };
+
+  const filtered = alokasiList.filter(a => {
+    const dosen = dosenList.find(d => d.id === a.dosenId);
+    if (!dosen) return false;
+    const search_ = search.toLowerCase();
+    const matchSearch = !search || dosen.nama.toLowerCase().includes(search_) || dosen.nip.includes(search_) || a.keperluan.toLowerCase().includes(search_);
+    const matchBudget = budgetFilter === 'all' || a.jenis === budgetFilter;
+    const matchStatus = statusFilter === 'all'
+      || (statusFilter === 'OVER_BUDGET' && a.status === 'OVER_BUDGET')
+      || (statusFilter === 'TERSEDIA' && a.status !== 'OVER_BUDGET');
+    return matchSearch && matchBudget && matchStatus;
+  });
+
+  const totalAnggaran = alokasiList.reduce((s, a) => s + a.nominal, 0);
+
+  const selectedDosen = dosenList.find(d => d.id === selectedDosenId);
+
+  return (
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-5">
+      {/* Page header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <h1 className="text-xl font-bold text-[#1F2937]">Penetapan Anggaran</h1>
+        <div className="flex items-center gap-3">
+          <CustomSelect
+            value={year}
+            onChange={(val) => setYear(Number(val))}
+            options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+            buttonClassName="text-xs font-semibold bg-white border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
+            dropdownClassName="w-full mt-1 right-0"
+          />
+          <Button variant="secondary" size="sm" icon={
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+          }>
+            Export Excel
+          </Button>
+          <Button onClick={() => { setAlokasiForm(f => ({ ...f, tahun: year })); setModalOpen(true); }} icon={
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          }>
+            Tambah Anggaran
+          </Button>
+        </div>
+      </div>
+
+      {/* Quick stats */}
+      {isLoading ? (
+        <div className="flex items-center justify-center p-8">
+          <p className="text-[#667085]">Memuat data dari Supabase...</p>
+        </div>
+      ) : error ? (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-[10px] mb-6">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+            {[
+              { label: 'Total Alokasi', value: alokasiList.length + ' entri' },
+              { label: 'Total Anggaran', value: formatRupiah(totalAnggaran) },
+              { label: 'OPEX', value: alokasiList.filter(a => a.jenis === 'OPEX').length + ' alokasi' },
+              { label: 'CAPEX', value: alokasiList.filter(a => a.jenis === 'CAPEX').length + ' alokasi' },
+            ].map(s => (
+              <div key={s.label} className="bg-white rounded-[14px] border border-[#E4E7EC] px-3 py-2.5">
+                <p className="text-[11px] text-[#98A2B3]">{s.label}</p>
+                <p className="text-xs font-bold text-[#1F2937] mt-0.5">{s.value}</p>
+              </div>
+            ))}
+          </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2 mb-3">
+        <div className="relative flex-1 min-w-[200px]">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="Cari nama dosen, NIP, atau keperluan..."
+            className="w-full pl-9 pr-4 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937] placeholder-[#98A2B3]"
+          />
+        </div>
+        <CustomSelect
+          value={budgetFilter}
+          onChange={(val) => setBudgetFilter(val as BudgetFilter)}
+          options={[
+            { label: 'Semua Jenis', value: 'all' },
+            { label: 'OPEX', value: 'OPEX' },
+            { label: 'CAPEX', value: 'CAPEX' },
+          ]}
+          buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[100px]"
+          dropdownClassName="min-w-[120px] mt-1 right-0"
+        />
+        <CustomSelect
+          value={statusFilter}
+          onChange={(val) => setStatusFilter(val as StatusFilter)}
+          options={[
+            { label: 'Semua Status', value: 'all' },
+            { label: 'Tersedia', value: 'TERSEDIA' },
+            { label: 'Habis', value: 'OVER_BUDGET' },
+          ]}
+          buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[110px]"
+          dropdownClassName="min-w-[130px] mt-1 right-0"
+        />
+      </div>
+
+      {/* Table */}
+      <div className="bg-white rounded-[16px] border border-[#E4E7EC] overflow-hidden">
+        {filtered.length === 0 ? (
+          <EmptyState
+            title="Belum ada penetapan anggaran"
+            description={`Belum ada penetapan anggaran untuk tahun ${year}.`}
+            action={{ label: '+ Tambah Anggaran', onClick: () => setModalOpen(true) }}
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-[#E4E7EC] bg-[#F7F7F8]">
+                  {['No', 'Nama Dosen', 'Fakultas', 'Keperluan', 'Jenis', 'Nominal', 'Realisasi', 'Status', 'Aksi'].map(h => (
+                    <th key={h} className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((alok, idx) => {
+                  const dosen = dosenList.find(d => d.id === alok.dosenId)!;
+                  const totalReal = alok.totalRealisasi;
+                  const status = alok.status;
+                  return (
+                    <tr key={alok.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
+                      <td className="px-3 py-2.5 text-[#98A2B3] text-[11px]">{idx + 1}</td>
+                      <td className="px-3 py-2.5">
+                        <p className="font-medium text-[#1F2937] whitespace-nowrap">{dosen.nama}</p>
+                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        <p className="text-[#667085] whitespace-nowrap">{dosen.fakultas}</p>
+                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{dosen.jabatanAkademik}</p>
+                      </td>
+                      <td className="px-3 py-2.5">
+                        {(() => {
+                          let items = [alok.keperluan];
+                          try {
+                            const parsed = JSON.parse(alok.keperluan);
+                            if (Array.isArray(parsed)) items = parsed;
+                          } catch {}
+                          
+                          if (items.length > 1) {
+                            return (
+                              <button
+                                onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
+                                className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
+                                title="Lihat detail keperluan"
+                              >
+                                <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
+                                <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                </svg>
+                              </button>
+                            );
+                          }
+                          return <p className="text-[#1F2937] max-w-[160px] truncate" title={items[0]}>{items[0]}</p>;
+                        })()}
+                      </td>
+                      <td className="px-3 py-2.5"><BudgetTypeBadge type={alok.jenis} /></td>
+                      <td className="px-3 py-2.5 font-semibold text-[#1F2937] whitespace-nowrap">{formatRupiah(alok.nominal)}</td>
+                      <td className="px-3 py-2.5">
+                        <p className="text-[#8F2438] font-medium whitespace-nowrap">{formatRupiah(totalReal)}</p>
+                      </td>
+                      <td className="px-3 py-2.5"><StatusBadge status={status} /></td>
+                      <td className="px-3 py-2.5">
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => openEditModal(alok)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => setShareDosen(dosen)}
+                            className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]"
+                            title="Bagikan Link Dosen"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                            </svg>
+                          </button>
+                          <button onClick={() => setConfirmId(alok.id)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {filtered.length > 0 && (
+          <div className="flex items-center justify-between px-4 py-3 border-t border-[#E4E7EC]">
+            <p className="text-xs text-[#98A2B3]">Menampilkan {filtered.length} dari {alokasiList.length} data</p>
+            <div className="flex gap-1">
+              <button className="px-3 py-1.5 text-xs border border-[#E4E7EC] rounded-[6px] text-[#667085] hover:bg-[#F7F7F8]">Sebelumnya</button>
+              <button className="px-3 py-1.5 text-xs bg-[#8F2438] text-white rounded-[6px]">1</button>
+              <button className="px-3 py-1.5 text-xs border border-[#E4E7EC] rounded-[6px] text-[#667085] hover:bg-[#F7F7F8]">Berikutnya</button>
+            </div>
+          </div>
+        )}
+      </div>
+        </>
+      )}
+
+      {/* Add Budget Modal */}
+      <Modal
+        open={modalOpen}
+        onClose={closeModal}
+        title={editingAlokasiId ? "Edit Penetapan Anggaran" : "Tambah Penetapan Anggaran"}
+        subtitle={editingAlokasiId ? "Ubah detail alokasi yang dipilih." : "Pilih dosen dari master data atau tambah dosen baru."}
+        size="2xl"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <Button variant="secondary" onClick={closeModal} disabled={isSaving}>Batal</Button>
+            <Button onClick={handleSubmit} disabled={isSaving}>{isSaving ? 'Menyimpan...' : 'Simpan'}</Button>
+          </div>
+        }
+      >
+        <div className="grid grid-cols-2 gap-4">
+          {/* Dosen section */}
+          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC]">
+            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Dosen</p>
+            {!newDosen ? (
+              <div className="flex flex-col gap-3">
+                <FormField label="Pilih Dosen">
+                  <div className="relative">
+                    <div className="relative">
+                      <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                      </svg>
+                      <input
+                        type="text"
+                        className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 disabled:bg-[#F7F7F8] disabled:text-[#98A2B3]"
+                        placeholder="Ketik nama atau NIP dosen..."
+                        value={isDosenDropdownOpen ? dosenSearchQuery : (selectedDosen ? `${selectedDosen.nama} — ${selectedDosen.nip}` : dosenSearchQuery)}
+                        onChange={(e) => {
+                          setDosenSearchQuery(e.target.value);
+                          if (!isDosenDropdownOpen) setIsDosenDropdownOpen(true);
+                          if (selectedDosenId) setSelectedDosenId('');
+                        }}
+                        onFocus={() => {
+                          setDosenSearchQuery('');
+                          setIsDosenDropdownOpen(true);
+                        }}
+                        onBlur={() => setTimeout(() => setIsDosenDropdownOpen(false), 200)}
+                      />
+                      <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                    {isDosenDropdownOpen && (
+                      <div className="absolute z-50 w-full mt-1 bg-white border border-[#E4E7EC] rounded-[10px] shadow-xl max-h-[160px] overflow-y-auto">
+                        {(() => {
+                          const matches = dosenList.filter(d =>
+                            d.nama.toLowerCase().includes(dosenSearchQuery.toLowerCase()) ||
+                            d.nip.includes(dosenSearchQuery)
+                          ).slice(0, 5);
+                          if (matches.length === 0) return (
+                            <div className="p-3 text-xs text-[#98A2B3] text-center">Data tidak ditemukan</div>
+                          );
+                          return matches.map(d => (
+                            <div
+                              key={d.id}
+                              className="px-3 py-2 cursor-pointer hover:bg-[#F8E9ED] border-b border-[#E4E7EC] last:border-none"
+                              onClick={() => {
+                                setSelectedDosenId(d.id);
+                                setDosenSearchQuery(`${d.nama} — ${d.nip}`);
+                                setIsDosenDropdownOpen(false);
+                              }}
+                            >
+                              <div className="text-xs font-semibold text-[#1F2937] leading-tight">{d.nama}</div>
+                              <div className="text-[10px] text-[#98A2B3] mt-0.5">{d.nip} • {d.fakultas}</div>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+                    )}
+                  </div>
+                </FormField>
+                {selectedDosen && (
+                  <div className="grid grid-cols-2 gap-3 mt-1 bg-white p-3 rounded-[8px] border border-[#E4E7EC]">
+                    {[
+                      { l: 'Nama', v: selectedDosen.nama },
+                      { l: 'NIP', v: selectedDosen.nip },
+                      { l: 'Fakultas', v: selectedDosen.fakultas },
+                      { l: 'Prodi', v: selectedDosen.programStudi },
+                      { l: 'Jabatan', v: selectedDosen.jabatanAkademik },
+                      { l: 'Status', v: selectedDosen.statusDosen },
+                    ].map(f => (
+                      <div key={f.l}>
+                        <p className="text-[10px] text-[#98A2B3]">{f.l}</p>
+                        <p className="text-xs font-medium text-[#1F2937] break-words">{f.v}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <button onClick={() => setNewDosen(true)} className="text-sm text-[#8F2438] hover:text-[#761D2E] font-medium text-left">
+                  + Tambah Dosen Baru
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 mt-1">
+                <div className="bg-white border border-[#E4E7EC] p-3 rounded-[8px] shadow-sm">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="text-xs font-semibold text-[#1F2937]">Informasi Dosen Baru</h4>
+                    <button onClick={() => setNewDosen(false)} className="text-xs font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 border border-[#8F2438]/30 hover:border-[#8F2438] px-2 py-1 rounded-[6px] transition-colors">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                      Batal
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField label="Nama Lengkap & Gelar"><Input placeholder="Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
+                      <FormField label="NIP"><Input placeholder="197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField label="Fakultas"><Input placeholder="Contoh: Teknik" value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} /></FormField>
+                      <FormField label="Prodi"><Input placeholder="Contoh: TI" value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} /></FormField>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField label="Jabatan Akademik">
+                        <Select value={dosenForm.jabatanAkademik} onChange={e => setDosenForm({ ...dosenForm, jabatanAkademik: e.target.value })}>
+                          <option>Asisten Ahli</option>
+                          <option>Lektor</option>
+                          <option>Lektor Kepala</option>
+                          <option>Guru Besar</option>
+                        </Select>
+                    </FormField>
+                    <FormField label="Status Dosen">
+                      <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
+                    </FormField>
+                  </div>
+                </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Budget section */}
+          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC]">
+            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Alokasi Anggaran</p>
+            <div className="flex flex-col gap-3">
+              <div className="grid grid-cols-2 gap-3">
+                <FormField label="Tahun Anggaran">
+                  <CustomSelect
+                    value={alokasiForm.tahun}
+                    onChange={(val) => setAlokasiForm({ ...alokasiForm, tahun: Number(val) })}
+                    options={[
+                      { label: '2024', value: 2024 },
+                      { label: '2025', value: 2025 },
+                      { label: '2026', value: 2026 },
+                      { label: '2027', value: 2027 },
+                    ]}
+                    buttonClassName="text-xs font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all w-full focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
+                    dropdownClassName="w-full mt-1 left-0"
+                  />
+                </FormField>
+                <FormField label="Jenis Anggaran">
+                  <CustomSelect
+                    value={alokasiForm.jenis}
+                    onChange={(val) => setAlokasiForm({ ...alokasiForm, jenis: val as BudgetType })}
+                    options={[
+                      { label: 'OPEX', value: 'OPEX' },
+                      { label: 'CAPEX', value: 'CAPEX' },
+                    ]}
+                    buttonClassName="text-xs font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all w-full focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
+                    dropdownClassName="w-full mt-1 left-0"
+                  />
+                </FormField>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] font-semibold text-[#344054]">Daftar Keperluan</label>
+                <div className="flex flex-col gap-2">
+                  {alokasiForm.keperluanList.map((k, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#F7F7F8] border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0">
+                        {i + 1}
+                      </div>
+                      <input 
+                        type="text"
+                        placeholder={i === 0 ? "Contoh: Konferensi Internasional" : "Keperluan lainnya..."}
+                        value={k}
+                        onChange={e => {
+                          const newList = [...alokasiForm.keperluanList];
+                          newList[i] = e.target.value;
+                          setAlokasiForm({ ...alokasiForm, keperluanList: newList });
+                        }}
+                        className="flex-1 px-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
+                      />
+                      {alokasiForm.keperluanList.length > 1 && (
+                        <button 
+                          onClick={() => {
+                            const newList = alokasiForm.keperluanList.filter((_, idx) => idx !== i);
+                            setAlokasiForm({ ...alokasiForm, keperluanList: newList });
+                          }}
+                          className="p-1.5 text-[#98A2B3] hover:text-[#B42318] hover:bg-[#FDECEC] rounded-md transition-colors"
+                          title="Hapus baris"
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  <button 
+                    onClick={() => setAlokasiForm({ ...alokasiForm, keperluanList: [...alokasiForm.keperluanList, ''] })}
+                    className="self-start text-[11px] font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 mt-1"
+                  >
+                    <span>+ Tambah Keperluan Lain</span>
+                  </button>
+                </div>
+              </div>
+              <FormField label="Nominal Anggaran">
+                <Input placeholder="Rp 0" type="text" value={alokasiForm.nominal} onChange={handleNominalChange} />
+              </FormField>
+              <FormField label="Keterangan" optional>
+                <Input placeholder="Deskripsi tambahan (opsional)" value={alokasiForm.keterangan} onChange={e => setAlokasiForm({ ...alokasiForm, keterangan: e.target.value })} />
+              </FormField>
+
+            </div>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Confirm delete */}
+      <ConfirmDialog
+        open={!!confirmId}
+        title="Hapus Penetapan Anggaran"
+        message="Apakah Anda yakin ingin menghapus data ini? Data realisasi yang terkait juga akan dihapus."
+        onConfirm={handleDelete}
+        onCancel={() => setConfirmId(null)}
+      />
+
+      <ShareLinkModal open={!!shareDosen} onClose={() => setShareDosen(null)} dosen={shareDosen} />
+
+      <Modal
+        open={!!viewKeperluanList}
+        onClose={() => setViewKeperluanList(null)}
+        title="Daftar Keperluan"
+        subtitle={`Rincian keperluan anggaran untuk ${viewKeperluanList?.name}`}
+      >
+        <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+          {viewKeperluanList?.items.map((k, i) => (
+            <div key={i} className="flex items-start gap-3 p-3 bg-white border border-[#E4E7EC] rounded-lg shadow-sm">
+              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#FDF5F6] border border-[#F8E9ED] text-[10px] font-bold text-[#8F2438] shrink-0 mt-0.5">
+                {i + 1}
+              </div>
+              <p className="text-[13px] text-[#344054] leading-relaxed pt-1 flex-1">{k}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 flex justify-end">
+          <Button onClick={() => setViewKeperluanList(null)}>Tutup</Button>
+        </div>
+      </Modal>
+
+      {toast && <Toast message={toast.msg} type={toast.type} onClose={() => setToast(null)} />}
+    </main>
+  );
+}
