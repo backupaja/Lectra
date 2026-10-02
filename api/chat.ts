@@ -344,12 +344,8 @@ ATURAN WAJIB:
       }
       
       // Send the function response back to Gemini to synthesize the final answer
-      result = await chat.sendMessage([{
-        functionResponse: {
-          name: fnName,
-          response: dataResponse as any
-        }
-      }]);
+      // Using plain text bypasses the "role 'function' is not supported" bug in Gemini 3.5 Flash Lite API
+      result = await chat.sendMessage(`Hasil dari database untuk fungsi ${fnName}:\n${JSON.stringify(dataResponse)}`);
 
       functionCalls = result.response.functionCalls();
     }
