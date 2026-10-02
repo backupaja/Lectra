@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AuthService } from '../../services/authService';
+import ReactMarkdown from 'react-markdown';
 
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -113,12 +114,18 @@ export function ChatBot() {
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'self-end' : 'self-start'}`}>
               <div className={`px-3.5 py-2.5 rounded-[14px] text-[13px] shadow-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#8F2438] text-white rounded-tr-sm' : 'bg-white border border-[#E4E7EC] text-[#1F2937] rounded-tl-sm'}`}>
-                {msg.text.split('\n').map((line, i) => (
-                  <React.Fragment key={i}>
-                    {line}
-                    {i !== msg.text.split('\n').length - 1 && <br />}
-                  </React.Fragment>
-                ))}
+                {msg.role === 'user' ? (
+                  msg.text.split('\n').map((line, i) => (
+                    <React.Fragment key={i}>
+                      {line}
+                      {i !== msg.text.split('\n').length - 1 && <br />}
+                    </React.Fragment>
+                  ))
+                ) : (
+                  <div className="prose prose-sm prose-p:my-1 prose-ul:my-1 prose-li:my-0 max-w-none text-[#1F2937]">
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                  </div>
+                )}
               </div>
               <span className={`text-[10px] text-[#98A2B3] mt-1.5 ${msg.role === 'user' ? 'text-right' : 'text-left px-1'}`}>
                 {msg.role === 'user' ? 'Anda' : 'LECTRA AI'}
