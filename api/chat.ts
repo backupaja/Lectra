@@ -92,8 +92,11 @@ async function get_lecturer_summary(supabase: any, args: { year?: number, jenis_
     };
   });
   
+  // Filter out lecturers who have no budget allocated for the given criteria
+  const activeLecturers = result.filter((r: any) => r.total_anggaran > 0);
+  
   // Sort descending by realisasi as default sensible order
-  return result.sort((a: any, b: any) => b.total_realisasi - a.total_realisasi);
+  return activeLecturers.sort((a: any, b: any) => b.total_realisasi - a.total_realisasi);
 }
 
 async function get_allocation_status(supabase: any, args: { year?: number, status?: string, jenis_anggaran?: string }) {
