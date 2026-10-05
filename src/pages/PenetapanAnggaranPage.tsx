@@ -31,7 +31,6 @@ export function PenetapanAnggaranPage() {
   const [selectedDosenId, setSelectedDosenId] = useState('');
   const [dosenSearchQuery, setDosenSearchQuery] = useState('');
   const [isDosenDropdownOpen, setIsDosenDropdownOpen] = useState(false);
-  const [newDosen, setNewDosen] = useState(false);
   const [shareDosen, setShareDosen] = useState<Dosen | null>(null);
 
   const [dosenForm, setDosenForm] = useState({
@@ -44,6 +43,7 @@ export function PenetapanAnggaranPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [editingAlokasiId, setEditingAlokasiId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [sortConfig, setSortConfig] = useState<{ key: 'nominal' | 'realisasi' | null, direction: 'asc' | 'desc' }>({ key: null, direction: 'asc' });
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -85,7 +85,6 @@ export function PenetapanAnggaranPage() {
   const closeModal = () => {
     setModalOpen(false);
     setSelectedDosenId('');
-    setNewDosen(false);
     setEditingAlokasiId(null);
     setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
     setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala' });
@@ -95,7 +94,6 @@ export function PenetapanAnggaranPage() {
   const openEditModal = (alok: AlokasiAnggaran) => {
     setEditingAlokasiId(alok.id);
     setSelectedDosenId(alok.dosenId);
-    setNewDosen(false);
     
     const d = dosenList.find(dosen => dosen.id === alok.dosenId);
     setDosenSearchQuery(d ? `${d.nama} — ${d.nip}` : '');
@@ -149,11 +147,7 @@ export function PenetapanAnggaranPage() {
     setIsSaving(true);
     try {
       let finalDosenId = selectedDosenId;
-      if (newDosen) {
-        if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP dosen wajib diisi.');
-        const created = await AnggaranService.createDosen(dosenForm);
-        finalDosenId = created.id;
-      } else if (!finalDosenId) {
+      if (!finalDosenId) {
         throw new Error('Silakan pilih dosen.');
       }
 
@@ -221,6 +215,13 @@ export function PenetapanAnggaranPage() {
       || (statusFilter === 'OVER_BUDGET' && a.status === 'OVER_BUDGET')
       || (statusFilter === 'TERSEDIA' && a.status !== 'OVER_BUDGET');
     return matchSearch && matchBudget && matchStatus;
+  }).sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    const aValue = sortConfig.key === 'nominal' ? a.nominal : a.totalRealisasi;
+    const bValue = sortConfig.key === 'nominal' ? b.nominal : b.totalRealisasi;
+    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
+    return 0;
   });
 
   const totalAnggaran = alokasiList.reduce((s, a) => s + a.nominal, 0);
@@ -334,8 +335,43 @@ export function PenetapanAnggaranPage() {
             <table className="w-full text-xs">
               <thead>
                 <tr className="border-b border-[#E4E7EC] bg-[#F7F7F8]">
-                  {['No', 'Nama Dosen', 'Fakultas / KK', 'Keperluan', 'Pertanggungan (OPEX)', 'Jenis', 'Nominal', 'Realisasi', 'Status', 'Aksi'].map(h => (
-                    <th key={h} className="text-left px-3 py-2.5 text-[11px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
+                  {['No', 'Nama Dosen', 'Fakultas / KK', 'Keperluan', 'Pertanggungan (OPEX)', 'Jenis'].map(h => (
+                    <th key={h} className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
+                  ))}
+                  <th 
+                    className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap cursor-pointer hover:bg-[#F0F2F5] transition-colors group select-none"
+                    onClick={() => setSortConfig(s => ({ key: 'nominal', direction: s.key === 'nominal' && s.direction === 'asc' ? 'desc' : 'asc' }))}
+                    title="Urutkan berdasarkan Nominal"
+                  >
+                    <div className="flex items-center gap-1">
+                      Nominal
+                      <svg className={`w-3 h-3 transition-opacity ${sortConfig.key === 'nominal' ? 'text-[#8F2438] opacity-100' : 'opacity-0 group-hover:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        {sortConfig.key === 'nominal' && sortConfig.direction === 'desc' ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                        )}
+                      </svg>
+                    </div>
+                  </th>
+                  <th 
+                    className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap cursor-pointer hover:bg-[#F0F2F5] transition-colors group select-none"
+                    onClick={() => setSortConfig(s => ({ key: 'realisasi', direction: s.key === 'realisasi' && s.direction === 'asc' ? 'desc' : 'asc' }))}
+                    title="Urutkan berdasarkan Realisasi"
+                  >
+                    <div className="flex items-center gap-1">
+                      Realisasi
+                      <svg className={`w-3 h-3 transition-opacity ${sortConfig.key === 'realisasi' ? 'text-[#8F2438] opacity-100' : 'opacity-0 group-hover:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                        {sortConfig.key === 'realisasi' && sortConfig.direction === 'desc' ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        ) : (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                        )}
+                      </svg>
+                    </div>
+                  </th>
+                  {['Status', 'Aksi'].map(h => (
+                    <th key={h} className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
               </thead>
@@ -346,19 +382,19 @@ export function PenetapanAnggaranPage() {
                   const status = alok.status;
                   return (
                     <tr key={alok.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
-                      <td className="px-3 py-2.5 text-[#98A2B3] text-[11px]">{idx + 1}</td>
-                      <td className="px-3 py-2.5">
-                        <p className="font-medium text-[#1F2937] whitespace-nowrap">{dosen.nama}</p>
-                        <p className="text-[10px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
+                      <td className="px-2 py-1.5 text-[#98A2B3] text-[10px]">{idx + 1}</td>
+                      <td className="px-2 py-1.5">
+                        <p className="font-medium text-[#1F2937] whitespace-nowrap text-[11px]">{dosen.nama}</p>
+                        <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
                       </td>
-                      <td className="px-3 py-2.5">
-                        <p className="text-[#667085] whitespace-nowrap">{dosen.fakultas}</p>
+                      <td className="px-2 py-1.5">
+                        <p className="text-[#667085] whitespace-nowrap text-[10px]">{dosen.fakultas}</p>
                         {alok.jenis === 'CAPEX' && alok.kelompokKeahlian && (
-                          <p className="text-[10px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
+                          <p className="text-[9.5px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
                         )}
-                        <p className="text-[10px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
+                        <p className="text-[9.5px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
                       </td>
-                      <td className="px-3 py-2.5">
+                      <td className="px-2 py-1.5">
                         {(() => {
                           let items = [alok.keperluan];
                           try {
@@ -380,9 +416,9 @@ export function PenetapanAnggaranPage() {
                           );
                         })()}
                       </td>
-                      <td className="px-3 py-2.5">
+                      <td className="px-2 py-1.5">
                         {alok.jenis === 'CAPEX' ? (
-                          <p className="text-[10px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
+                          <p className="text-[9.5px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
                         ) : (() => {
                           let items = [alok.pertanggungan || '-'];
                           try {
@@ -404,21 +440,21 @@ export function PenetapanAnggaranPage() {
                           );
                         })()}
                       </td>
-                      <td className="px-3 py-2.5"><BudgetTypeBadge type={alok.jenis} /></td>
-                      <td className="px-3 py-2.5 font-semibold text-[#1F2937] whitespace-nowrap">{formatRupiah(alok.nominal)}</td>
-                      <td className="px-3 py-2.5">
-                        <p className={`font-medium whitespace-nowrap ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
+                      <td className="px-2 py-1.5"><BudgetTypeBadge type={alok.jenis} /></td>
+                      <td className="px-2 py-1.5 font-semibold text-[#1F2937] whitespace-nowrap text-[11px]">{formatRupiah(alok.nominal)}</td>
+                      <td className="px-2 py-1.5">
+                        <p className={`font-medium whitespace-nowrap text-[11px] ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
                           {formatRupiah(totalReal)}
                         </p>
                         {status === 'OVER_BUDGET' && (
-                          <p className="text-[10px] text-[#B42318] mt-0.5 font-medium">
+                          <p className="text-[9.5px] text-[#B42318] mt-0.5 font-medium">
                             +{Math.round(((totalReal - alok.nominal) / alok.nominal) * 100)}% ({formatRupiah(totalReal - alok.nominal)})
                           </p>
                         )}
                       </td>
-                      <td className="px-3 py-2.5"><StatusBadge status={status} /></td>
-                      <td className="px-3 py-2.5">
-                        <div className="flex items-center gap-1">
+                      <td className="px-2 py-1.5"><StatusBadge status={status} /></td>
+                      <td className="px-2 py-1.5">
+                        <div className="flex items-center gap-0.5">
                           <button onClick={() => openEditModal(alok)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                               <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
@@ -481,7 +517,6 @@ export function PenetapanAnggaranPage() {
           {/* Dosen section */}
           <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC]">
             <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Dosen</p>
-            {!newDosen ? (
               <div className="flex flex-col gap-3">
                 <FormField label="Pilih Dosen">
                   <div className="relative">
@@ -554,38 +589,65 @@ export function PenetapanAnggaranPage() {
                     ))}
                   </div>
                 )}
-                <button onClick={() => setNewDosen(true)} className="text-sm text-[#8F2438] hover:text-[#761D2E] font-medium text-left">
-                  + Tambah Dosen Baru
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 mt-1">
-                <div className="bg-white border border-[#E4E7EC] p-3 rounded-[8px] shadow-sm">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-xs font-semibold text-[#1F2937]">Informasi Dosen Baru</h4>
-                    <button onClick={() => setNewDosen(false)} className="text-xs font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 border border-[#8F2438]/30 hover:border-[#8F2438] px-2 py-1 rounded-[6px] transition-colors">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
-                      Batal
-                    </button>
+                {!selectedDosen && (
+                  <div className="flex flex-col gap-4 mt-2 pt-4 border-t border-[#E4E7EC]">
+                    <div className="bg-white p-3 rounded-[10px] border border-[#E4E7EC] shadow-sm">
+                      <h4 className="text-[12px] font-bold text-[#8F2438] mb-3 uppercase tracking-wide">Master Data Dosen Baru</h4>
+                      <div className="grid grid-cols-1 gap-3">
+                        <div className="grid grid-cols-2 gap-3">
+                          <FormField label="Nama Lengkap & Gelar"><Input placeholder="Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
+                          <FormField label="NIP"><Input placeholder="197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <FormField label="Fakultas">
+                            <Input list="fakultas-list-md" placeholder="Contoh: FIT" value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} />
+                          </FormField>
+                          <FormField label="Prodi">
+                            <Input list="prodi-list-md" placeholder="Contoh: S1 Sistem Informasi" value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} />
+                          </FormField>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 items-end">
+                          <FormField label="Status Dosen">
+                            <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
+                          </FormField>
+                          <Button onClick={async () => {
+                            try {
+                              if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP wajib diisi.');
+                              const created = await AnggaranService.createDosen(dosenForm);
+                              showToast('Dosen berhasil ditambahkan!');
+                              setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
+                              setDosenList(prev => [...prev, created]);
+                              setSelectedDosenId(created.id);
+                              setDosenSearchQuery(`${created.nama} — ${created.nip}`);
+                            } catch (err: any) {
+                              showToast(err.message || 'Gagal menambah dosen', 'error');
+                            }
+                          }}>Simpan & Pilih Dosen</Button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white rounded-[10px] p-3 border border-[#E4E7EC] shadow-sm">
+                        <p className="text-[11px] font-bold text-[#344054] mb-3 uppercase tracking-wide">Master Data Fakultas</p>
+                        <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto custom-scrollbar">
+                          {Array.from(new Set(dosenList.map(d => d.fakultas).filter(Boolean))).sort().map(f => (
+                            <span key={f} className="px-2 py-1 bg-[#F9FAFB] border border-[#E4E7EC] rounded-md text-[11px] text-[#344054]">{f}</span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-[10px] p-3 border border-[#E4E7EC] shadow-sm">
+                        <p className="text-[11px] font-bold text-[#344054] mb-3 uppercase tracking-wide">Master Data Prodi</p>
+                        <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto custom-scrollbar">
+                          {Array.from(new Set(dosenList.map(d => d.programStudi).filter(Boolean))).sort().map(p => (
+                            <span key={p} className="px-2 py-1 bg-[#F9FAFB] border border-[#E4E7EC] rounded-md text-[11px] text-[#344054]">{p}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-1 gap-2">
-                    <div className="grid grid-cols-2 gap-2">
-                      <FormField label="Nama Lengkap & Gelar"><Input placeholder="Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
-                      <FormField label="NIP"><Input placeholder="197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <FormField label="Fakultas"><Input placeholder="Contoh: Teknik" value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} /></FormField>
-                      <FormField label="Prodi"><Input placeholder="Contoh: TI" value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} /></FormField>
-                    </div>
-                    <div className="grid grid-cols-1 gap-2">
-                      <FormField label="Status Dosen">
-                        <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
-                      </FormField>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
-            )}
           </div>
 
           {/* Budget section */}
@@ -633,7 +695,13 @@ export function PenetapanAnggaranPage() {
                   </Select>
                 </FormField>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <FormField label="Nominal Anggaran">
+                <Input placeholder="Rp 0" type="text" value={alokasiForm.nominal} onChange={handleNominalChange} />
+              </FormField>
+              <FormField label="Keterangan" optional>
+                <Input placeholder="Deskripsi tambahan (opsional)" value={alokasiForm.keterangan} onChange={e => setAlokasiForm({ ...alokasiForm, keterangan: e.target.value })} />
+              </FormField>
+              <div className="flex flex-col gap-1.5 mt-2 pt-3 border-t border-[#E4E7EC]">
                 <label className="text-[11px] font-semibold text-[#344054]">Daftar Keperluan</label>
                 <div className="flex flex-col gap-2">
                   {alokasiForm.keperluanList.map((k, i) => (
@@ -759,17 +827,22 @@ export function PenetapanAnggaranPage() {
                   />
                 </div>
               )}
-              <FormField label="Nominal Anggaran">
-                <Input placeholder="Rp 0" type="text" value={alokasiForm.nominal} onChange={handleNominalChange} />
-              </FormField>
-              <FormField label="Keterangan" optional>
-                <Input placeholder="Deskripsi tambahan (opsional)" value={alokasiForm.keterangan} onChange={e => setAlokasiForm({ ...alokasiForm, keterangan: e.target.value })} />
-              </FormField>
-
             </div>
           </div>
         </div>
       </Modal>
+
+      {/* Master Data Datalists Hidden */}
+      <datalist id="fakultas-list-md">
+        {Array.from(new Set(dosenList.map(d => d.fakultas).filter(Boolean))).sort().map(f => (
+          <option key={f} value={f} />
+        ))}
+      </datalist>
+      <datalist id="prodi-list-md">
+        {Array.from(new Set(dosenList.map(d => d.programStudi).filter(Boolean))).sort().map(p => (
+          <option key={p} value={p} />
+        ))}
+      </datalist>
 
       {/* Confirm delete */}
       <ConfirmDialog
