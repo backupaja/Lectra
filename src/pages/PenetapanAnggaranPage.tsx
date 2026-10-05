@@ -620,26 +620,6 @@ export function PenetapanAnggaranPage() {
               <div className="mt-4 bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-[11px] font-bold text-[#1F2937] uppercase tracking-wide">Informasi Dosen</h4>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => {
-                      setEditDosenForm({
-                        id: selectedDosen.id,
-                        nama: selectedDosen.nama,
-                        nip: selectedDosen.nip,
-                        fakultas: selectedDosen.fakultas,
-                        programStudi: selectedDosen.programStudi,
-                        statusDosen: selectedDosen.statusDosen || 'Aktif'
-                      });
-                      setEditDosenModalOpen(true);
-                    }} className="text-[10px] font-semibold text-[#175CD3] flex items-center gap-1 bg-[#EFF8FF] hover:bg-[#D1E9FF] px-2 py-1 rounded transition-colors">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                      Ubah Data
-                    </button>
-                    <button onClick={() => { setSelectedDosenId(''); setDosenSearchQuery(''); }} className="text-[10px] font-semibold text-[#8F2438] flex items-center gap-1 bg-[#FDF5F6] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors">
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                      Ganti Dosen
-                    </button>
-                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-2">
                   <div><p className="text-[10px] text-[#667085] mb-0.5">Nama Lengkap & Gelar</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.nama}</p></div>
@@ -648,8 +628,29 @@ export function PenetapanAnggaranPage() {
                   <div><p className="text-[10px] text-[#667085] mb-0.5">Prodi</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.programStudi}</p></div>
                   <div className="col-span-2">
                     <p className="text-[10px] text-[#667085] mb-1">Status Dosen</p>
-                    <span className="px-2 py-0.5 bg-[#ECFDF3] text-[#027A48] border border-[#D1FADF] rounded text-[10px] font-medium">{selectedDosen.statusDosen || 'Aktif'}</span>
+                    <span className="px-2 py-0.5 bg-[#ECFDF3] text-[#027A48] border border-[#D1FADF] rounded text-[10px] font-medium inline-block mb-3">{selectedDosen.statusDosen || 'Aktif'}</span>
                   </div>
+                </div>
+                
+                <div className="flex justify-end gap-2 pt-3 mt-1 border-t border-[#E4E7EC]">
+                  <button onClick={() => {
+                    setEditDosenForm({
+                      id: selectedDosen.id,
+                      nama: selectedDosen.nama,
+                      nip: selectedDosen.nip,
+                      fakultas: selectedDosen.fakultas,
+                      programStudi: selectedDosen.programStudi,
+                      statusDosen: selectedDosen.statusDosen || 'Aktif'
+                    });
+                    setEditDosenModalOpen(true);
+                  }} className="text-[10px] font-semibold text-[#175CD3] flex items-center gap-1 bg-[#EFF8FF] hover:bg-[#D1E9FF] px-3 py-1.5 rounded-md transition-colors">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    Ubah Data
+                  </button>
+                  <button onClick={() => { setSelectedDosenId(''); setDosenSearchQuery(''); }} className="text-[10px] font-semibold text-[#8F2438] flex items-center gap-1 bg-[#FDF5F6] hover:bg-[#FAD9D9] px-3 py-1.5 rounded-md transition-colors">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                    Ganti Dosen
+                  </button>
                 </div>
               </div>
             )}
