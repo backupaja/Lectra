@@ -728,7 +728,7 @@ export function PenetapanAnggaranPage() {
                         <FormField label="Status Dosen">
                           <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
                         </FormField>
-                        <Button className="w-full bg-[#8F2438] hover:bg-[#761D2E] text-white py-2" onClick={async () => {
+                        <Button className="w-full bg-[#8F2438] hover:bg-[#761D2E] text-white py-1.5 text-xs h-[30px] flex items-center justify-center" onClick={async () => {
                           try {
                             if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP wajib diisi.');
                             const created = await AnggaranService.createDosen(dosenForm);
