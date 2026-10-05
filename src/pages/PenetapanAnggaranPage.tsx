@@ -531,7 +531,7 @@ export function PenetapanAnggaranPage() {
         onClose={closeModal}
         title={editingAlokasiId ? "Edit Penetapan Anggaran" : "Tambah Penetapan Anggaran"}
         subtitle={editingAlokasiId ? "Ubah detail alokasi yang dipilih." : "Pilih dosen dari master data atau tambah dosen baru."}
-        size="2xl"
+        size="xl"
         footer={
           <div className="flex gap-3 justify-end">
             <Button variant="secondary" onClick={closeModal} disabled={isSaving}>Batal</Button>
@@ -539,10 +539,10 @@ export function PenetapanAnggaranPage() {
           </div>
         }
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {/* Left Column: Dosen & Master Data */}
-          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC] flex flex-col gap-0">
-            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Dosen</p>
+          <div className="p-3 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC] flex flex-col gap-0">
+            <p className="text-[11px] font-semibold text-[#667085] uppercase tracking-wide mb-2.5">Data Dosen</p>
             <FormField label="Pilih Dosen">
               <div className="relative">
                 <div className="relative">
@@ -628,10 +628,10 @@ export function PenetapanAnggaranPage() {
                   <span className="text-[10px] font-bold text-[#98A2B3] uppercase tracking-wider">Atau</span>
                   <div className="flex-1 h-px bg-[#E4E7EC]"></div>
                 </div>
-                <div className="flex flex-col gap-4">
-                  <div className="bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm border-t-2 border-t-[#8F2438]/20">
-                    <h4 className="text-[11px] font-bold text-[#8F2438] mb-4 uppercase tracking-wide">Tambah Dosen Baru</h4>
-                    <div className="grid grid-cols-1 gap-4">
+                <div className="flex flex-col gap-3">
+                  <div className="bg-white p-3 rounded-[10px] border border-[#E4E7EC] shadow-sm border-t-2 border-t-[#8F2438]/20">
+                    <h4 className="text-[10px] font-bold text-[#8F2438] mb-3 uppercase tracking-wide">Tambah Dosen Baru</h4>
+                    <div className="grid grid-cols-1 gap-3">
                       <div className="grid grid-cols-2 gap-3">
                         <FormField label="Nama Lengkap & Gelar"><Input placeholder="Contoh: Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
                         <FormField label="NIP"><Input placeholder="Contoh: 197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
@@ -735,8 +735,8 @@ export function PenetapanAnggaranPage() {
           </div>
 
           {/* Budget section */}
-          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC] flex flex-col gap-0">
-            <h4 className="text-[11px] font-bold text-[#667085] uppercase tracking-wide mb-3">Data Alokasi Anggaran</h4>
+          <div className="p-3 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC] flex flex-col gap-0">
+            <h4 className="text-[11px] font-bold text-[#667085] uppercase tracking-wide mb-2.5">Data Alokasi Anggaran</h4>
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-3">
                 <FormField label="Tahun Anggaran">

@@ -29,10 +29,10 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className={`relative bg-white rounded-[16px] shadow-xl w-full ${sizeClasses[size]} max-h-[90vh] flex flex-col`}>
         {/* Header - fixed */}
-        <div className="flex items-start justify-between p-6 border-b border-[#E4E7EC] shrink-0">
+        <div className="flex items-start justify-between px-5 py-4 border-b border-[#E4E7EC] shrink-0">
           <div>
-            <h2 className="text-lg font-semibold text-[#1F2937]">{title}</h2>
-            {subtitle && <p className="text-sm text-[#667085] mt-0.5">{subtitle}</p>}
+            <h2 className="text-base font-semibold text-[#1F2937]">{title}</h2>
+            {subtitle && <p className="text-xs text-[#667085] mt-0.5">{subtitle}</p>}
           </div>
           <button
             onClick={onClose}
@@ -44,10 +44,10 @@ export function Modal({ open, onClose, title, subtitle, children, footer, size =
           </button>
         </div>
         {/* Body - scrollable */}
-        <div className="overflow-y-auto flex-1 p-6">{children}</div>
+        <div className="overflow-y-auto flex-1 p-5">{children}</div>
         {/* Footer - always pinned at bottom */}
         {footer && (
-          <div className="shrink-0 px-6 py-4 border-t border-[#E4E7EC] bg-white rounded-b-[16px]">
+          <div className="shrink-0 px-5 py-4 border-t border-[#E4E7EC] bg-white rounded-b-[16px]">
             {footer}
           </div>
         )}
