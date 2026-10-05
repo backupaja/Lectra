@@ -365,21 +365,18 @@ export function PenetapanAnggaranPage() {
                             if (Array.isArray(parsed)) items = parsed;
                           } catch {}
                           
-                          if (items.length > 1) {
-                            return (
-                              <button
-                                onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
-                                className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
-                                title="Lihat detail keperluan"
-                              >
-                                <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
-                                <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                              </button>
-                            );
-                          }
-                          return <p className="text-[#1F2937] max-w-[160px] truncate" title={items[0]}>{items[0]}</p>;
+                          return (
+                            <button
+                              onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
+                              className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
+                              title="Lihat detail keperluan"
+                            >
+                              <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
+                              <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                              </svg>
+                            </button>
+                          );
                         })()}
                       </td>
                       <td className="px-3 py-2.5">
@@ -392,21 +389,18 @@ export function PenetapanAnggaranPage() {
                             if (Array.isArray(parsed)) items = parsed;
                           } catch {}
                           
-                          if (items.length > 1) {
-                            return (
-                              <button
-                                onClick={() => setViewKeperluanList({ items, name: `Pertanggungan ${dosen.nama}` })}
-                                className="flex items-center gap-1.5 px-2 py-1 bg-[#FFF6ED] hover:bg-[#FFECD6] border border-[#FFD8B2] rounded-md transition-colors text-[#9A3412]"
-                                title="Lihat detail pertanggungan"
-                              >
-                                <span className="text-[10px] font-semibold">{items.length} Dokumen</span>
-                                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                </svg>
-                              </button>
-                            );
-                          }
-                          return <p className="text-[#1F2937] max-w-[160px] truncate" title={items[0]}>{items[0]}</p>;
+                          return (
+                            <button
+                              onClick={() => setViewKeperluanList({ items, name: `Pertanggungan ${dosen.nama}` })}
+                              className="flex items-center gap-1.5 px-2 py-1 bg-[#FFF6ED] hover:bg-[#FFECD6] border border-[#FFD8B2] rounded-md transition-colors text-[#9A3412]"
+                              title="Lihat detail pertanggungan"
+                            >
+                              <span className="text-[10px] font-semibold">{items.length} Dokumen</span>
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                              </svg>
+                            </button>
+                          );
                         })()}
                       </td>
                       <td className="px-3 py-2.5"><BudgetTypeBadge type={alok.jenis} /></td>
