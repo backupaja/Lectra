@@ -740,7 +740,7 @@ export function PenetapanAnggaranPage() {
                           } catch (err: any) {
                             showToast(err.message || 'Gagal menambah dosen', 'error');
                           }
-                        }}>Simpan & Pilih Dosen</Button>
+                        }}>Simpan & Pilih</Button>
                       </div>
                     </div>
                   </div>
