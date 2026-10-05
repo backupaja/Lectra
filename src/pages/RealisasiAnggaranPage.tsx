@@ -595,7 +595,6 @@ export function RealisasiAnggaranPage() {
         open={!!viewKeperluanList}
         onClose={() => setViewKeperluanList(null)}
         title={viewKeperluanList?.name.startsWith('Pertanggungan') ? `Detail ${viewKeperluanList.name}` : `Daftar Keperluan: ${viewKeperluanList?.name}`}
-        hideFooter
       >
         <div className="flex flex-col gap-2">
           {viewKeperluanList?.items.map((k, i) => (
