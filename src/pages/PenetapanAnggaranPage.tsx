@@ -406,7 +406,14 @@ export function PenetapanAnggaranPage() {
                       <td className="px-3 py-2.5"><BudgetTypeBadge type={alok.jenis} /></td>
                       <td className="px-3 py-2.5 font-semibold text-[#1F2937] whitespace-nowrap">{formatRupiah(alok.nominal)}</td>
                       <td className="px-3 py-2.5">
-                        <p className="text-[#8F2438] font-medium whitespace-nowrap">{formatRupiah(totalReal)}</p>
+                        <p className={`font-medium whitespace-nowrap ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
+                          {formatRupiah(totalReal)}
+                        </p>
+                        {status === 'OVER_BUDGET' && (
+                          <p className="text-[10px] text-[#B42318] mt-0.5 font-medium">
+                            +{Math.round(((totalReal - alok.nominal) / alok.nominal) * 100)}% ({formatRupiah(totalReal - alok.nominal)})
+                          </p>
+                        )}
                       </td>
                       <td className="px-3 py-2.5"><StatusBadge status={status} /></td>
                       <td className="px-3 py-2.5">
