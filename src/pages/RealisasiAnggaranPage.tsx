@@ -455,32 +455,38 @@ export function RealisasiAnggaranPage() {
                       <thead>
                         <tr className="border-b border-[#E4E7EC] bg-[#F7F7F8]">
                           {['No', 'Tanggal', 'Nomor SIMKUG', 'Nominal', 'Keterangan', 'Aksi'].map(h => (
-                            <th key={h} className="text-left px-4 py-3 text-xs font-semibold text-[#667085] whitespace-nowrap">{h}</th>
+                            <th key={h} className="text-left px-3 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody>
                         {realisasiList.map((r, idx) => (
                           <tr key={r.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
-                            <td className="px-4 py-3 text-[#98A2B3] text-xs">{idx + 1}</td>
-                            <td className="px-4 py-3 text-[#1F2937] whitespace-nowrap">{r.tanggal}</td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 py-1.5 text-[#98A2B3] text-[10px]">{idx + 1}</td>
+                            <td className="px-3 py-1.5 text-[#1F2937] whitespace-nowrap text-[11px]">{r.tanggal}</td>
+                            <td className="px-3 py-1.5">
                               {r.nomorSimkug ? (
-                                <span className="text-xs font-mono bg-[#F7F7F8] border border-[#E4E7EC] px-2 py-0.5 rounded-[6px] text-[#1F2937]">{r.nomorSimkug}</span>
+                                <span className="text-[10px] font-mono bg-[#F7F7F8] border border-[#E4E7EC] px-1.5 py-0.5 rounded-[6px] text-[#1F2937]">{r.nomorSimkug}</span>
                               ) : (
                                 <span className="text-[#98A2B3]">–</span>
                               )}
                             </td>
-                            <td className="px-4 py-3 font-semibold text-[#8F2438] whitespace-nowrap">{formatRupiah(r.nominal)}</td>
-                            <td className="px-4 py-3 text-[#667085] max-w-[200px] truncate">{r.keterangan}</td>
-                            <td className="px-4 py-3">
+                            <td className="px-3 py-1.5 font-semibold text-[#8F2438] whitespace-nowrap text-[11px]">{formatRupiah(r.nominal)}</td>
+                            <td className="px-3 py-1.5 text-[#667085] max-w-[200px] truncate text-[11px]">{r.keterangan}</td>
+                            <td className="px-3 py-1.5">
                               <div className="flex items-center gap-1">
-                                <button onClick={() => openModal(r)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
+                                <button onClick={() => window.open('https://loremflickr.com/800/600/invoice', '_blank')} className="px-2 py-1 bg-white border border-[#E4E7EC] text-[#344054] text-[10px] font-medium rounded-md hover:bg-[#F9FAFB] hover:text-[#8F2438] transition-colors flex items-center gap-1" title="Lihat Bukti">
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+                                  </svg>
+                                  Bukti
+                                </button>
+                                <button onClick={() => openModal(r)} className="p-1 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
                                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z" />
                                   </svg>
                                 </button>
-                                <button onClick={() => setConfirmId(r.id)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
+                                <button onClick={() => setConfirmId(r.id)} className="p-1 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
                                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                   </svg>
@@ -492,8 +498,8 @@ export function RealisasiAnggaranPage() {
                       </tbody>
                       <tfoot>
                         <tr className="bg-[#F7F7F8] border-t border-[#E4E7EC]">
-                          <td colSpan={3} className="px-4 py-3 text-xs font-semibold text-[#344054]">Total Realisasi</td>
-                          <td className="px-4 py-3 font-bold text-[#8F2438]">{formatRupiah(totalReal)}</td>
+                          <td colSpan={3} className="px-3 py-1.5 text-[11px] font-semibold text-[#344054]">Total Realisasi</td>
+                          <td className="px-3 py-1.5 font-bold text-[#8F2438] text-[11px]">{formatRupiah(totalReal)}</td>
                           <td colSpan={2} />
                         </tr>
                       </tfoot>

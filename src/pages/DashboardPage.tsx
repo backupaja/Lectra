@@ -477,7 +477,10 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         </div>
 
         {/* 2. PENYERAPAN PER DOSEN */}
-        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-5 flex flex-col h-full min-h-[240px]">
+        <div 
+          className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-5 flex flex-col h-full"
+          style={{ minHeight: dosenTopN === 10 ? '400px' : '260px' }}
+        >
           <div className="flex items-start justify-between mb-3 shrink-0">
             <div>
               <h3 className="text-[13px] font-bold text-[#1F2937]">Penyerapan Anggaran & Frekuensi (Top N)</h3>
@@ -519,6 +522,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                     <YAxis 
                       type="category" 
                       dataKey="displayName" 
+                      interval={0}
                       tick={(props) => {
                         const { x, y, payload } = props;
                         const [rank, name] = payload.value.split('|');
@@ -548,7 +552,10 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         </div>
 
         {/* 3. PENYERAPAN TERENDAH */}
-        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-5 flex flex-col h-full min-h-[240px]">
+        <div 
+          className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-5 flex flex-col h-full"
+          style={{ minHeight: dosenBottomN === 10 ? '400px' : '260px' }}
+        >
           <div className="flex items-start justify-between mb-3 shrink-0">
             <div>
               <h3 className="text-[13px] font-bold text-[#1F2937]">Penyerapan Anggaran Terendah</h3>
@@ -593,6 +600,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                     <YAxis 
                       type="category" 
                       dataKey="displayName" 
+                      interval={0}
                       tick={(props) => {
                         const { x, y, payload } = props;
                         const [rank, name] = payload.value.split('|');
