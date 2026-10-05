@@ -313,7 +313,8 @@ export function PenetapanAnggaranPage() {
           options={[
             { label: 'Semua Status', value: 'all' },
             { label: 'Tersedia', value: 'TERSEDIA' },
-            { label: 'Habis', value: 'OVER_BUDGET' },
+            { label: 'Habis', value: 'HABIS' },
+            { label: 'Over Budget', value: 'OVER_BUDGET' },
           ]}
           buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[110px]"
           dropdownClassName="min-w-[130px] mt-1 right-0"
