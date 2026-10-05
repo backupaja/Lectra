@@ -3,7 +3,7 @@ import { YearlyBarChart } from '../components/charts/YearlyBarChart';
 import { Button } from '../components/ui/Button';
 import { DonutChart } from '../components/charts/DonutChart';
 import { MonthlyChart } from '../components/charts/MonthlyChart';
-import { formatRupiah, YEARLY_DATA } from '../data/mockData';
+import { formatRupiah, getDynamicYearOptions } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 import { CustomSelect } from '../components/ui/CustomSelect';
 
@@ -145,7 +145,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               <CustomSelect
                 value={year}
                 onChange={val => setYear(Number(val))}
-                options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                options={getDynamicYearOptions()}
                 buttonClassName="bg-transparent border-none text-sm font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
                 dropdownClassName="w-auto min-w-[80px]"
               />
@@ -229,7 +229,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                 <CustomSelect
                   value={chartStartYear || minYear}
                   onChange={val => setChartStartYear(Number(val))}
-                  options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                  options={getDynamicYearOptions()}
                   buttonClassName="bg-transparent border-none text-xs font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
                   dropdownClassName="w-auto min-w-[80px]"
                 />
@@ -239,7 +239,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                 <CustomSelect
                   value={chartEndYear || maxYear}
                   onChange={val => setChartEndYear(Number(val))}
-                  options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                  options={getDynamicYearOptions()}
                   buttonClassName="bg-transparent border-none text-xs font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
                   dropdownClassName="w-auto min-w-[80px] right-0"
                 />

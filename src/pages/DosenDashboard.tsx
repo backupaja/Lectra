@@ -5,7 +5,7 @@ import { BudgetTypeBadge, StatusBadge } from '../components/ui/Badge';
 import { Modal } from '../components/ui/Modal';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import {
-  YEARLY_DATA, MONTHLY_DATA_BY_YEAR, formatRupiah
+  YEARLY_DATA, MONTHLY_DATA_BY_YEAR, formatRupiah, getDynamicYearOptions
 } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 import { AnggaranService } from '../services/anggaranService';
@@ -271,7 +271,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
                 <CustomSelect
                   value={year}
                   onChange={val => setYear(Number(val))}
-                  options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                  options={getDynamicYearOptions()}
                   buttonClassName="bg-transparent border-none text-sm font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
                   dropdownClassName="w-[100px] right-0"
                 />

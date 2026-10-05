@@ -7,7 +7,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { ConfirmDialog } from '../components/ui/ConfirmDialog';
 import { Toast } from '../components/ui/Toast';
 import { ShareLinkModal } from '../components/ui/ShareLinkModal';
-import { YEARLY_DATA, formatRupiah } from '../data/mockData';
+import { formatRupiah, getDynamicYearOptions } from '../data/mockData';
 import { AnggaranService } from '../services/anggaranService';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import type { AlokasiAnggaran, Dosen, BudgetType } from '../types';
@@ -280,7 +280,7 @@ export function PenetapanAnggaranPage() {
           <CustomSelect
             value={year}
             onChange={(val) => setYear(Number(val))}
-            options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+            options={getDynamicYearOptions()}
             buttonClassName="text-xs font-semibold bg-white border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
             dropdownClassName="w-full mt-1 right-0"
           />
@@ -777,7 +777,7 @@ export function PenetapanAnggaranPage() {
                   <CustomSelect
                     value={alokasiForm.tahun}
                     onChange={(val) => setAlokasiForm({ ...alokasiForm, tahun: Number(val) })}
-                    options={Array.from({ length: 12 }, (_, i) => ({ label: `${2024 + i}`, value: 2024 + i }))}
+                    options={getDynamicYearOptions()}
                     buttonClassName="text-xs font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all w-full focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
                     dropdownClassName="w-full mt-1 left-0"
                   />

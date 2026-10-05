@@ -132,6 +132,14 @@ export const REALISASI_LIST: RealisasiAnggaran[] = [
   { id: 'r12', alokasiId: 'a6', tanggal: '2026-03-01', nominal: 2000000, nomorSimkug: '', keterangan: 'Transportasi pulang' },
 ];
 
+export function getDynamicYearOptions() {
+  const currentYear = new Date().getFullYear();
+  return Array.from(
+    { length: Math.max(5, currentYear + 3 - 2023 + 1) },
+    (_, i) => ({ label: String(2023 + i), value: 2023 + i })
+  );
+}
+
 export const YEARLY_DATA: YearlyData[] = [
   { tahun: 2024, totalAnggaran: 180000000, totalRealisasi: 165000000, opex: 80000000, capex: 100000000, opexRealisasi: 75000000, capexRealisasi: 90000000 },
   { tahun: 2025, totalAnggaran: 220000000, totalRealisasi: 198000000, opex: 100000000, capex: 120000000, opexRealisasi: 92000000, capexRealisasi: 106000000 },

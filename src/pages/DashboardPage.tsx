@@ -3,7 +3,7 @@ import type { Page } from '../types';
 import { DonutChart } from '../components/charts/DonutChart';
 import { MonthlyChart } from '../components/charts/MonthlyChart';
 import { CustomSelect } from '../components/ui/CustomSelect';
-import { YEARLY_DATA, formatRupiah } from '../data/mockData';
+import { YEARLY_DATA, formatRupiah, getDynamicYearOptions } from '../data/mockData';
 import { AnggaranService } from '../services/anggaranService';
 import { RealisasiService } from '../services/realisasiService';
 import { AnalitikService } from '../services/analitikService';
@@ -58,7 +58,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [filterJenis, setFilterJenis] = useState<'SEMUA' | 'OPEX' | 'CAPEX'>('SEMUA');
   
   const [filterTrenTahunAwal, setFilterTrenTahunAwal] = useState(2023);
-  const [filterTrenTahunAkhir, setFilterTrenTahunAkhir] = useState(2026);
+  const [filterTrenTahunAkhir, setFilterTrenTahunAkhir] = useState(new Date().getFullYear());
+
+  const yearOptions = getDynamicYearOptions();
 
   const [trenLoading, setTrenLoading] = useState(true);
   const [dosenLoading, setDosenLoading] = useState(true);
@@ -195,7 +197,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <CustomSelect
                   value={year}
                   onChange={(val) => setYear(Number(val))}
-                  options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                  options={yearOptions}
                   buttonClassName="appearance-none text-[13px] font-bold text-[#1F2937] bg-transparent border-none outline-none cursor-pointer pr-4"
                   dropdownClassName="w-[100px] right-0 mt-1"
                 />
@@ -313,7 +315,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               <CustomSelect
                 value={filterTrenTahunAwal}
                 onChange={(val) => setFilterTrenTahunAwal(Number(val))}
-                options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                options={yearOptions}
                 buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2 py-1 pr-5 text-[#1F2937] outline-none w-[75px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all"
               />
             </div>
@@ -323,7 +325,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               <CustomSelect
                 value={filterTrenTahunAkhir}
                 onChange={(val) => setFilterTrenTahunAkhir(Number(val))}
-                options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                options={yearOptions}
                 buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2 py-1 pr-5 text-[#1F2937] outline-none w-[75px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all"
               />
             </div>
@@ -347,7 +349,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               <CustomSelect
                 value={filterTahun}
                 onChange={(val) => setFilterTahun(Number(val))}
-                options={YEARLY_DATA.map(y => ({ label: String(y.tahun), value: y.tahun }))}
+                options={yearOptions}
                 buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2.5 py-1 pr-6 text-[#1F2937] outline-none w-[80px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
               />
             </div>
