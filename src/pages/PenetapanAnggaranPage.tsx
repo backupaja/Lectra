@@ -56,8 +56,10 @@ export function PenetapanAnggaranPage() {
 
   const [addFakultasModalOpen, setAddFakultasModalOpen] = useState(false);
   const [addProdiModalOpen, setAddProdiModalOpen] = useState(false);
+  const [editDosenModalOpen, setEditDosenModalOpen] = useState(false);
   const [newFakultasForm, setNewFakultasForm] = useState({ kode: '', nama: '' });
   const [newProdiForm, setNewProdiForm] = useState({ nama: '' });
+  const [editDosenForm, setEditDosenForm] = useState({ id: '', nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
 
   const [masterFakultas, setMasterFakultas] = useState([
     { kode: 'FIT', nama: 'Fakultas Ilmu Terapan' },
@@ -618,10 +620,26 @@ export function PenetapanAnggaranPage() {
               <div className="mt-4 bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-[11px] font-bold text-[#1F2937] uppercase tracking-wide">Informasi Dosen</h4>
-                  <button onClick={() => { setSelectedDosenId(''); setDosenSearchQuery(''); }} className="text-[10px] font-semibold text-[#8F2438] flex items-center gap-1 bg-[#FDF5F6] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors">
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                    Ubah Dosen
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => {
+                      setEditDosenForm({
+                        id: selectedDosen.id,
+                        nama: selectedDosen.nama,
+                        nip: selectedDosen.nip,
+                        fakultas: selectedDosen.fakultas,
+                        programStudi: selectedDosen.programStudi,
+                        statusDosen: selectedDosen.statusDosen || 'Aktif'
+                      });
+                      setEditDosenModalOpen(true);
+                    }} className="text-[10px] font-semibold text-[#175CD3] flex items-center gap-1 bg-[#EFF8FF] hover:bg-[#D1E9FF] px-2 py-1 rounded transition-colors">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                      Ubah Data
+                    </button>
+                    <button onClick={() => { setSelectedDosenId(''); setDosenSearchQuery(''); }} className="text-[10px] font-semibold text-[#8F2438] flex items-center gap-1 bg-[#FDF5F6] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors">
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                      Ganti Dosen
+                    </button>
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-2">
                   <div><p className="text-[10px] text-[#667085] mb-0.5">Nama Lengkap & Gelar</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.nama}</p></div>
@@ -1035,6 +1053,48 @@ export function PenetapanAnggaranPage() {
         <div className="flex flex-col gap-4">
           <FormField label="Nama Prodi">
             <Input placeholder="Contoh: S1 Sistem Informasi" value={newProdiForm.nama} onChange={e => setNewProdiForm({ ...newProdiForm, nama: e.target.value })} />
+          </FormField>
+        </div>
+      </Modal>
+
+      {/* Edit Dosen Modal */}
+      <Modal
+        open={editDosenModalOpen}
+        onClose={() => setEditDosenModalOpen(false)}
+        title="Ubah Data Dosen"
+        size="md"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <Button variant="secondary" onClick={() => setEditDosenModalOpen(false)}>Batal</Button>
+            <Button onClick={async () => {
+              try {
+                if (!editDosenForm.nama || !editDosenForm.nip) throw new Error('Nama dan NIP wajib diisi.');
+                await AnggaranService.updateDosen(editDosenForm.id, editDosenForm);
+                showToast('Data dosen berhasil diperbarui!');
+                setEditDosenModalOpen(false);
+                fetchData();
+              } catch (err: any) {
+                showToast(err.message || 'Gagal memperbarui dosen', 'error');
+              }
+            }}>Simpan Perubahan</Button>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <FormField label="Nama Lengkap & Gelar"><Input value={editDosenForm.nama} onChange={e => setEditDosenForm({ ...editDosenForm, nama: e.target.value })} /></FormField>
+          <FormField label="NIP"><Input value={editDosenForm.nip} onChange={e => setEditDosenForm({ ...editDosenForm, nip: e.target.value })} /></FormField>
+          <FormField label="Fakultas">
+            <Select value={editDosenForm.fakultas} onChange={e => setEditDosenForm({ ...editDosenForm, fakultas: e.target.value })}>
+              {masterFakultas.map(f => <option key={f.kode} value={f.kode}>{f.kode} - {f.nama}</option>)}
+            </Select>
+          </FormField>
+          <FormField label="Prodi">
+            <Select value={editDosenForm.programStudi} onChange={e => setEditDosenForm({ ...editDosenForm, programStudi: e.target.value })}>
+              {masterProdi.map(p => <option key={p} value={p}>{p}</option>)}
+            </Select>
+          </FormField>
+          <FormField label="Status Dosen">
+            <Select value={editDosenForm.statusDosen} onChange={e => setEditDosenForm({ ...editDosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
           </FormField>
         </div>
       </Modal>

@@ -54,7 +54,24 @@ export const AnggaranService = {
     };
   },
 
-  // 3. Ambil data alokasi
+  // 3. Update dosen
+  updateDosen: async (id: string, data: Partial<Dosen>): Promise<void> => {
+    const updates: any = {};
+    if (data.nama !== undefined) updates.nama = data.nama;
+    if (data.nip !== undefined) updates.nip = data.nip;
+    if (data.fakultas !== undefined) updates.fakultas = data.fakultas;
+    if (data.programStudi !== undefined) updates.program_studi = data.programStudi;
+    if (data.statusDosen !== undefined) updates.status = data.statusDosen;
+
+    const { error } = await supabase
+      .from('dosen')
+      .update(updates)
+      .eq('id', id);
+      
+    if (error) throw error;
+  },
+
+  // 4. Ambil data alokasi
   getAlokasi: async (tahun: number): Promise<(AlokasiAnggaran & { totalRealisasi: number })[]> => {
     const { data: alokasiData, error: alokasiError } = await supabase
       .from('alokasi_anggaran')
