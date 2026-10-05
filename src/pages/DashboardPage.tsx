@@ -543,7 +543,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                       dataKey="totalRealisasi" 
                       radius={[0, 4, 4, 0]}
                       minPointSize={3}
-                      background={{ fill: '#F9FAFB', radius: [0, 4, 4, 0] }}
+                      background={{ fill: '#F9FAFB' }}
                     >
                       {penyerapanData.slice(0, dosenTopN).map((d, i) => (
                         <Cell key={i} fill={i === 0 ? '#8F2438' : '#D48696'} />
@@ -626,7 +626,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                       dataKey="totalRealisasi" 
                       radius={[0, 4, 4, 0]}
                       minPointSize={3}
-                      background={{ fill: '#F9FAFB', radius: [0, 4, 4, 0] }}
+                      background={{ fill: '#F9FAFB' }}
                     >
                       {[...penyerapanData].reverse().slice(0, dosenBottomN).map((d, i) => (
                         <Cell key={i} fill={i === 0 ? '#B42318' : '#FDA29B'} />
