@@ -33,6 +33,32 @@ export function PenetapanAnggaranPage() {
   const [isDosenDropdownOpen, setIsDosenDropdownOpen] = useState(false);
   const [shareDosen, setShareDosen] = useState<Dosen | null>(null);
 
+  const [isFakultasDropdownOpen, setIsFakultasDropdownOpen] = useState(false);
+  const [fakultasSearchQuery, setFakultasSearchQuery] = useState('');
+  
+  const [isProdiDropdownOpen, setIsProdiDropdownOpen] = useState(false);
+  const [prodiSearchQuery, setProdiSearchQuery] = useState('');
+
+  const [addFakultasModalOpen, setAddFakultasModalOpen] = useState(false);
+  const [addProdiModalOpen, setAddProdiModalOpen] = useState(false);
+  const [newFakultasForm, setNewFakultasForm] = useState({ kode: '', nama: '' });
+  const [newProdiForm, setNewProdiForm] = useState({ nama: '' });
+
+  const [masterFakultas, setMasterFakultas] = useState([
+    { kode: 'FIT', nama: 'Fakultas Ilmu Terapan' },
+    { kode: 'FEB', nama: 'Fakultas Ekonomi dan Bisnis' },
+    { kode: 'FKS', nama: 'Fakultas Komunikasi dan Sosial' },
+    { kode: 'FRI', nama: 'Fakultas Rekayasa Industri' },
+    { kode: 'FTE', nama: 'Fakultas Teknik Elektro' },
+  ]);
+  const [masterProdi, setMasterProdi] = useState([
+    'S1 Sistem Informasi',
+    'S1 Informatika',
+    'S1 Akuntansi',
+    'S1 Manajemen',
+    'S1 Teknik Informatika'
+  ]);
+
   const [dosenForm, setDosenForm] = useState({
     nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif'
   });
@@ -515,7 +541,8 @@ export function PenetapanAnggaranPage() {
       >
         <div className="grid grid-cols-2 gap-4">
           {/* Left Column: Dosen & Master Data */}
-          <div className="flex flex-col gap-0">
+          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC] flex flex-col gap-0">
+            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Dosen</p>
             <FormField label="Pilih Dosen">
               <div className="relative">
                 <div className="relative">
@@ -524,7 +551,7 @@ export function PenetapanAnggaranPage() {
                   </svg>
                   <input
                     type="text"
-                    className="w-full pl-9 pr-8 py-2.5 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 disabled:bg-[#F7F7F8] disabled:text-[#98A2B3]"
+                    className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 disabled:bg-[#F7F7F8] disabled:text-[#98A2B3]"
                     placeholder="Ketik nama atau NIP dosen..."
                     value={isDosenDropdownOpen ? dosenSearchQuery : (selectedDosen ? `${selectedDosen.nama} (${selectedDosen.nip})` : dosenSearchQuery)}
                     onChange={(e) => {
@@ -578,22 +605,18 @@ export function PenetapanAnggaranPage() {
                   <h4 className="text-[11px] font-bold text-[#1F2937] uppercase tracking-wide">Informasi Dosen</h4>
                   <button onClick={() => { setSelectedDosenId(''); setDosenSearchQuery(''); }} className="text-[10px] font-semibold text-[#8F2438] flex items-center gap-1 bg-[#FDF5F6] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors">
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                    Ganti Dosen
+                    Ubah Dosen
                   </button>
                 </div>
                 <div className="grid grid-cols-2 gap-y-4 gap-x-2">
                   <div><p className="text-[10px] text-[#667085] mb-0.5">Nama Lengkap & Gelar</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.nama}</p></div>
                   <div><p className="text-[10px] text-[#667085] mb-0.5">NIP</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.nip}</p></div>
-                  <div><p className="text-[10px] text-[#667085] mb-0.5">Fakultas</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.fakultas}</p></div>
+                  <div><p className="text-[10px] text-[#667085] mb-0.5">Fakultas</p><p className="text-[11px] font-semibold text-[#1F2937]">{masterFakultas.find(f => f.kode === selectedDosen.fakultas)?.nama ? `${selectedDosen.fakultas} (${masterFakultas.find(f => f.kode === selectedDosen.fakultas)?.nama})` : selectedDosen.fakultas}</p></div>
                   <div><p className="text-[10px] text-[#667085] mb-0.5">Prodi</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.programStudi}</p></div>
                   <div className="col-span-2">
                     <p className="text-[10px] text-[#667085] mb-1">Status Dosen</p>
                     <span className="px-2 py-0.5 bg-[#ECFDF3] text-[#027A48] border border-[#D1FADF] rounded text-[10px] font-medium">{selectedDosen.statusDosen || 'Aktif'}</span>
                   </div>
-                </div>
-                <div className="mt-5 p-2.5 bg-[#EFF8FF] border border-[#B2DDFF] rounded-md flex items-start gap-2">
-                  <svg className="w-4 h-4 text-[#175CD3] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  <p className="text-[10px] text-[#175CD3] leading-relaxed">Data dosen diambil dari master data.<br/>Jika ada perubahan, silakan ubah melalui menu master data dosen.</p>
                 </div>
               </div>
             )}
@@ -606,27 +629,91 @@ export function PenetapanAnggaranPage() {
                   <div className="flex-1 h-px bg-[#E4E7EC]"></div>
                 </div>
                 <div className="flex flex-col gap-4">
-                  <div className="bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm">
-                    <h4 className="text-[11px] font-bold text-[#1F2937] mb-1 uppercase tracking-wide">Master Data Dosen Baru</h4>
-                    <p className="text-[10px] text-[#667085] mb-4">Jika dosen belum ada, tambahkan ke master data terlebih dahulu.</p>
+                  <div className="bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm border-t-2 border-t-[#8F2438]/20">
+                    <h4 className="text-[11px] font-bold text-[#8F2438] mb-4 uppercase tracking-wide">Tambah Dosen Baru</h4>
                     <div className="grid grid-cols-1 gap-4">
                       <div className="grid grid-cols-2 gap-3">
                         <FormField label="Nama Lengkap & Gelar"><Input placeholder="Contoh: Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
                         <FormField label="NIP"><Input placeholder="Contoh: 197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
                       </div>
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-3 relative">
                         <FormField label="Fakultas">
-                          <Input list="fakultas-list-md" placeholder="Pilih fakultas..." value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} />
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className="w-full px-3 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 cursor-pointer"
+                              placeholder="Pilih fakultas..."
+                              value={dosenForm.fakultas}
+                              readOnly
+                              onClick={() => { setIsFakultasDropdownOpen(true); setIsProdiDropdownOpen(false); }}
+                            />
+                            <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                          </div>
+                          {isFakultasDropdownOpen && (
+                            <div className="absolute z-50 w-[240px] left-0 mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl flex flex-col max-h-[220px]">
+                              <div className="p-2 border-b border-[#E4E7EC]">
+                                <div className="relative">
+                                  <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                                  <input type="text" autoFocus placeholder="Cari fakultas..." value={fakultasSearchQuery} onChange={e => setFakultasSearchQuery(e.target.value)} className="w-full pl-8 pr-3 py-1.5 text-[11px] bg-[#F9FAFB] border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438]" />
+                                </div>
+                              </div>
+                              <div className="overflow-y-auto flex-1 custom-scrollbar">
+                                {masterFakultas.filter(f => f.kode.toLowerCase().includes(fakultasSearchQuery.toLowerCase()) || f.nama.toLowerCase().includes(fakultasSearchQuery.toLowerCase())).map((f) => (
+                                  <div key={f.kode} className="px-3 py-2 cursor-pointer hover:bg-[#FDF5F6] border-b border-[#E4E7EC] last:border-none flex flex-col" onClick={() => { setDosenForm({ ...dosenForm, fakultas: f.kode }); setIsFakultasDropdownOpen(false); }}>
+                                    <span className="text-[11px] font-bold text-[#1F2937]">{f.kode}</span>
+                                    <span className="text-[10px] text-[#667085]">{f.nama}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="p-2 border-t border-[#E4E7EC] bg-[#F9FAFB] rounded-b-[8px]">
+                                <button onClick={() => { setIsFakultasDropdownOpen(false); setAddFakultasModalOpen(true); }} className="text-[11px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded transition-colors w-full text-left px-2 flex items-center gap-1">
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg> Tambah Fakultas Baru
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </FormField>
                         <FormField label="Prodi">
-                          <Input list="prodi-list-md" placeholder="Pilih prodi..." value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} />
+                          <div className="relative">
+                            <input
+                              type="text"
+                              className="w-full px-3 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 cursor-pointer"
+                              placeholder="Pilih prodi..."
+                              value={dosenForm.programStudi}
+                              readOnly
+                              onClick={() => { setIsProdiDropdownOpen(true); setIsFakultasDropdownOpen(false); }}
+                            />
+                            <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                          </div>
+                          {isProdiDropdownOpen && (
+                            <div className="absolute z-50 w-[240px] right-0 mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl flex flex-col max-h-[220px]">
+                              <div className="p-2 border-b border-[#E4E7EC]">
+                                <div className="relative">
+                                  <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                                  <input type="text" autoFocus placeholder="Cari prodi..." value={prodiSearchQuery} onChange={e => setProdiSearchQuery(e.target.value)} className="w-full pl-8 pr-3 py-1.5 text-[11px] bg-[#F9FAFB] border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438]" />
+                                </div>
+                              </div>
+                              <div className="overflow-y-auto flex-1 custom-scrollbar">
+                                {masterProdi.filter(p => p.toLowerCase().includes(prodiSearchQuery.toLowerCase())).map((p) => (
+                                  <div key={p} className="px-3 py-2 cursor-pointer hover:bg-[#FDF5F6] border-b border-[#E4E7EC] last:border-none flex flex-col" onClick={() => { setDosenForm({ ...dosenForm, programStudi: p }); setIsProdiDropdownOpen(false); }}>
+                                    <span className="text-[11px] font-medium text-[#1F2937]">{p}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <div className="p-2 border-t border-[#E4E7EC] bg-[#F9FAFB] rounded-b-[8px]">
+                                <button onClick={() => { setIsProdiDropdownOpen(false); setAddProdiModalOpen(true); }} className="text-[11px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded transition-colors w-full text-left px-2 flex items-center gap-1">
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg> Tambah Prodi Baru
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </FormField>
                       </div>
-                      <div className="grid grid-cols-2 gap-3 items-end">
+                      <div className="grid grid-cols-2 gap-3 items-end mt-1">
                         <FormField label="Status Dosen">
                           <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
                         </FormField>
-                        <Button className="w-full bg-[#8F2438] hover:bg-[#761D2E] text-white" onClick={async () => {
+                        <Button className="w-full bg-[#8F2438] hover:bg-[#761D2E] text-white py-2" onClick={async () => {
                           try {
                             if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP wajib diisi.');
                             const created = await AnggaranService.createDosen(dosenForm);
@@ -642,47 +729,14 @@ export function PenetapanAnggaranPage() {
                       </div>
                     </div>
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white rounded-[10px] p-4 border border-[#E4E7EC] shadow-sm flex flex-col border-t-2 border-t-[#8F2438]/20">
-                      <h4 className="text-[11px] font-bold text-[#1F2937] mb-3 uppercase tracking-wide">Master Data Fakultas</h4>
-                      <div className="relative mb-3">
-                        <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                        <input type="text" placeholder="Cari fakultas..." className="w-full pl-8 pr-3 py-1.5 text-[11px] bg-[#F9FAFB] border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" />
-                      </div>
-                      <div className="flex flex-wrap gap-2 max-h-[140px] overflow-y-auto custom-scrollbar flex-1 items-start content-start">
-                        {Array.from(new Set(dosenList.map(d => d.fakultas).filter(Boolean))).sort().map((f, i) => (
-                          <span key={f} className={`px-2.5 py-1 ${i===0 ? 'bg-[#8F2438] text-white border-[#8F2438]' : 'bg-white text-[#344054] border-[#E4E7EC]'} border rounded-md text-[10px] font-medium shadow-sm`}>{f}</span>
-                        ))}
-                      </div>
-                      <button className="text-[10px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded mt-3 border border-transparent hover:border-[#F8E9ED] transition-colors w-full text-left px-2">
-                        + Tambah Fakultas Baru
-                      </button>
-                    </div>
-                    <div className="bg-white rounded-[10px] p-4 border border-[#E4E7EC] shadow-sm flex flex-col border-t-2 border-t-[#8F2438]/20">
-                      <h4 className="text-[11px] font-bold text-[#1F2937] mb-3 uppercase tracking-wide">Master Data Prodi</h4>
-                      <div className="relative mb-3">
-                        <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                        <input type="text" placeholder="Cari prodi..." className="w-full pl-8 pr-3 py-1.5 text-[11px] bg-[#F9FAFB] border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" />
-                      </div>
-                      <div className="flex flex-col max-h-[140px] overflow-y-auto custom-scrollbar flex-1 border border-[#E4E7EC] rounded-md bg-[#F9FAFB]">
-                        {Array.from(new Set(dosenList.map(d => d.programStudi).filter(Boolean))).sort().map((p, i) => (
-                          <div key={p} className={`px-3 py-2 text-[10px] font-medium ${i % 2 === 0 ? 'bg-[#FDF5F6] text-[#8F2438]' : 'bg-white text-[#344054]'} border-b border-[#E4E7EC] last:border-0`}>{p}</div>
-                        ))}
-                      </div>
-                      <button className="text-[10px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded mt-3 border border-transparent hover:border-[#F8E9ED] transition-colors w-full text-left px-2">
-                        + Tambah Prodi Baru
-                      </button>
-                    </div>
-                  </div>
                 </div>
               </>
             )}
           </div>
 
           {/* Budget section */}
-          <div className="flex flex-col gap-0">
-            <h4 className="text-[11px] font-bold text-[#1F2937] uppercase tracking-wide mb-3">Data Alokasi Anggaran</h4>
+          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC] flex flex-col gap-0">
+            <h4 className="text-[11px] font-bold text-[#667085] uppercase tracking-wide mb-3">Data Alokasi Anggaran</h4>
             <div className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-3">
                 <FormField label="Tahun Anggaran">
@@ -903,6 +957,70 @@ export function PenetapanAnggaranPage() {
         </div>
         <div className="mt-5 flex justify-end">
           <Button onClick={() => setViewKeperluanList(null)}>Tutup</Button>
+        </div>
+      </Modal>
+
+      {/* Tambah Fakultas Modal */}
+      <Modal
+        open={addFakultasModalOpen}
+        onClose={() => setAddFakultasModalOpen(false)}
+        title="Tambah Fakultas"
+        size="md"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <Button variant="secondary" onClick={() => setAddFakultasModalOpen(false)}>Batal</Button>
+            <Button onClick={() => {
+              if (newFakultasForm.kode && newFakultasForm.nama) {
+                setMasterFakultas([...masterFakultas, newFakultasForm]);
+                setDosenForm({ ...dosenForm, fakultas: newFakultasForm.kode });
+                setNewFakultasForm({ kode: '', nama: '' });
+                setAddFakultasModalOpen(false);
+                showToast('Fakultas berhasil ditambahkan!');
+              } else {
+                showToast('Mohon lengkapi data fakultas', 'error');
+              }
+            }}>Simpan</Button>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <FormField label="Kode Fakultas (Singkatan)">
+            <Input placeholder="Contoh: FIT" value={newFakultasForm.kode} onChange={e => setNewFakultasForm({ ...newFakultasForm, kode: e.target.value })} />
+            <p className="text-[10px] text-[#98A2B3] mt-1">Contoh: FIT, FEB, FKS, FRI, FTE, FIF, FK, HTB, TUJ, TUP, TUS.</p>
+          </FormField>
+          <FormField label="Nama Fakultas">
+            <Input placeholder="Contoh: Fakultas Ilmu Terapan" value={newFakultasForm.nama} onChange={e => setNewFakultasForm({ ...newFakultasForm, nama: e.target.value })} />
+          </FormField>
+        </div>
+      </Modal>
+
+      {/* Tambah Prodi Modal */}
+      <Modal
+        open={addProdiModalOpen}
+        onClose={() => setAddProdiModalOpen(false)}
+        title="Tambah Prodi"
+        size="md"
+        footer={
+          <div className="flex gap-3 justify-end">
+            <Button variant="secondary" onClick={() => setAddProdiModalOpen(false)}>Batal</Button>
+            <Button onClick={() => {
+              if (newProdiForm.nama) {
+                setMasterProdi([...masterProdi, newProdiForm.nama]);
+                setDosenForm({ ...dosenForm, programStudi: newProdiForm.nama });
+                setNewProdiForm({ nama: '' });
+                setAddProdiModalOpen(false);
+                showToast('Prodi berhasil ditambahkan!');
+              } else {
+                showToast('Mohon lengkapi nama prodi', 'error');
+              }
+            }}>Simpan</Button>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <FormField label="Nama Prodi">
+            <Input placeholder="Contoh: S1 Sistem Informasi" value={newProdiForm.nama} onChange={e => setNewProdiForm({ ...newProdiForm, nama: e.target.value })} />
+          </FormField>
         </div>
       </Modal>
 
