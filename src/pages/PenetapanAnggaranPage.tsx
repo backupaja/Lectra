@@ -514,146 +514,176 @@ export function PenetapanAnggaranPage() {
         }
       >
         <div className="grid grid-cols-2 gap-4">
-          {/* Dosen section */}
-          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC]">
-            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Dosen</p>
-              <div className="flex flex-col gap-3">
-                <FormField label="Pilih Dosen">
-                  <div className="relative">
-                    <div className="relative">
-                      <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                      </svg>
-                      <input
-                        type="text"
-                        className="w-full pl-9 pr-8 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 disabled:bg-[#F7F7F8] disabled:text-[#98A2B3]"
-                        placeholder="Ketik nama atau NIP dosen..."
-                        value={isDosenDropdownOpen ? dosenSearchQuery : (selectedDosen ? `${selectedDosen.nama} — ${selectedDosen.nip}` : dosenSearchQuery)}
-                        onChange={(e) => {
-                          setDosenSearchQuery(e.target.value);
-                          if (!isDosenDropdownOpen) setIsDosenDropdownOpen(true);
-                          if (selectedDosenId) setSelectedDosenId('');
-                        }}
-                        onFocus={() => {
-                          setDosenSearchQuery('');
-                          setIsDosenDropdownOpen(true);
-                        }}
-                        onBlur={() => setTimeout(() => setIsDosenDropdownOpen(false), 200)}
-                      />
-                      <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                    {isDosenDropdownOpen && (
-                      <div className="absolute z-50 w-full mt-1 bg-white border border-[#E4E7EC] rounded-[10px] shadow-xl max-h-[160px] overflow-y-auto">
-                        {(() => {
-                          const matches = dosenList.filter(d =>
-                            d.nama.toLowerCase().includes(dosenSearchQuery.toLowerCase()) ||
-                            d.nip.includes(dosenSearchQuery)
-                          ).slice(0, 5);
-                          if (matches.length === 0) return (
-                            <div className="p-3 text-xs text-[#98A2B3] text-center">Data tidak ditemukan</div>
-                          );
-                          return matches.map(d => (
-                            <div
-                              key={d.id}
-                              className="px-3 py-2 cursor-pointer hover:bg-[#F8E9ED] border-b border-[#E4E7EC] last:border-none"
-                              onClick={() => {
-                                setSelectedDosenId(d.id);
-                                setDosenSearchQuery(`${d.nama} — ${d.nip}`);
-                                setIsDosenDropdownOpen(false);
-                              }}
-                            >
-                              <div className="text-xs font-semibold text-[#1F2937] leading-tight">{d.nama}</div>
-                              <div className="text-[10px] text-[#98A2B3] mt-0.5">{d.nip} • {d.fakultas}</div>
-                            </div>
-                          ));
-                        })()}
-                      </div>
-                    )}
-                  </div>
-                </FormField>
-                {selectedDosen && (
-                  <div className="grid grid-cols-2 gap-3 mt-1 bg-white p-3 rounded-[8px] border border-[#E4E7EC]">
-                    {[
-                      { l: 'Nama', v: selectedDosen.nama },
-                      { l: 'NIP', v: selectedDosen.nip },
-                      { l: 'Fakultas', v: selectedDosen.fakultas },
-                      { l: 'Prodi', v: selectedDosen.programStudi },
-                      { l: 'Status', v: selectedDosen.statusDosen },
-                    ].map(f => (
-                      <div key={f.l}>
-                        <p className="text-[10px] text-[#98A2B3]">{f.l}</p>
-                        <p className="text-xs font-medium text-[#1F2937] break-words">{f.v}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {!selectedDosen && (
-                  <div className="flex flex-col gap-4 mt-2 pt-4 border-t border-[#E4E7EC]">
-                    <div className="bg-white p-3 rounded-[10px] border border-[#E4E7EC] shadow-sm">
-                      <h4 className="text-[12px] font-bold text-[#8F2438] mb-3 uppercase tracking-wide">Master Data Dosen Baru</h4>
-                      <div className="grid grid-cols-1 gap-3">
-                        <div className="grid grid-cols-2 gap-3">
-                          <FormField label="Nama Lengkap & Gelar"><Input placeholder="Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
-                          <FormField label="NIP"><Input placeholder="197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
+          {/* Left Column: Dosen & Master Data */}
+          <div className="flex flex-col gap-0">
+            <FormField label="Pilih Dosen">
+              <div className="relative">
+                <div className="relative">
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                  <input
+                    type="text"
+                    className="w-full pl-9 pr-8 py-2.5 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 disabled:bg-[#F7F7F8] disabled:text-[#98A2B3]"
+                    placeholder="Ketik nama atau NIP dosen..."
+                    value={isDosenDropdownOpen ? dosenSearchQuery : (selectedDosen ? `${selectedDosen.nama} (${selectedDosen.nip})` : dosenSearchQuery)}
+                    onChange={(e) => {
+                      setDosenSearchQuery(e.target.value);
+                      if (!isDosenDropdownOpen) setIsDosenDropdownOpen(true);
+                      if (selectedDosenId) setSelectedDosenId('');
+                    }}
+                    onFocus={() => {
+                      setDosenSearchQuery('');
+                      setIsDosenDropdownOpen(true);
+                    }}
+                    onBlur={() => setTimeout(() => setIsDosenDropdownOpen(false), 200)}
+                  />
+                  <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+                {isDosenDropdownOpen && (
+                  <div className="absolute z-50 w-full mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl max-h-[160px] overflow-y-auto custom-scrollbar">
+                    {(() => {
+                      const matches = dosenList.filter(d =>
+                        d.nama.toLowerCase().includes(dosenSearchQuery.toLowerCase()) ||
+                        d.nip.includes(dosenSearchQuery)
+                      ).slice(0, 5);
+                      if (matches.length === 0) return (
+                        <div className="p-3 text-xs text-[#98A2B3] text-center">Data tidak ditemukan</div>
+                      );
+                      return matches.map(d => (
+                        <div
+                          key={d.id}
+                          className="px-3 py-2 cursor-pointer hover:bg-[#F8E9ED] border-b border-[#E4E7EC] last:border-none"
+                          onClick={() => {
+                            setSelectedDosenId(d.id);
+                            setDosenSearchQuery(`${d.nama} (${d.nip})`);
+                            setIsDosenDropdownOpen(false);
+                          }}
+                        >
+                          <div className="text-xs font-semibold text-[#1F2937] leading-tight">{d.nama}</div>
+                          <div className="text-[10px] text-[#98A2B3] mt-0.5">{d.nip} • {d.fakultas}</div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <FormField label="Fakultas">
-                            <Input list="fakultas-list-md" placeholder="Contoh: FIT" value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} />
-                          </FormField>
-                          <FormField label="Prodi">
-                            <Input list="prodi-list-md" placeholder="Contoh: S1 Sistem Informasi" value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} />
-                          </FormField>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 items-end">
-                          <FormField label="Status Dosen">
-                            <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
-                          </FormField>
-                          <Button onClick={async () => {
-                            try {
-                              if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP wajib diisi.');
-                              const created = await AnggaranService.createDosen(dosenForm);
-                              showToast('Dosen berhasil ditambahkan!');
-                              setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
-                              setDosenList(prev => [...prev, created]);
-                              setSelectedDosenId(created.id);
-                              setDosenSearchQuery(`${created.nama} — ${created.nip}`);
-                            } catch (err: any) {
-                              showToast(err.message || 'Gagal menambah dosen', 'error');
-                            }
-                          }}>Simpan & Pilih Dosen</Button>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-white rounded-[10px] p-3 border border-[#E4E7EC] shadow-sm">
-                        <p className="text-[11px] font-bold text-[#344054] mb-3 uppercase tracking-wide">Master Data Fakultas</p>
-                        <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto custom-scrollbar">
-                          {Array.from(new Set(dosenList.map(d => d.fakultas).filter(Boolean))).sort().map(f => (
-                            <span key={f} className="px-2 py-1 bg-[#F9FAFB] border border-[#E4E7EC] rounded-md text-[11px] text-[#344054]">{f}</span>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="bg-white rounded-[10px] p-3 border border-[#E4E7EC] shadow-sm">
-                        <p className="text-[11px] font-bold text-[#344054] mb-3 uppercase tracking-wide">Master Data Prodi</p>
-                        <div className="flex flex-wrap gap-1.5 max-h-[120px] overflow-y-auto custom-scrollbar">
-                          {Array.from(new Set(dosenList.map(d => d.programStudi).filter(Boolean))).sort().map(p => (
-                            <span key={p} className="px-2 py-1 bg-[#F9FAFB] border border-[#E4E7EC] rounded-md text-[11px] text-[#344054]">{p}</span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                      ));
+                    })()}
                   </div>
                 )}
               </div>
+            </FormField>
+
+            {selectedDosen && (
+              <div className="mt-4 bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-[11px] font-bold text-[#1F2937] uppercase tracking-wide">Informasi Dosen</h4>
+                  <button onClick={() => { setSelectedDosenId(''); setDosenSearchQuery(''); }} className="text-[10px] font-semibold text-[#8F2438] flex items-center gap-1 bg-[#FDF5F6] hover:bg-[#FAD9D9] px-2 py-1 rounded transition-colors">
+                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                    Ganti Dosen
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-y-4 gap-x-2">
+                  <div><p className="text-[10px] text-[#667085] mb-0.5">Nama Lengkap & Gelar</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.nama}</p></div>
+                  <div><p className="text-[10px] text-[#667085] mb-0.5">NIP</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.nip}</p></div>
+                  <div><p className="text-[10px] text-[#667085] mb-0.5">Fakultas</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.fakultas}</p></div>
+                  <div><p className="text-[10px] text-[#667085] mb-0.5">Prodi</p><p className="text-[11px] font-semibold text-[#1F2937]">{selectedDosen.programStudi}</p></div>
+                  <div className="col-span-2">
+                    <p className="text-[10px] text-[#667085] mb-1">Status Dosen</p>
+                    <span className="px-2 py-0.5 bg-[#ECFDF3] text-[#027A48] border border-[#D1FADF] rounded text-[10px] font-medium">{selectedDosen.statusDosen || 'Aktif'}</span>
+                  </div>
+                </div>
+                <div className="mt-5 p-2.5 bg-[#EFF8FF] border border-[#B2DDFF] rounded-md flex items-start gap-2">
+                  <svg className="w-4 h-4 text-[#175CD3] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  <p className="text-[10px] text-[#175CD3] leading-relaxed">Data dosen diambil dari master data.<br/>Jika ada perubahan, silakan ubah melalui menu master data dosen.</p>
+                </div>
+              </div>
+            )}
+
+            {!selectedDosen && (
+              <>
+                <div className="flex items-center gap-3 my-4">
+                  <div className="flex-1 h-px bg-[#E4E7EC]"></div>
+                  <span className="text-[10px] font-bold text-[#98A2B3] uppercase tracking-wider">Atau</span>
+                  <div className="flex-1 h-px bg-[#E4E7EC]"></div>
+                </div>
+                <div className="flex flex-col gap-4">
+                  <div className="bg-white p-4 rounded-[10px] border border-[#E4E7EC] shadow-sm">
+                    <h4 className="text-[11px] font-bold text-[#1F2937] mb-1 uppercase tracking-wide">Master Data Dosen Baru</h4>
+                    <p className="text-[10px] text-[#667085] mb-4">Jika dosen belum ada, tambahkan ke master data terlebih dahulu.</p>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        <FormField label="Nama Lengkap & Gelar"><Input placeholder="Contoh: Dr. Ahmad Fauzi, M.T." value={dosenForm.nama} onChange={e => setDosenForm({ ...dosenForm, nama: e.target.value })} /></FormField>
+                        <FormField label="NIP"><Input placeholder="Contoh: 197805122005011002" value={dosenForm.nip} onChange={e => setDosenForm({ ...dosenForm, nip: e.target.value })} /></FormField>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <FormField label="Fakultas">
+                          <Input list="fakultas-list-md" placeholder="Pilih fakultas..." value={dosenForm.fakultas} onChange={e => setDosenForm({ ...dosenForm, fakultas: e.target.value })} />
+                        </FormField>
+                        <FormField label="Prodi">
+                          <Input list="prodi-list-md" placeholder="Pilih prodi..." value={dosenForm.programStudi} onChange={e => setDosenForm({ ...dosenForm, programStudi: e.target.value })} />
+                        </FormField>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 items-end">
+                        <FormField label="Status Dosen">
+                          <Select value={dosenForm.statusDosen} onChange={e => setDosenForm({ ...dosenForm, statusDosen: e.target.value })}><option>Aktif</option><option>Tidak Aktif</option></Select>
+                        </FormField>
+                        <Button className="w-full bg-[#8F2438] hover:bg-[#761D2E] text-white" onClick={async () => {
+                          try {
+                            if (!dosenForm.nama || !dosenForm.nip) throw new Error('Nama dan NIP wajib diisi.');
+                            const created = await AnggaranService.createDosen(dosenForm);
+                            showToast('Dosen berhasil ditambahkan!');
+                            setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
+                            setDosenList(prev => [...prev, created]);
+                            setSelectedDosenId(created.id);
+                            setDosenSearchQuery(`${created.nama} (${created.nip})`);
+                          } catch (err: any) {
+                            showToast(err.message || 'Gagal menambah dosen', 'error');
+                          }
+                        }}>Simpan & Pilih Dosen</Button>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white rounded-[10px] p-4 border border-[#E4E7EC] shadow-sm flex flex-col border-t-2 border-t-[#8F2438]/20">
+                      <h4 className="text-[11px] font-bold text-[#1F2937] mb-3 uppercase tracking-wide">Master Data Fakultas</h4>
+                      <div className="relative mb-3">
+                        <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                        <input type="text" placeholder="Cari fakultas..." className="w-full pl-8 pr-3 py-1.5 text-[11px] bg-[#F9FAFB] border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" />
+                      </div>
+                      <div className="flex flex-wrap gap-2 max-h-[140px] overflow-y-auto custom-scrollbar flex-1 items-start content-start">
+                        {Array.from(new Set(dosenList.map(d => d.fakultas).filter(Boolean))).sort().map((f, i) => (
+                          <span key={f} className={`px-2.5 py-1 ${i===0 ? 'bg-[#8F2438] text-white border-[#8F2438]' : 'bg-white text-[#344054] border-[#E4E7EC]'} border rounded-md text-[10px] font-medium shadow-sm`}>{f}</span>
+                        ))}
+                      </div>
+                      <button className="text-[10px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded mt-3 border border-transparent hover:border-[#F8E9ED] transition-colors w-full text-left px-2">
+                        + Tambah Fakultas Baru
+                      </button>
+                    </div>
+                    <div className="bg-white rounded-[10px] p-4 border border-[#E4E7EC] shadow-sm flex flex-col border-t-2 border-t-[#8F2438]/20">
+                      <h4 className="text-[11px] font-bold text-[#1F2937] mb-3 uppercase tracking-wide">Master Data Prodi</h4>
+                      <div className="relative mb-3">
+                        <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                        <input type="text" placeholder="Cari prodi..." className="w-full pl-8 pr-3 py-1.5 text-[11px] bg-[#F9FAFB] border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" />
+                      </div>
+                      <div className="flex flex-col max-h-[140px] overflow-y-auto custom-scrollbar flex-1 border border-[#E4E7EC] rounded-md bg-[#F9FAFB]">
+                        {Array.from(new Set(dosenList.map(d => d.programStudi).filter(Boolean))).sort().map((p, i) => (
+                          <div key={p} className={`px-3 py-2 text-[10px] font-medium ${i % 2 === 0 ? 'bg-[#FDF5F6] text-[#8F2438]' : 'bg-white text-[#344054]'} border-b border-[#E4E7EC] last:border-0`}>{p}</div>
+                        ))}
+                      </div>
+                      <button className="text-[10px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded mt-3 border border-transparent hover:border-[#F8E9ED] transition-colors w-full text-left px-2">
+                        + Tambah Prodi Baru
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Budget section */}
-          <div className="p-4 bg-[#F7F7F8] rounded-[10px] border border-[#E4E7EC]">
-            <p className="text-xs font-semibold text-[#667085] uppercase tracking-wide mb-3">Data Alokasi Anggaran</p>
-            <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-0">
+            <h4 className="text-[11px] font-bold text-[#1F2937] uppercase tracking-wide mb-3">Data Alokasi Anggaran</h4>
+            <div className="flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-3">
                 <FormField label="Tahun Anggaran">
                   <CustomSelect
