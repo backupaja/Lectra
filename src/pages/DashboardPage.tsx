@@ -528,17 +528,17 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                         const [rank, name] = payload.value.split('|');
                         return (
                           <g transform={`translate(${x},${y})`}>
-                            <rect x={-150} y={-12} width={24} height={24} rx={6} fill="#FDF5F6" />
-                            <text x={-138} y={4} textAnchor="middle" fill="#8F2438" fontSize={11} fontWeight="bold">{rank}</text>
-                            <text x={-115} y={4} textAnchor="start" fill="#344054" fontSize={10} fontWeight="500">
-                              {name.length > 20 ? name.substring(0, 20) + '...' : name}
+                            <rect x={-190} y={-12} width={24} height={24} rx={6} fill="#FDF5F6" />
+                            <text x={-178} y={4} textAnchor="middle" fill="#8F2438" fontSize={11} fontWeight="bold">{rank}</text>
+                            <text x={-155} y={4} textAnchor="start" fill="#344054" fontSize={10} fontWeight="500">
+                              {name.length > 25 ? name.substring(0, 25) + '...' : name}
                             </text>
                           </g>
                         );
                       }}
                       axisLine={false} 
                       tickLine={false} 
-                      width={150} 
+                      width={190} 
                     />
                     <Tooltip cursor={{ fill: '#F7F7F8' }} content={<CustomBarTooltip />} />
                     <Bar 
@@ -613,17 +613,17 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                         const [rank, name] = payload.value.split('|');
                         return (
                           <g transform={`translate(${x},${y})`}>
-                            <rect x={-150} y={-12} width={24} height={24} rx={6} fill="#FDF5F6" />
-                            <text x={-138} y={4} textAnchor="middle" fill="#8F2438" fontSize={11} fontWeight="bold">{rank}</text>
-                            <text x={-115} y={4} textAnchor="start" fill="#344054" fontSize={10} fontWeight="500">
-                              {name.length > 20 ? name.substring(0, 20) + '...' : name}
+                            <rect x={-190} y={-12} width={24} height={24} rx={6} fill="#FDF5F6" />
+                            <text x={-178} y={4} textAnchor="middle" fill="#8F2438" fontSize={11} fontWeight="bold">{rank}</text>
+                            <text x={-155} y={4} textAnchor="start" fill="#344054" fontSize={10} fontWeight="500">
+                              {name.length > 25 ? name.substring(0, 25) + '...' : name}
                             </text>
                           </g>
                         );
                       }}
                       axisLine={false} 
                       tickLine={false} 
-                      width={150} 
+                      width={190} 
                     />
                     <Tooltip cursor={{ fill: '#F7F7F8' }} content={<CustomBarTooltip />} />
                     <Bar 
