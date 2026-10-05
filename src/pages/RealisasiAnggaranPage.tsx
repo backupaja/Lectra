@@ -35,17 +35,19 @@ function KeperluanCompact({ keperluan }: { keperluan: string }) {
 }
 
 // Full version for the detail panel (with per-badge truncation)
-function KeperlunaBadges({ keperluan }: { keperluan: string }) {
+function KeperlunaBadges({ keperluan, onClick }: { keperluan: string, onClick?: (items: string[]) => void }) {
   const items = parseKeperluan(keperluan);
   return (
-    <div className="flex flex-wrap gap-1">
-      {items.map((item, i) => (
-        <span key={i} title={item} className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 bg-[#F7F7F8] border border-[#E4E7EC] rounded text-[#344054] font-medium max-w-[180px] cursor-default">
-          {items.length > 1 && <span className="text-[#8F2438] font-bold shrink-0">{i + 1}</span>}
-          <span className="truncate">{item}</span>
-        </span>
-      ))}
-    </div>
+    <button
+      onClick={() => onClick && onClick(items)}
+      className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors mt-0.5"
+      title="Lihat detail keperluan"
+    >
+      <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
+      <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+      </svg>
+    </button>
   );
 }
 
@@ -66,6 +68,7 @@ export function RealisasiAnggaranPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRealisasiId, setEditingRealisasiId] = useState<string | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [viewKeperluanList, setViewKeperluanList] = useState<{items: string[], name: string} | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'warning' } | null>(null);
   
   const [nominalInput, setNominalInput] = useState('');
@@ -369,7 +372,10 @@ export function RealisasiAnggaranPage() {
                     <p className="text-xs text-[#98A2B3]">{selectedDosen?.nip} · {selectedDosen?.fakultas}</p>
                     <div className="mt-1">
                       <span className="text-xs text-[#667085] font-medium">Keperluan: </span>
-                      <span className="block mt-0.5"><KeperlunaBadges keperluan={selectedAlokasi.keperluan} /></span>
+                      <KeperlunaBadges 
+                        keperluan={selectedAlokasi.keperluan} 
+                        onClick={(items) => setViewKeperluanList({ items, name: selectedDosen?.nama || '' })}
+                      />
                     </div>
                   </div>
                   <StatusBadge status={status} />
@@ -382,7 +388,9 @@ export function RealisasiAnggaranPage() {
                     { label: 'Total Realisasi', value: formatRupiah(totalReal), color: 'text-[#8F2438]' },
                     {
                       label: overBudget ? 'Over Budget' : 'Sisa Anggaran',
-                      value: overBudget ? formatRupiah(Math.abs(sisa)) : formatRupiah(sisa),
+                      value: overBudget 
+                        ? `${formatRupiah(Math.abs(sisa))} (+${Math.round((Math.abs(sisa) / selectedAlokasi.nominal) * 100)}%)` 
+                        : formatRupiah(sisa),
                       color: overBudget ? 'text-[#C88719]' : 'text-[#16805B]'
                     },
                     { label: 'Jumlah Realisasi', value: `${realisasiList.length} kali`, color: 'text-[#1F2937]' },
@@ -580,6 +588,24 @@ export function RealisasiAnggaranPage() {
               <p className="text-xs text-[#667085]">Klik untuk unggah dokumen pendukung <span className="text-[#98A2B3]">(PDF, DOC, XLSX maks. 10MB)</span></p>
             </div>
           </FormField>
+        </div>
+      </Modal>
+
+      <Modal
+        open={!!viewKeperluanList}
+        onClose={() => setViewKeperluanList(null)}
+        title={viewKeperluanList?.name.startsWith('Pertanggungan') ? `Detail ${viewKeperluanList.name}` : `Daftar Keperluan: ${viewKeperluanList?.name}`}
+        hideFooter
+      >
+        <div className="flex flex-col gap-2">
+          {viewKeperluanList?.items.map((k, i) => (
+            <div key={i} className="flex items-start gap-3 p-3 bg-[#F9FAFB] border border-[#E4E7EC] rounded-lg">
+              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-white border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0 mt-0.5">
+                {i + 1}
+              </div>
+              <p className="text-sm text-[#344054] leading-snug pt-0.5">{k}</p>
+            </div>
+          ))}
         </div>
       </Modal>
 
