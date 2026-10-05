@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { BudgetTypeBadge, StatusBadge } from '../components/ui/Badge';
@@ -35,9 +35,24 @@ export function PenetapanAnggaranPage() {
 
   const [isFakultasDropdownOpen, setIsFakultasDropdownOpen] = useState(false);
   const [fakultasSearchQuery, setFakultasSearchQuery] = useState('');
+  const fakultasDropdownRef = useRef<HTMLDivElement>(null);
   
   const [isProdiDropdownOpen, setIsProdiDropdownOpen] = useState(false);
   const [prodiSearchQuery, setProdiSearchQuery] = useState('');
+  const prodiDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (fakultasDropdownRef.current && !fakultasDropdownRef.current.contains(event.target as Node)) {
+        setIsFakultasDropdownOpen(false);
+      }
+      if (prodiDropdownRef.current && !prodiDropdownRef.current.contains(event.target as Node)) {
+        setIsProdiDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const [addFakultasModalOpen, setAddFakultasModalOpen] = useState(false);
   const [addProdiModalOpen, setAddProdiModalOpen] = useState(false);
@@ -638,7 +653,7 @@ export function PenetapanAnggaranPage() {
                       </div>
                       <div className="grid grid-cols-2 gap-3 relative">
                         <FormField label="Fakultas">
-                          <div className="relative">
+                          <div className="relative" ref={fakultasDropdownRef}>
                             <input
                               type="text"
                               className="w-full px-3 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 cursor-pointer"
@@ -674,7 +689,7 @@ export function PenetapanAnggaranPage() {
                           )}
                         </FormField>
                         <FormField label="Prodi">
-                          <div className="relative">
+                          <div className="relative" ref={prodiDropdownRef}>
                             <input
                               type="text"
                               className="w-full px-3 py-2 text-sm bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 cursor-pointer"
