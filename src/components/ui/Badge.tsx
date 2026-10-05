@@ -16,7 +16,6 @@ export function StatusBadge({ status }: { status: BudgetStatus | string }) {
   if (status === 'OVER_BUDGET') {
     return (
       <span className="inline-flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-md text-xs font-medium bg-[#FDECEC] text-[#B42318] border border-[#B42318]/20">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#B42318]" />
         Over Budget
       </span>
     );
@@ -24,14 +23,12 @@ export function StatusBadge({ status }: { status: BudgetStatus | string }) {
   if (status === 'HABIS') {
     return (
       <span className="inline-flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-md text-xs font-medium bg-[#FFF4ED] text-[#B93815] border border-[#B93815]/20">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#B93815]" />
         Habis
       </span>
     );
   }
   return (
     <span className="inline-flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-md text-xs font-medium bg-[#E8F5EF] text-[#16805B] border border-[#16805B]/20">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#16805B]" />
       Tersedia
     </span>
   );
