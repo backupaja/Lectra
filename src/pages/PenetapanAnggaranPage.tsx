@@ -595,12 +595,7 @@ export function PenetapanAnggaranPage() {
                   <CustomSelect
                     value={alokasiForm.tahun}
                     onChange={(val) => setAlokasiForm({ ...alokasiForm, tahun: Number(val) })}
-                    options={[
-                      { label: '2024', value: 2024 },
-                      { label: '2025', value: 2025 },
-                      { label: '2026', value: 2026 },
-                      { label: '2027', value: 2027 },
-                    ]}
+                    options={Array.from({ length: 12 }, (_, i) => ({ label: `${2024 + i}`, value: 2024 + i }))}
                     buttonClassName="text-xs font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all w-full focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
                     dropdownClassName="w-full mt-1 left-0"
                   />
