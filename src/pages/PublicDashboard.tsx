@@ -10,8 +10,6 @@ import { JadService } from '../services/jadService';
 import type { PublicJadSummary, PublicPenerimaAnggaran, BudgetType } from '../types';
 import { EmptyState } from '../components/ui/EmptyState';
 import { AnimatedNumber } from '../components/ui/AnimatedNumber';
-import { DosenProfileModal } from '../components/modals/DosenProfileModal';
-
 interface PublicDashboardProps {
   onLogin: () => void;
 }
@@ -40,8 +38,6 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const [jadSummary, setJadSummary] = useState<PublicJadSummary | null>(null);
   const [isJadLoading, setIsJadLoading] = useState(true);
   const [filterJenis, setFilterJenis] = useState<BudgetType>('OPEX');
-  const [selectedDosenId, setSelectedDosenId] = useState<string | null>(null);
-
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -328,18 +324,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                       <td className="py-2.5 px-3 text-xs text-[#667085] text-center">{idx + 1}</td>
                       <td className="py-2.5 px-3 text-xs text-[#667085]">{item.nip}</td>
                       <td className="py-2.5 px-3 text-xs font-medium">
-                        <button 
-                          onClick={() => {
-                            if (!item.dosen_id) {
-                              alert("Data Dosen ID belum tersedia. Harap pastikan SQL sudah di-Run!");
-                            } else {
-                              setSelectedDosenId(item.dosen_id);
-                            }
-                          }}
-                          className="text-[#1F2937] hover:text-[#8F2438] text-left transition-all font-semibold underline decoration-[#E4E7EC] hover:decoration-[#8F2438] underline-offset-4 cursor-pointer"
-                        >
-                          {item.nama}
-                        </button>
+                        <span className="text-[#1F2937] font-semibold">{item.nama}</span>
                       </td>
                       <td className="py-2.5 px-3 text-xs text-[#1F2937]">{item.fakultas}</td>
                       <td className="py-2.5 px-3 text-xs text-[#667085]">{item.program_studi}</td>
@@ -361,13 +346,6 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
 
 
       </main>
-
-      {/* Dosen Profile Modal */}
-      <DosenProfileModal
-        isOpen={!!selectedDosenId}
-        onClose={() => setSelectedDosenId(null)}
-        dosenId={selectedDosenId || ''}
-      />
     </div>
   );
 }
