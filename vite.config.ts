@@ -4,9 +4,12 @@ import tailwindcss from '@tailwindcss/vite'
 import path from 'node:path'
 
 const siteConfiguration = {
-  title: "LECTRA - Sistem Informasi Anggaran",
-  description: "Dashboard monitoring dan pengelolaan anggaran untuk dosen dan pimpinan",
-  language: "id"
+  title: "DigiLectra",
+  description: "Sistem Informasi Anggaran DigiLectra",
+  language: "id",
+  openGraph: {
+    image: "https://digilectra.vercel.app/logo-square.png"
+  }
 };
 
 
