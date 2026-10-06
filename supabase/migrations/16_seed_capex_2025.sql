@@ -1,4 +1,4 @@
--- Seed Data for CAPEX 2026
+-- Seed Data for CAPEX 2025
 DO $$
 DECLARE
   v_d1 UUID; v_d2 UUID; v_d3 UUID;
@@ -68,13 +68,13 @@ BEGIN
     UPDATE public.dosen SET nip = '02780045-1', fakultas = 'TUP', jabatan_fungsional = 'Lektor Kepala' WHERE id = v_d6;
   END IF;
 
-  -- Insert Alokasi Anggaran (CAPEX 2026)
+  -- Insert Alokasi Anggaran (CAPEX 2025)
   INSERT INTO public.alokasi_anggaran (id, dosen_id, tahun, jenis_anggaran, keperluan, kelompok_keahlian, nominal_anggaran, jabatan_awal, target_jabatan) VALUES
-  (v_a1, v_d1, 2026, 'CAPEX', '["Kanomax, Inc. remote particle sensor model 3718 / 3719 / 3720-06 / 3715- 06 / 3715-06D"]', 'Lab Insight', 196000000, 'Lektor', 'Lektor Kepala'),
-  (v_a2, v_d2, 2026, 'CAPEX', '["Komponen channel transceiver USRP B210 SDR Kit - dua"]', 'Lab Elektronika RF', 35000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a3, v_d3, 2026, 'CAPEX', '["PC server Intel Core i9 14900K - RAM 64GB DDR5 - SSD 500GB NVMe PCIe 4.0 Monitor server 27 inch"]', 'Lab Adaptive Network', 24000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a4, v_d4, 2026, 'CAPEX', '["Upgrade simulator - Motherboard asus chosshair x670e am5 - ryzen 9 9950x - RAM 32GB"]', 'Seculab', 25000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a5, v_d5, 2026, 'CAPEX', '["Multispectral Camera untuk Spectral Gas Emission Mapping Riset"]', 'Lab IoT', 10000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a6, v_d6, 2026, 'CAPEX', '["1. NAS Server - BeeStation 4TB personal cloud backup y synology", "2. Adam Pluto - Tuner RF SDR ADALM-PLUTO plutosdr AD9363 original from analog devices"]', 'Lab Pengolahan Sinyal Digital', 10000000, 'Lektor Kepala', 'Guru Besar');
+  (v_a1, v_d1, 2025, 'CAPEX', '["Kanomax, Inc. remote particle sensor model 3718 / 3719 / 3720-06 / 3715- 06 / 3715-06D"]', 'Lab Insight', 196000000, 'Lektor', 'Lektor Kepala'),
+  (v_a2, v_d2, 2025, 'CAPEX', '["Komponen channel transceiver USRP B210 SDR Kit - dua"]', 'Lab Elektronika RF', 35000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a3, v_d3, 2025, 'CAPEX', '["PC server Intel Core i9 14900K - RAM 64GB DDR5 - SSD 500GB NVMe PCIe 4.0 Monitor server 27 inch"]', 'Lab Adaptive Network', 24000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a4, v_d4, 2025, 'CAPEX', '["Upgrade simulator - Motherboard asus chosshair x670e am5 - ryzen 9 9950x - RAM 32GB"]', 'Seculab', 25000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a5, v_d5, 2025, 'CAPEX', '["Multispectral Camera untuk Spectral Gas Emission Mapping Riset"]', 'Lab IoT', 10000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a6, v_d6, 2025, 'CAPEX', '["1. NAS Server - BeeStation 4TB personal cloud backup y synology", "2. Adam Pluto - Tuner RF SDR ADALM-PLUTO plutosdr AD9363 original from analog devices"]', 'Lab Pengolahan Sinyal Digital', 10000000, 'Lektor Kepala', 'Guru Besar');
 
 END $$;
