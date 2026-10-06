@@ -476,117 +476,137 @@ export function PenetapanAnggaranPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtered.map((alok, idx) => {
-                      const dosen = dosenList.find(d => d.id === alok.dosenId)!;
-                      const totalReal = alok.totalRealisasi;
-                      const status = alok.status;
-                      return (
-                        <tr key={alok.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
-                          <td className="px-2 py-1.5 text-[#98A2B3] text-[10px]">{idx + 1}</td>
-                          <td className="px-2 py-1.5">
-                            <p className="font-medium text-[#1F2937] text-[11px] max-w-[200px] leading-tight">
-                              {dosen.nama}
-                              {alok.anggotaTambahan?.length > 0 && (
-                                <span className="text-[#667085] font-normal">
-                                  {', '}
-                                  {alok.anggotaTambahan.map(at => dosenList.find(d => d.id === at.dosen_id)?.nama).filter(Boolean).join(', ')}
-                                </span>
-                              )}
-                            </p>
-                            <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip} {alok.anggotaTambahan?.length > 0 ? `(dan ${alok.anggotaTambahan.length} anggota)` : ''}</p>
-                          </td>
-                          <td className="px-2 py-1.5">
-                            <p className="text-[#667085] whitespace-nowrap text-[10px]">{dosen.fakultas}</p>
-                            {alok.jenis === 'CAPEX' && alok.kelompokKeahlian && (
-                              <p className="text-[9.5px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
-                            )}
-                            <p className="text-[9.5px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
-                          </td>
-                          <td className="px-2 py-1.5">
-                            {(() => {
-                              let items = [alok.keperluan];
-                              try {
-                                const parsed = JSON.parse(alok.keperluan);
-                                if (Array.isArray(parsed)) items = parsed;
-                              } catch { }
+                    {(() => {
+                      let currentIndex = 1;
+                      return filtered.map((alok) => {
+                        const dosen = dosenList.find(d => d.id === alok.dosenId)!;
+                        const totalReal = alok.totalRealisasi;
+                        const status = alok.status;
+                        const rowSpan = 1 + (alok.anggotaTambahan?.length || 0);
+                        const anggotaList = (alok.anggotaTambahan || []).map(a => ({
+                          ...a,
+                          dosen: dosenList.find(d => d.id === a.dosen_id)
+                        })).filter(a => a.dosen);
+                        
+                        const startIdx = currentIndex;
+                        currentIndex += rowSpan;
 
-                              return (
-                                <button
-                                  onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
-                                  className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
-                                  title="Lihat detail keperluan"
-                                >
-                                  <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
-                                  <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                  </svg>
-                                </button>
-                              );
-                            })()}
-                          </td>
-                          <td className="px-2 py-1.5">
-                            {alok.jenis === 'CAPEX' ? (
-                              <p className="text-[9.5px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
-                            ) : (() => {
-                              let items = [alok.pertanggungan || '-'];
-                              try {
-                                const parsed = JSON.parse(alok.pertanggungan || '[]');
-                                if (Array.isArray(parsed)) items = parsed;
-                              } catch { }
+                        return (
+                          <React.Fragment key={alok.id}>
+                            <tr className={`${rowSpan > 1 ? '' : 'border-b border-[#E4E7EC]'} hover:bg-[#F7F7F8] transition-colors group/row`}>
+                              <td className="px-2 py-1.5 text-[#98A2B3] text-[10px] bg-white">{startIdx}</td>
+                              <td className="px-2 py-1.5 bg-white">
+                                <p className="font-medium text-[#1F2937] text-[11px] max-w-[200px] leading-tight">{dosen.nama}</p>
+                                <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
+                              </td>
+                              <td className="px-2 py-1.5 bg-white">
+                                <p className="text-[#667085] whitespace-nowrap text-[10px]">{dosen.fakultas}</p>
+                                {alok.jenis === 'CAPEX' && alok.kelompokKeahlian && (
+                                  <p className="text-[9.5px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
+                                )}
+                                <p className="text-[9.5px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
+                              </td>
+                              
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-l border-[#E4E7EC] bg-white align-top border-b">
+                                {(() => {
+                                  let items = [alok.keperluan];
+                                  try {
+                                    const parsed = JSON.parse(alok.keperluan);
+                                    if (Array.isArray(parsed)) items = parsed;
+                                  } catch { }
 
-                              return (
-                                <button
-                                  onClick={() => setViewKeperluanList({ items, name: `Pertanggungan ${dosen.nama}` })}
-                                  className="flex items-center gap-1.5 px-2 py-1 bg-[#FFF6ED] hover:bg-[#FFECD6] border border-[#FFD8B2] rounded-md transition-colors text-[#9A3412]"
-                                  title="Lihat detail pertanggungan"
-                                >
-                                  <span className="text-[10px] font-semibold">{items.length} Dokumen</span>
-                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                  </svg>
-                                </button>
-                              );
-                            })()}
-                          </td>
-                          <td className="px-2 py-1.5"><BudgetTypeBadge type={alok.jenis} /></td>
-                          <td className="px-2 py-1.5 font-semibold text-[#1F2937] whitespace-nowrap text-[11px]">{formatRupiah(alok.nominal)}</td>
-                          <td className="px-2 py-1.5">
-                            <p className={`font-medium whitespace-nowrap text-[11px] ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
-                              {formatRupiah(totalReal)}
-                            </p>
-                            {status === 'OVER_BUDGET' && (
-                              <p className="text-[9.5px] text-[#B42318] mt-0.5 font-medium">
-                                +{Math.round(((totalReal - alok.nominal) / alok.nominal) * 100)}% ({formatRupiah(totalReal - alok.nominal)})
-                              </p>
-                            )}
-                          </td>
-                          <td className="px-2 py-1.5"><StatusBadge status={status} /></td>
-                          <td className="px-2 py-1.5">
-                            <div className="flex items-center gap-0.5">
-                              <button onClick={() => openEditModal(alok)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                                </svg>
-                              </button>
-                              <button
-                                onClick={() => setShareDosen(dosen)}
-                                className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]"
-                                title="Bagikan Link Dosen"
-                              >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
-                                </svg>
-                              </button>
-                              <button onClick={() => setConfirmId(alok.id)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                                  return (
+                                    <button
+                                      onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
+                                      className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
+                                      title="Lihat detail keperluan"
+                                    >
+                                      <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
+                                      <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                      </svg>
+                                    </button>
+                                  );
+                                })()}
+                              </td>
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-b border-[#E4E7EC] bg-white align-top">
+                                {alok.jenis === 'CAPEX' ? (
+                                  <p className="text-[9.5px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
+                                ) : (() => {
+                                  let items = [alok.pertanggungan || '-'];
+                                  try {
+                                    const parsed = JSON.parse(alok.pertanggungan || '[]');
+                                    if (Array.isArray(parsed)) items = parsed;
+                                  } catch { }
+
+                                  return (
+                                    <button
+                                      onClick={() => setViewKeperluanList({ items, name: `Pertanggungan ${dosen.nama}` })}
+                                      className="flex items-center gap-1.5 px-2 py-1 bg-[#FFF6ED] hover:bg-[#FFECD6] border border-[#FFD8B2] rounded-md transition-colors text-[#9A3412]"
+                                      title="Lihat detail pertanggungan"
+                                    >
+                                      <span className="text-[10px] font-semibold">{items.length} Dokumen</span>
+                                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                      </svg>
+                                    </button>
+                                  );
+                                })()}
+                              </td>
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-b border-[#E4E7EC] bg-white align-top"><BudgetTypeBadge type={alok.jenis} /></td>
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-b border-[#E4E7EC] font-semibold text-[#1F2937] whitespace-nowrap text-[11px] bg-white align-top">{formatRupiah(alok.nominal)}</td>
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-b border-[#E4E7EC] bg-white align-top">
+                                <p className={`font-medium whitespace-nowrap text-[11px] ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
+                                  {formatRupiah(totalReal)}
+                                </p>
+                                {status === 'OVER_BUDGET' && (
+                                  <p className="text-[9.5px] text-[#B42318] mt-0.5 font-medium">
+                                    +{Math.round(((totalReal - alok.nominal) / alok.nominal) * 100)}% ({formatRupiah(totalReal - alok.nominal)})
+                                  </p>
+                                )}
+                              </td>
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-b border-[#E4E7EC] bg-white align-top"><StatusBadge status={status} /></td>
+                              <td rowSpan={rowSpan} className="px-2 py-1.5 border-b border-[#E4E7EC] bg-white align-top">
+                                <div className="flex items-center gap-0.5">
+                                  <button onClick={() => openEditModal(alok)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    onClick={() => setShareDosen(dosen)}
+                                    className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]"
+                                    title="Bagikan Link Dosen"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                    </svg>
+                                  </button>
+                                  <button onClick={() => setConfirmId(alok.id)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
+                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                      <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            {anggotaList.map((anggota, i) => (
+                              <tr key={anggota.dosen_id} className={`${i === anggotaList.length - 1 ? 'border-b border-[#E4E7EC]' : ''} hover:bg-[#F7F7F8] transition-colors group/row`}>
+                                <td className="px-2 py-1.5 text-[#98A2B3] text-[10px] bg-white border-l border-[#E4E7EC]">{startIdx + i + 1}</td>
+                                <td className="px-2 py-1.5 bg-white">
+                                  <p className="font-medium text-[#1F2937] text-[11px] max-w-[200px] leading-tight">{anggota.dosen!.nama}</p>
+                                  <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{anggota.dosen!.nip}</p>
+                                </td>
+                                <td className="px-2 py-1.5 bg-white">
+                                  <p className="text-[#667085] whitespace-nowrap text-[10px]">{anggota.dosen!.fakultas}</p>
+                                  <p className="text-[9.5px] font-semibold text-[#8F2438] mt-0.5">{anggota.jabatan_awal}{anggota.target_jabatan ? ` → ${anggota.target_jabatan}` : ''}</p>
+                                </td>
+                              </tr>
+                            ))}
+                          </React.Fragment>
+                        );
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>
@@ -735,13 +755,34 @@ export function PenetapanAnggaranPage() {
                             <p className="text-[11px] font-bold text-[#1F2937]">{d?.nama || 'Unknown'}</p>
                             <p className="text-[10px] text-[#667085]">{d?.nip}</p>
                           </div>
-                          <button
-                            onClick={() => setAlokasiForm({ ...alokasiForm, anggotaTambahan: alokasiForm.anggotaTambahan.filter((_, idx) => idx !== i) })}
-                            className="text-[#98A2B3] hover:text-[#B42318] p-1 rounded transition-colors"
-                            title="Hapus anggota"
-                          >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                          </button>
+                          <div className="flex items-center gap-1">
+                            {d && (
+                              <button
+                                onClick={() => {
+                                  setEditDosenForm({
+                                    id: d.id,
+                                    nama: d.nama,
+                                    nip: d.nip,
+                                    fakultas: d.fakultas,
+                                    programStudi: d.programStudi,
+                                    statusDosen: d.statusDosen || 'Aktif'
+                                  });
+                                  setEditDosenModalOpen(true);
+                                }}
+                                className="text-[#175CD3] hover:text-[#0B4A9E] p-1 rounded transition-colors"
+                                title="Ubah Data Dosen (Anggota)"
+                              >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                              </button>
+                            )}
+                            <button
+                              onClick={() => setAlokasiForm({ ...alokasiForm, anggotaTambahan: alokasiForm.anggotaTambahan.filter((_, idx) => idx !== i) })}
+                              className="text-[#98A2B3] hover:text-[#B42318] p-1 rounded transition-colors"
+                              title="Hapus anggota"
+                            >
+                              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                          </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-[#E4E7EC]">
                           <div>
