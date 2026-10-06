@@ -306,13 +306,13 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#F7F7F8] border-b border-[#E4E7EC]">
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] w-10 text-center">No</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085]">NIP</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085]">Nama Dosen</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085]">Fakultas</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085]">Prodi</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085]">Jenis</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] text-right">Nominal</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] w-10 text-center whitespace-nowrap">No</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">NIP</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Nama Dosen</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Fakultas</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Prodi</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Jenis</th>
+                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] text-right whitespace-nowrap">Nominal</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E4E7EC]">
@@ -321,15 +321,15 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                 ) : penerimaAnggaran.length > 0 ? (
                   penerimaAnggaran.map((item, idx) => (
                     <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-[#1E293B] transition-colors">
-                      <td className="py-2.5 px-3 text-xs text-[#667085] text-center">{idx + 1}</td>
-                      <td className="py-2.5 px-3 text-xs text-[#667085]">{item.nip}</td>
-                      <td className="py-2.5 px-3 text-xs font-medium">
+                      <td className="py-2.5 px-3 text-xs text-[#667085] text-center whitespace-nowrap">{idx + 1}</td>
+                      <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.nip}</td>
+                      <td className="py-2.5 px-3 text-xs font-medium whitespace-nowrap">
                         <span className="text-[#1F2937] font-semibold">{item.nama}</span>
                       </td>
-                      <td className="py-2.5 px-3 text-xs text-[#1F2937]">{item.fakultas}</td>
-                      <td className="py-2.5 px-3 text-xs text-[#667085]">{item.program_studi}</td>
-                      <td className="py-2.5 px-3 text-xs text-[#1F2937]">{item.jenis_anggaran}</td>
-                      <td className="py-2.5 px-3 text-xs font-medium text-[#1F2937] text-right">{formatRupiah(item.nominal_anggaran)}</td>
+                      <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.fakultas}</td>
+                      <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.program_studi}</td>
+                      <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.jenis_anggaran}</td>
+                      <td className="py-2.5 px-3 text-xs font-medium text-[#1F2937] text-right whitespace-nowrap">{formatRupiah(item.nominal_anggaran)}</td>
                     </tr>
                   ))
                 ) : (
