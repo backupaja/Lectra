@@ -285,7 +285,7 @@ export function RealisasiAnggaranPage() {
 
       <div className="flex gap-5 flex-1 min-h-0 flex-col lg:flex-row">
         {/* Left — Allocation list */}
-        <div className="lg:w-[320px] shrink-0 flex flex-col min-h-0">
+        <div className={`lg:w-[320px] shrink-0 flex-col min-h-0 ${selectedAlokasiId ? 'hidden lg:flex' : 'flex'}`}>
           <div className="mb-3">
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -365,7 +365,7 @@ export function RealisasiAnggaranPage() {
         </div>
 
         {/* Right — Detail */}
-        <div className="flex-1 min-w-0 min-h-0 overflow-y-auto">
+        <div className={`flex-1 min-w-0 min-h-0 overflow-y-auto ${!selectedAlokasiId ? 'hidden lg:block' : 'block'}`}>
           {!selectedAlokasi ? (
             <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC] h-full min-h-[400px] flex items-center justify-center">
               <EmptyState
@@ -375,6 +375,17 @@ export function RealisasiAnggaranPage() {
             </div>
           ) : (
             <div className="flex flex-col gap-4">
+              {/* Back button (Mobile only) */}
+              <button 
+                onClick={() => setSelectedAlokasiId(null)}
+                className="lg:hidden flex items-center gap-2 text-sm font-medium text-[#667085] hover:text-[#1F2937] transition-colors -mb-1"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+                Kembali ke daftar dosen
+              </button>
+
               {/* Header info */}
               <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC] p-5">
                 <div className="flex items-start justify-between mb-4">
