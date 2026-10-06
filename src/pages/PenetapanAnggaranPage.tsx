@@ -11,6 +11,7 @@ import { formatRupiah, getDynamicYearOptions } from '../data/mockData';
 import { AnggaranService } from '../services/anggaranService';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import type { AlokasiAnggaran, Dosen, BudgetType } from '../types';
+import { AnimatedNumber } from '../components/ui/AnimatedNumber';
 
 type BudgetFilter = 'all' | 'OPEX' | 'CAPEX';
 type StatusFilter = 'all' | 'OVER_BUDGET' | 'TERSEDIA';
@@ -36,7 +37,7 @@ export function PenetapanAnggaranPage() {
   const [isFakultasDropdownOpen, setIsFakultasDropdownOpen] = useState(false);
   const [fakultasSearchQuery, setFakultasSearchQuery] = useState('');
   const fakultasDropdownRef = useRef<HTMLDivElement>(null);
-  
+
   const [isProdiDropdownOpen, setIsProdiDropdownOpen] = useState(false);
   const [prodiSearchQuery, setProdiSearchQuery] = useState('');
   const prodiDropdownRef = useRef<HTMLDivElement>(null);
@@ -82,7 +83,7 @@ export function PenetapanAnggaranPage() {
   const [alokasiForm, setAlokasiForm] = useState({
     tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala'
   });
-  const [viewKeperluanList, setViewKeperluanList] = useState<{items: string[], name: string} | null>(null);
+  const [viewKeperluanList, setViewKeperluanList] = useState<{ items: string[], name: string } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [editingAlokasiId, setEditingAlokasiId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -137,7 +138,7 @@ export function PenetapanAnggaranPage() {
   const openEditModal = (alok: AlokasiAnggaran) => {
     setEditingAlokasiId(alok.id);
     setSelectedDosenId(alok.dosenId);
-    
+
     const d = dosenList.find(dosen => dosen.id === alok.dosenId);
     setDosenSearchQuery(d ? `${d.nama} — ${d.nip}` : '');
 
@@ -158,7 +159,7 @@ export function PenetapanAnggaranPage() {
     } catch {
       parsedPertanggungan = [alok.pertanggungan || ''];
     }
-    
+
     setAlokasiForm({
       tahun: alok.tahun,
       jenis: alok.jenis,
@@ -181,7 +182,7 @@ export function PenetapanAnggaranPage() {
       showToast('Minimal 1 keperluan dan Nominal wajib diisi dengan benar.', 'error');
       return;
     }
-    
+
     const stringifiedKeperluan = validKeperluan.length === 1 ? validKeperluan[0] : JSON.stringify(validKeperluan);
 
     const validPertanggungan = alokasiForm.pertanggunganList.filter(p => p.trim());
@@ -223,7 +224,7 @@ export function PenetapanAnggaranPage() {
         });
         showToast('Penetapan anggaran berhasil ditambahkan.');
       }
-      
+
       closeModal();
       fetchData();
     } catch (err: any) {
@@ -312,233 +313,269 @@ export function PenetapanAnggaranPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-            {[
-              { label: 'Total Alokasi', value: alokasiList.length + ' entri' },
-              { label: 'Total Anggaran', value: formatRupiah(totalAnggaran) },
-              { label: 'OPEX', value: alokasiList.filter(a => a.jenis === 'OPEX').length + ' alokasi' },
-              { label: 'CAPEX', value: alokasiList.filter(a => a.jenis === 'CAPEX').length + ' alokasi' },
-            ].map(s => (
-              <div key={s.label} className="bg-white rounded-[14px] border border-[#E4E7EC] px-3 py-2.5">
-                <p className="text-[11px] text-[#98A2B3]">{s.label}</p>
-                <p className="text-xs font-bold text-[#1F2937] mt-0.5">{s.value}</p>
+          <div className="flex flex-col lg:flex-row bg-white rounded-xl border border-[#E4E7EC] shadow-sm mb-6 divide-y lg:divide-y-0 lg:divide-x divide-[#E4E7EC] overflow-hidden">
+            <div className="flex-[0.8] px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-[#F7F7F8] flex items-center justify-center text-[#667085]">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                </div>
+                <p className="text-[10px] font-bold text-[#667085] uppercase tracking-wider">Total Alokasi</p>
               </div>
-            ))}
-          </div>
+              <p className="text-lg font-extrabold text-[#1F2937] whitespace-nowrap">
+                <AnimatedNumber value={alokasiList.length} duration={1500} />
+              </p>
+            </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-3">
-        <div className="relative flex-1 min-w-[200px]">
-          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-          </svg>
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Cari nama dosen, NIP, atau keperluan..."
-            className="w-full pl-9 pr-4 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937] placeholder-[#98A2B3]"
-          />
-        </div>
-        <CustomSelect
-          value={budgetFilter}
-          onChange={(val) => setBudgetFilter(val as BudgetFilter)}
-          options={[
-            { label: 'Semua Jenis', value: 'all' },
-            { label: 'OPEX', value: 'OPEX' },
-            { label: 'CAPEX', value: 'CAPEX' },
-          ]}
-          buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[100px]"
-          dropdownClassName="min-w-[120px] mt-1 right-0"
-        />
-        <CustomSelect
-          value={statusFilter}
-          onChange={(val) => setStatusFilter(val as StatusFilter)}
-          options={[
-            { label: 'Semua Status', value: 'all' },
-            { label: 'Tersedia', value: 'TERSEDIA' },
-            { label: 'Habis', value: 'HABIS' },
-            { label: 'Over Budget', value: 'OVER_BUDGET' },
-          ]}
-          buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[110px]"
-          dropdownClassName="min-w-[130px] mt-1 right-0"
-        />
-      </div>
+            <div className="flex-[1.2] px-4 py-3 flex items-center justify-between hover:bg-[#FDF9FA] transition-colors">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-[#F8E9ED] flex items-center justify-center text-[#8F2438]">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <p className="text-[10px] font-bold text-[#8F2438] uppercase tracking-wider">Total Anggaran</p>
+              </div>
+              <p className="text-lg font-extrabold text-[#1F2937] whitespace-nowrap">
+                <AnimatedNumber value={totalAnggaran} duration={1500} separator="." prefix="Rp " />
+              </p>
+            </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-[16px] border border-[#E4E7EC] overflow-hidden">
-        {filtered.length === 0 ? (
-          <EmptyState
-            title="Belum ada penetapan anggaran"
-            description={`Belum ada penetapan anggaran untuk tahun ${year}.`}
-            action={{ label: '+ Tambah Anggaran', onClick: () => setModalOpen(true) }}
-          />
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-[#E4E7EC] bg-[#F7F7F8]">
-                  {['No', 'Nama Dosen', 'Fakultas / KK', 'Keperluan', 'Pertanggungan (OPEX)', 'Jenis'].map(h => (
-                    <th key={h} className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
-                  ))}
-                  <th 
-                    className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap cursor-pointer hover:bg-[#F0F2F5] transition-colors group select-none"
-                    onClick={() => setSortConfig(s => ({ key: 'nominal', direction: s.key === 'nominal' && s.direction === 'asc' ? 'desc' : 'asc' }))}
-                    title="Urutkan berdasarkan Nominal"
-                  >
-                    <div className="flex items-center gap-1">
-                      Nominal
-                      <svg className={`w-3 h-3 transition-opacity ${sortConfig.key === 'nominal' ? 'text-[#8F2438] opacity-100' : 'opacity-0 group-hover:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        {sortConfig.key === 'nominal' && sortConfig.direction === 'desc' ? (
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        ) : (
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                        )}
-                      </svg>
-                    </div>
-                  </th>
-                  <th 
-                    className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap cursor-pointer hover:bg-[#F0F2F5] transition-colors group select-none"
-                    onClick={() => setSortConfig(s => ({ key: 'realisasi', direction: s.key === 'realisasi' && s.direction === 'asc' ? 'desc' : 'asc' }))}
-                    title="Urutkan berdasarkan Realisasi"
-                  >
-                    <div className="flex items-center gap-1">
-                      Realisasi
-                      <svg className={`w-3 h-3 transition-opacity ${sortConfig.key === 'realisasi' ? 'text-[#8F2438] opacity-100' : 'opacity-0 group-hover:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        {sortConfig.key === 'realisasi' && sortConfig.direction === 'desc' ? (
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                        ) : (
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-                        )}
-                      </svg>
-                    </div>
-                  </th>
-                  {['Status', 'Aksi'].map(h => (
-                    <th key={h} className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((alok, idx) => {
-                  const dosen = dosenList.find(d => d.id === alok.dosenId)!;
-                  const totalReal = alok.totalRealisasi;
-                  const status = alok.status;
-                  return (
-                    <tr key={alok.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
-                      <td className="px-2 py-1.5 text-[#98A2B3] text-[10px]">{idx + 1}</td>
-                      <td className="px-2 py-1.5">
-                        <p className="font-medium text-[#1F2937] whitespace-nowrap text-[11px]">{dosen.nama}</p>
-                        <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
-                      </td>
-                      <td className="px-2 py-1.5">
-                        <p className="text-[#667085] whitespace-nowrap text-[10px]">{dosen.fakultas}</p>
-                        {alok.jenis === 'CAPEX' && alok.kelompokKeahlian && (
-                          <p className="text-[9.5px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
-                        )}
-                        <p className="text-[9.5px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
-                      </td>
-                      <td className="px-2 py-1.5">
-                        {(() => {
-                          let items = [alok.keperluan];
-                          try {
-                            const parsed = JSON.parse(alok.keperluan);
-                            if (Array.isArray(parsed)) items = parsed;
-                          } catch {}
-                          
-                          return (
-                            <button
-                              onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
-                              className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
-                              title="Lihat detail keperluan"
-                            >
-                              <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
-                              <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                              </svg>
-                            </button>
-                          );
-                        })()}
-                      </td>
-                      <td className="px-2 py-1.5">
-                        {alok.jenis === 'CAPEX' ? (
-                          <p className="text-[9.5px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
-                        ) : (() => {
-                          let items = [alok.pertanggungan || '-'];
-                          try {
-                            const parsed = JSON.parse(alok.pertanggungan || '[]');
-                            if (Array.isArray(parsed)) items = parsed;
-                          } catch {}
-                          
-                          return (
-                            <button
-                              onClick={() => setViewKeperluanList({ items, name: `Pertanggungan ${dosen.nama}` })}
-                              className="flex items-center gap-1.5 px-2 py-1 bg-[#FFF6ED] hover:bg-[#FFECD6] border border-[#FFD8B2] rounded-md transition-colors text-[#9A3412]"
-                              title="Lihat detail pertanggungan"
-                            >
-                              <span className="text-[10px] font-semibold">{items.length} Dokumen</span>
-                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                              </svg>
-                            </button>
-                          );
-                        })()}
-                      </td>
-                      <td className="px-2 py-1.5"><BudgetTypeBadge type={alok.jenis} /></td>
-                      <td className="px-2 py-1.5 font-semibold text-[#1F2937] whitespace-nowrap text-[11px]">{formatRupiah(alok.nominal)}</td>
-                      <td className="px-2 py-1.5">
-                        <p className={`font-medium whitespace-nowrap text-[11px] ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
-                          {formatRupiah(totalReal)}
-                        </p>
-                        {status === 'OVER_BUDGET' && (
-                          <p className="text-[9.5px] text-[#B42318] mt-0.5 font-medium">
-                            +{Math.round(((totalReal - alok.nominal) / alok.nominal) * 100)}% ({formatRupiah(totalReal - alok.nominal)})
-                          </p>
-                        )}
-                      </td>
-                      <td className="px-2 py-1.5"><StatusBadge status={status} /></td>
-                      <td className="px-2 py-1.5">
-                        <div className="flex items-center gap-0.5">
-                          <button onClick={() => openEditModal(alok)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => setShareDosen(dosen)}
-                            className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]"
-                            title="Bagikan Link Dosen"
-                          >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
-                            </svg>
-                          </button>
-                          <button onClick={() => setConfirmId(alok.id)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+            <div className="flex-[0.8] px-4 py-3 flex items-center justify-between hover:bg-[#F9FCFB] transition-colors">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-[#E8F5EF] flex items-center justify-center text-[#16805B]">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" /></svg>
+                </div>
+                <p className="text-[10px] font-bold text-[#16805B] uppercase tracking-wider">OPEX</p>
+              </div>
+              <p className="text-lg font-extrabold text-[#1F2937] whitespace-nowrap">
+                <AnimatedNumber value={alokasiList.filter(a => a.jenis === 'OPEX').length} duration={1500} />
+              </p>
+            </div>
 
-        {/* Pagination */}
-        {filtered.length > 0 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-[#E4E7EC]">
-            <p className="text-xs text-[#98A2B3]">Menampilkan {filtered.length} dari {alokasiList.length} data</p>
-            <div className="flex gap-1">
-              <button className="px-3 py-1.5 text-xs border border-[#E4E7EC] rounded-[6px] text-[#667085] hover:bg-[#F7F7F8]">Sebelumnya</button>
-              <button className="px-3 py-1.5 text-xs bg-[#8F2438] text-white rounded-[6px]">1</button>
-              <button className="px-3 py-1.5 text-xs border border-[#E4E7EC] rounded-[6px] text-[#667085] hover:bg-[#F7F7F8]">Berikutnya</button>
+            <div className="flex-[0.8] px-4 py-3 flex items-center justify-between hover:bg-[#FDF9ED] transition-colors">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-[#FFF4D6] flex items-center justify-center text-[#C88719]">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z" /></svg>
+                </div>
+                <p className="text-[10px] font-bold text-[#C88719] uppercase tracking-wider">CAPEX</p>
+              </div>
+              <p className="text-lg font-extrabold text-[#1F2937] whitespace-nowrap">
+                <AnimatedNumber value={alokasiList.filter(a => a.jenis === 'CAPEX').length} duration={1500} />
+              </p>
             </div>
           </div>
-        )}
-      </div>
+
+          {/* Filters */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            <div className="relative flex-1 min-w-[200px]">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+              <input
+                type="text"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Cari nama dosen, NIP, atau keperluan..."
+                className="w-full pl-9 pr-4 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937] placeholder-[#98A2B3]"
+              />
+            </div>
+            <CustomSelect
+              value={budgetFilter}
+              onChange={(val) => setBudgetFilter(val as BudgetFilter)}
+              options={[
+                { label: 'Semua Jenis', value: 'all' },
+                { label: 'OPEX', value: 'OPEX' },
+                { label: 'CAPEX', value: 'CAPEX' },
+              ]}
+              buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[100px]"
+              dropdownClassName="min-w-[120px] mt-1 right-0"
+            />
+            <CustomSelect
+              value={statusFilter}
+              onChange={(val) => setStatusFilter(val as StatusFilter)}
+              options={[
+                { label: 'Semua Status', value: 'all' },
+                { label: 'Tersedia', value: 'TERSEDIA' },
+                { label: 'Habis', value: 'HABIS' },
+                { label: 'Over Budget', value: 'OVER_BUDGET' },
+              ]}
+              buttonClassName="text-[10px] font-medium bg-white border border-[#E4E7EC] rounded-[8px] px-2 py-1.5 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all min-w-[110px]"
+              dropdownClassName="min-w-[130px] mt-1 right-0"
+            />
+          </div>
+
+          {/* Table */}
+          <div className="bg-white rounded-[16px] border border-[#E4E7EC] overflow-hidden">
+            {filtered.length === 0 ? (
+              <EmptyState
+                title="Belum ada penetapan anggaran"
+                description={`Belum ada penetapan anggaran untuk tahun ${year}.`}
+                action={{ label: '+ Tambah Anggaran', onClick: () => setModalOpen(true) }}
+              />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="border-b border-[#E4E7EC] bg-[#F7F7F8]">
+                      {['No', 'Nama Dosen', 'Fakultas / KK', 'Keperluan', 'Pertanggungan (OPEX)', 'Jenis'].map(h => (
+                        <th key={h} className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
+                      ))}
+                      <th
+                        className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap cursor-pointer hover:bg-[#F0F2F5] transition-colors group select-none"
+                        onClick={() => setSortConfig(s => ({ key: 'nominal', direction: s.key === 'nominal' && s.direction === 'asc' ? 'desc' : 'asc' }))}
+                        title="Urutkan berdasarkan Nominal"
+                      >
+                        <div className="flex items-center gap-1">
+                          Nominal
+                          <svg className={`w-3 h-3 transition-opacity ${sortConfig.key === 'nominal' ? 'text-[#8F2438] opacity-100' : 'opacity-0 group-hover:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            {sortConfig.key === 'nominal' && sortConfig.direction === 'desc' ? (
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            ) : (
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                            )}
+                          </svg>
+                        </div>
+                      </th>
+                      <th
+                        className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap cursor-pointer hover:bg-[#F0F2F5] transition-colors group select-none"
+                        onClick={() => setSortConfig(s => ({ key: 'realisasi', direction: s.key === 'realisasi' && s.direction === 'asc' ? 'desc' : 'asc' }))}
+                        title="Urutkan berdasarkan Realisasi"
+                      >
+                        <div className="flex items-center gap-1">
+                          Realisasi
+                          <svg className={`w-3 h-3 transition-opacity ${sortConfig.key === 'realisasi' ? 'text-[#8F2438] opacity-100' : 'opacity-0 group-hover:opacity-50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            {sortConfig.key === 'realisasi' && sortConfig.direction === 'desc' ? (
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            ) : (
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+                            )}
+                          </svg>
+                        </div>
+                      </th>
+                      {['Status', 'Aksi'].map(h => (
+                        <th key={h} className="text-left px-2 py-1.5 text-[10px] font-semibold text-[#667085] whitespace-nowrap">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((alok, idx) => {
+                      const dosen = dosenList.find(d => d.id === alok.dosenId)!;
+                      const totalReal = alok.totalRealisasi;
+                      const status = alok.status;
+                      return (
+                        <tr key={alok.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
+                          <td className="px-2 py-1.5 text-[#98A2B3] text-[10px]">{idx + 1}</td>
+                          <td className="px-2 py-1.5">
+                            <p className="font-medium text-[#1F2937] whitespace-nowrap text-[11px]">{dosen.nama}</p>
+                            <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
+                          </td>
+                          <td className="px-2 py-1.5">
+                            <p className="text-[#667085] whitespace-nowrap text-[10px]">{dosen.fakultas}</p>
+                            {alok.jenis === 'CAPEX' && alok.kelompokKeahlian && (
+                              <p className="text-[9.5px] text-[#98A2B3] mt-0.5 truncate max-w-[150px]" title={alok.kelompokKeahlian}>{alok.kelompokKeahlian}</p>
+                            )}
+                            <p className="text-[9.5px] font-semibold text-[#8F2438] mt-0.5">{alok.jabatanAwal}{alok.targetJabatan ? ` → ${alok.targetJabatan}` : ''}</p>
+                          </td>
+                          <td className="px-2 py-1.5">
+                            {(() => {
+                              let items = [alok.keperluan];
+                              try {
+                                const parsed = JSON.parse(alok.keperluan);
+                                if (Array.isArray(parsed)) items = parsed;
+                              } catch { }
+
+                              return (
+                                <button
+                                  onClick={() => setViewKeperluanList({ items, name: dosen.nama })}
+                                  className="flex items-center gap-1.5 px-2 py-1 bg-[#F9FAFB] hover:bg-[#F3F4F6] border border-[#E4E7EC] rounded-md transition-colors"
+                                  title="Lihat detail keperluan"
+                                >
+                                  <span className="text-[10px] font-semibold text-[#344054]">{items.length} Keperluan</span>
+                                  <svg className="w-3 h-3 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                  </svg>
+                                </button>
+                              );
+                            })()}
+                          </td>
+                          <td className="px-2 py-1.5">
+                            {alok.jenis === 'CAPEX' ? (
+                              <p className="text-[9.5px] text-[#98A2B3] italic">- (Hanya OPEX)</p>
+                            ) : (() => {
+                              let items = [alok.pertanggungan || '-'];
+                              try {
+                                const parsed = JSON.parse(alok.pertanggungan || '[]');
+                                if (Array.isArray(parsed)) items = parsed;
+                              } catch { }
+
+                              return (
+                                <button
+                                  onClick={() => setViewKeperluanList({ items, name: `Pertanggungan ${dosen.nama}` })}
+                                  className="flex items-center gap-1.5 px-2 py-1 bg-[#FFF6ED] hover:bg-[#FFECD6] border border-[#FFD8B2] rounded-md transition-colors text-[#9A3412]"
+                                  title="Lihat detail pertanggungan"
+                                >
+                                  <span className="text-[10px] font-semibold">{items.length} Dokumen</span>
+                                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                  </svg>
+                                </button>
+                              );
+                            })()}
+                          </td>
+                          <td className="px-2 py-1.5"><BudgetTypeBadge type={alok.jenis} /></td>
+                          <td className="px-2 py-1.5 font-semibold text-[#1F2937] whitespace-nowrap text-[11px]">{formatRupiah(alok.nominal)}</td>
+                          <td className="px-2 py-1.5">
+                            <p className={`font-medium whitespace-nowrap text-[11px] ${status === 'OVER_BUDGET' ? 'text-[#B42318]' : 'text-[#8F2438]'}`}>
+                              {formatRupiah(totalReal)}
+                            </p>
+                            {status === 'OVER_BUDGET' && (
+                              <p className="text-[9.5px] text-[#B42318] mt-0.5 font-medium">
+                                +{Math.round(((totalReal - alok.nominal) / alok.nominal) * 100)}% ({formatRupiah(totalReal - alok.nominal)})
+                              </p>
+                            )}
+                          </td>
+                          <td className="px-2 py-1.5"><StatusBadge status={status} /></td>
+                          <td className="px-2 py-1.5">
+                            <div className="flex items-center gap-0.5">
+                              <button onClick={() => openEditModal(alok)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]" title="Edit">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                                </svg>
+                              </button>
+                              <button
+                                onClick={() => setShareDosen(dosen)}
+                                className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#8F2438] hover:bg-[#F8E9ED]"
+                                title="Bagikan Link Dosen"
+                              >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                                </svg>
+                              </button>
+                              <button onClick={() => setConfirmId(alok.id)} className="p-1.5 rounded-[6px] text-[#667085] hover:text-[#B42318] hover:bg-[#FDECEC]" title="Hapus">
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                </svg>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Pagination */}
+            {filtered.length > 0 && (
+              <div className="flex items-center justify-between px-4 py-3 border-t border-[#E4E7EC]">
+                <p className="text-xs text-[#98A2B3]">Menampilkan {filtered.length} dari {alokasiList.length} data</p>
+                <div className="flex gap-1">
+                  <button className="px-3 py-1.5 text-xs border border-[#E4E7EC] rounded-[6px] text-[#667085] hover:bg-[#F7F7F8]">Sebelumnya</button>
+                  <button className="px-3 py-1.5 text-xs bg-[#8F2438] text-white rounded-[6px]">1</button>
+                  <button className="px-3 py-1.5 text-xs border border-[#E4E7EC] rounded-[6px] text-[#667085] hover:bg-[#F7F7F8]">Berikutnya</button>
+                </div>
+              </div>
+            )}
+          </div>
         </>
       )}
 
@@ -631,7 +668,7 @@ export function PenetapanAnggaranPage() {
                     <span className="px-2 py-0.5 bg-[#ECFDF3] text-[#027A48] border border-[#D1FADF] rounded text-[10px] font-medium inline-block mb-3">{selectedDosen.statusDosen || 'Aktif'}</span>
                   </div>
                 </div>
-                
+
                 <div className="flex justify-end gap-2 pt-3 mt-1 border-t border-[#E4E7EC]">
                   <button onClick={() => {
                     setEditDosenForm({
@@ -827,7 +864,7 @@ export function PenetapanAnggaranPage() {
                       <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#F7F7F8] border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0">
                         {i + 1}
                       </div>
-                      <input 
+                      <input
                         type="text"
                         placeholder={i === 0 ? "Contoh: Konferensi Internasional" : "Keperluan lainnya..."}
                         value={k}
@@ -839,7 +876,7 @@ export function PenetapanAnggaranPage() {
                         className="flex-1 px-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
                       />
                       {alokasiForm.keperluanList.length > 1 && (
-                        <button 
+                        <button
                           onClick={() => {
                             const newList = alokasiForm.keperluanList.filter((_, idx) => idx !== i);
                             setAlokasiForm({ ...alokasiForm, keperluanList: newList });
@@ -852,7 +889,7 @@ export function PenetapanAnggaranPage() {
                       )}
                     </div>
                   ))}
-                  <button 
+                  <button
                     onClick={() => setAlokasiForm({ ...alokasiForm, keperluanList: [...alokasiForm.keperluanList, ''] })}
                     className="self-start text-[11px] font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 mt-1"
                   >
@@ -864,7 +901,7 @@ export function PenetapanAnggaranPage() {
                 <div className="flex flex-col gap-1.5 mt-2">
                   <div className="flex items-center justify-between">
                     <label className="text-[11px] font-semibold text-[#344054]">Kebutuhan Pertanggungan</label>
-                    <button 
+                    <button
                       type="button"
                       onClick={() => {
                         const MAPPING: Record<string, string[]> = {
@@ -900,7 +937,7 @@ export function PenetapanAnggaranPage() {
                         <div className="flex items-center justify-center w-6 h-6 rounded-md bg-[#F7F7F8] border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0">
                           {i + 1}
                         </div>
-                        <input 
+                        <input
                           type="text"
                           placeholder={i === 0 ? "Contoh: Kwitansi Pembayaran" : "Pertanggungan lainnya..."}
                           value={k}
@@ -912,7 +949,7 @@ export function PenetapanAnggaranPage() {
                           className="flex-1 px-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-md outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
                         />
                         {alokasiForm.pertanggunganList.length > 1 && (
-                          <button 
+                          <button
                             onClick={() => {
                               const newList = alokasiForm.pertanggunganList.filter((_, idx) => idx !== i);
                               setAlokasiForm({ ...alokasiForm, pertanggunganList: newList });
@@ -925,7 +962,7 @@ export function PenetapanAnggaranPage() {
                         )}
                       </div>
                     ))}
-                    <button 
+                    <button
                       onClick={() => setAlokasiForm({ ...alokasiForm, pertanggunganList: [...alokasiForm.pertanggunganList, ''] })}
                       className="self-start text-[11px] font-medium text-[#8F2438] hover:text-[#761D2E] flex items-center gap-1 mt-1"
                     >
@@ -936,7 +973,7 @@ export function PenetapanAnggaranPage() {
               ) : (
                 <div className="flex flex-col gap-1.5 mt-2">
                   <label className="text-[11px] font-semibold text-[#344054]">Kelompok Keahlian / Lab (Hanya CAPEX)</label>
-                  <input 
+                  <input
                     type="text"
                     placeholder="Contoh: Intelligent Systems / Big Data"
                     value={alokasiForm.kelompokKeahlian}

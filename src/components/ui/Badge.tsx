@@ -33,3 +33,18 @@ export function StatusBadge({ status }: { status: BudgetStatus | string }) {
     </span>
   );
 }
+
+export function Badge({ children, variant = 'secondary', className = '' }: { children: React.ReactNode; variant?: 'success' | 'warning' | 'danger' | 'secondary'; className?: string }) {
+  let styles = '';
+  switch (variant) {
+    case 'success': styles = 'bg-[#E8F5EF] text-[#16805B] border-[#16805B]/20'; break;
+    case 'warning': styles = 'bg-[#FFF4D6] text-[#C88719] border-[#C88719]/20'; break;
+    case 'danger': styles = 'bg-[#FDECEC] text-[#B42318] border-[#B42318]/20'; break;
+    case 'secondary': styles = 'bg-[#F7F7F8] text-[#667085] border-[#E4E7EC]'; break;
+  }
+  return (
+    <span className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded-md text-[11px] font-medium border ${styles} ${className}`}>
+      {children}
+    </span>
+  );
+}

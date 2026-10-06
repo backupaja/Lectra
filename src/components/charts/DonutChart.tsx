@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { AnimatedNumber } from '../ui/AnimatedNumber';
 import { CHART_COLOR_BUDGET, COLOR_BORDER } from '../../lib/designTokens';
 
 interface DonutChartProps {
   totalRealisasi: number;
   totalAnggaran: number;
   size?: number;
+  primaryColor?: string;
+  trackColor?: string;
+  label?: string;
 }
 
-export function DonutChart({ totalRealisasi, totalAnggaran, size = 160 }: DonutChartProps) {
+export function DonutChart({
+  totalRealisasi,
+  totalAnggaran,
+  size = 160,
+  primaryColor = CHART_COLOR_BUDGET,
+  trackColor = COLOR_BORDER,
+  label = 'Terealisasi'
+}: DonutChartProps) {
   const [hovered, setHovered] = useState(false);
 
   // Single source of truth
@@ -39,9 +50,12 @@ export function DonutChart({ totalRealisasi, totalAnggaran, size = 160 }: DonutC
             endAngle={-270}
             dataKey="value"
             strokeWidth={0}
+            isAnimationActive={true}
+            animationDuration={1500}
+            animationEasing="ease-out"
           >
-            <Cell fill={CHART_COLOR_BUDGET} />
-            <Cell fill={COLOR_BORDER} />
+            <Cell fill={primaryColor} />
+            <Cell fill={trackColor} />
           </Pie>
         </PieChart>
       </ResponsiveContainer>
@@ -63,12 +77,12 @@ export function DonutChart({ totalRealisasi, totalAnggaran, size = 160 }: DonutC
               {percentageFull}
             </span>
           ) : (
-            percentageRounded
+            <AnimatedNumber value={percentageRaw} decimals={2} decimal="," suffix="%" duration={1500} />
           )}
         </span>
         {/* Label */}
-        <span className="text-[#98A2B3] leading-none" style={{ fontSize: size * 0.077 }}>
-          Terealisasi
+        <span className="text-[#98A2B3] leading-none uppercase tracking-wider font-medium" style={{ fontSize: size * 0.07 }}>
+          {label}
         </span>
       </div>
     </div>

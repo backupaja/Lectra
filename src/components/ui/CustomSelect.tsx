@@ -35,7 +35,7 @@ export function CustomSelect({ value, onChange, options, className, buttonClassN
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center justify-between w-full outline-none transition-all ${buttonClassName || 'bg-white border border-[#E4E7EC] rounded-md px-2.5 py-1 text-[11px] font-medium text-[#1F2937] shadow-sm hover:bg-gray-50 focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20'}`}
+        className={`flex items-center justify-between w-full outline-none transition-all ${buttonClassName || 'bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-md px-2.5 py-1 text-[11px] font-medium text-[#1F2937] shadow-sm hover:bg-gray-50 dark:hover:bg-[#1E293B] focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20'}`}
       >
         <span className="truncate">{selectedOption ? selectedOption.label : 'Pilih...'}</span>
         <svg className={`w-3 h-3 text-[#98A2B3] transition-transform shrink-0 ml-1.5 ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
@@ -44,7 +44,7 @@ export function CustomSelect({ value, onChange, options, className, buttonClassN
       </button>
 
       {isOpen && (
-        <div className={`absolute z-50 mt-1 bg-white border border-[#E4E7EC] rounded-lg shadow-xl max-h-[160px] overflow-y-auto py-1 animate-in fade-in zoom-in-95 duration-100 ${dropdownClassName || 'w-full min-w-[100px] left-0'}`}>
+        <div className={`absolute z-50 mt-1 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-lg shadow-xl max-h-[160px] overflow-y-auto py-1 animate-in fade-in zoom-in-95 duration-100 ${dropdownClassName || 'w-full min-w-[100px] left-0'}`}>
           {options.map((opt) => (
             <button
               key={String(opt.value)}
@@ -56,7 +56,7 @@ export function CustomSelect({ value, onChange, options, className, buttonClassN
               className={`w-full text-left px-2.5 py-1.5 text-[11px] transition-colors ${
                 opt.value === value 
                   ? 'bg-[#FDF5F6] text-[#8F2438] font-bold' 
-                  : 'text-[#344054] hover:bg-gray-50'
+                  : 'text-[#344054] hover:bg-gray-50 dark:hover:bg-[#1E293B]'
               }`}
             >
               {opt.label}
