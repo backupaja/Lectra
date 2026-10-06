@@ -144,3 +144,7 @@
 *.stl                filter=lfs diff=lfs merge=lfs -text
 *.nc                 filter=lfs diff=lfs merge=lfs -text
 *.mat                filter=lfs diff=lfs merge=lfs -text
+
+public/favicon.png -filter -diff -merge -text
+public/logo-square.png -filter -diff -merge -text
+public/logo-wide.png -filter -diff -merge -text
