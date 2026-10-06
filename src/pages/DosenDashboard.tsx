@@ -130,7 +130,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
   if (!dosen) {
     return (
       <div className="min-h-screen bg-[#F7F7F8] flex items-center justify-center p-6">
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] p-10 text-center max-w-sm">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] p-10 text-center max-w-sm">
           <div className="w-14 h-14 bg-[#FDECEC] rounded-2xl flex items-center justify-center mx-auto mb-4">
             <svg className="w-7 h-7 text-[#B42318]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
@@ -192,7 +192,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
   return (
     <div className="min-h-screen bg-[#F7F7F8]">
       {/* Header */}
-      <header className="bg-white dark:bg-[#181B25] transition-colors border-b border-[#E4E7EC] sticky top-0 z-40">
+      <header className="bg-white transition-colors border-b border-[#E4E7EC] sticky top-0 z-40">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-[#8F2438] rounded-[8px] flex items-center justify-center">
@@ -221,7 +221,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
 
       <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Dosen profile card */}
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-5 mb-5">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-5 mb-5">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 bg-[#8F2438] rounded-2xl flex items-center justify-center text-white text-xl font-bold shrink-0">
@@ -239,7 +239,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
                 <button
                   key={val}
                   onClick={() => setBudgetFilter(val)}
-                  className={`px-3 py-1.5 rounded-[8px] text-sm font-medium transition-colors cursor-pointer ${budgetFilter === val ? 'bg-[#8F2438] text-white' : 'bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] text-[#344054] hover:bg-[#F7F7F8]'}`}
+                  className={`px-3 py-1.5 rounded-[8px] text-sm font-medium transition-colors cursor-pointer ${budgetFilter === val ? 'bg-[#8F2438] text-white' : 'bg-white transition-colors border border-[#E4E7EC] text-[#344054] hover:bg-[#F7F7F8]'}`}
                 >
                   {label}
                 </button>
@@ -259,7 +259,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
         </div>
 
         {/* ── MAIN SUMMARY (same layout as admin dashboard) ─────────────── */}
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-5 mb-5">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-5 mb-5">
           <div className="mb-4">
             <h2 className="text-base font-semibold text-[#1F2937]">Ringkasan Anggaran Tahun {year}</h2>
             <p className="text-xs text-[#98A2B3] mt-0.5">Total alokasi dan realisasi anggaran Anda pada tahun ini.</p>
@@ -336,7 +336,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
                 const overBudget = sisa < 0;
                 
                 return (
-                  <div key={a.id} className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC] p-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div key={a.id} className="bg-white transition-colors rounded-[16px] border border-[#E4E7EC] p-5 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <BudgetTypeBadge type={a.jenis} />
@@ -401,7 +401,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
         )}
 
         {/* ── REALIZATION HISTORY ─────────────── */}
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm">
           <div className="flex items-center justify-between p-5 border-b border-[#E4E7EC]">
             <div>
               <h2 className="text-base font-semibold text-[#1F2937]">Riwayat Realisasi</h2>
@@ -474,7 +474,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
               return (
                 <div className="space-y-3">
                   {parsedArray.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-4 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] p-3.5 rounded-[12px] shadow-sm hover:shadow-md transition-shadow">
+                    <div key={idx} className="flex items-center gap-4 bg-white transition-colors border border-[#E4E7EC] p-3.5 rounded-[12px] shadow-sm hover:shadow-md transition-shadow">
                       <div className="w-7 h-7 rounded-full bg-[#FDF5F6] text-[#8F2438] flex items-center justify-center text-xs font-bold shrink-0">
                         {idx + 1}
                       </div>

@@ -157,9 +157,9 @@ export function ProgressJADPage() {
       </div>
 
       {/* Summary Ribbon */}
-      <div className="flex flex-col lg:flex-row bg-white dark:bg-[#181B25] transition-colors rounded-xl border border-[#E4E7EC] shadow-sm mb-6 divide-y lg:divide-y-0 lg:divide-x divide-[#E4E7EC] overflow-hidden">
+      <div className="flex flex-col lg:flex-row bg-white transition-colors rounded-xl border border-[#E4E7EC] shadow-sm mb-6 divide-y lg:divide-y-0 lg:divide-x divide-[#E4E7EC] overflow-hidden">
 
-        <div className="flex-1 px-5 py-3 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-[#1E293B] transition-colors">
+        <div className="flex-1 px-5 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-[#F7F7F8] flex items-center justify-center text-[#667085]">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
@@ -215,7 +215,7 @@ export function ProgressJADPage() {
           value={String(year)}
           onChange={(val) => setYear(Number(val))}
           options={getDynamicYearOptions()}
-          buttonClassName="w-[100px] text-sm font-medium bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
+          buttonClassName="w-[100px] text-sm font-medium bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
         />
 
         <div className="relative flex-1">
@@ -227,7 +227,7 @@ export function ProgressJADPage() {
             placeholder="Cari nama dosen, NIP, atau prodi..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] text-sm text-[#1F2937] placeholder-[#98A2B3] focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] text-sm text-[#1F2937] placeholder-[#98A2B3] focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-all"
           />
         </div>
 
@@ -235,26 +235,26 @@ export function ProgressJADPage() {
           value={filterFakultas}
           onChange={(val) => setFilterFakultas(String(val))}
           options={fakultasOptions.map(f => ({ label: f, value: f }))}
-          buttonClassName="w-[160px] text-sm font-medium bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
+          buttonClassName="w-[160px] text-sm font-medium bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
         />
 
         <CustomSelect
           value={filterJenisAnggaran}
           onChange={(val) => setFilterJenisAnggaran(String(val))}
           options={jenisOptions.map(j => ({ label: j, value: j }))}
-          buttonClassName="w-[120px] text-sm font-medium bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
+          buttonClassName="w-[120px] text-sm font-medium bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
         />
 
         <CustomSelect
           value={filterStatus}
           onChange={(val) => setFilterStatus(String(val))}
           options={statusOptions.map(s => ({ label: s, value: s }))}
-          buttonClassName="w-[160px] text-sm font-medium bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
+          buttonClassName="w-[160px] text-sm font-medium bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-2 text-[#1F2937] outline-none"
         />
       </div>
 
       {/* Table */}
-      <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC] shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-white transition-colors rounded-[16px] border border-[#E4E7EC] shadow-sm overflow-hidden flex flex-col">
         <div className="overflow-x-auto min-h-[400px]">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -278,7 +278,7 @@ export function ProgressJADPage() {
                 </tr>
               ) : filteredList.length > 0 ? (
                 filteredList.map((item, idx) => (
-                  <tr key={item.dosen_id} className="hover:bg-gray-50 dark:hover:bg-[#1E293B] transition-colors">
+                  <tr key={item.dosen_id} className="hover:bg-gray-50 transition-colors">
                     <td className="py-2.5 px-3 text-xs text-[#667085] text-center">{idx + 1}</td>
                     <td className="py-2.5 px-3">
                       <div className="text-xs font-semibold text-[#1F2937] leading-tight mb-0.5">{item.nama}</div>
@@ -424,7 +424,7 @@ export function ProgressJADPage() {
                 </div>
                 
                 {(selectedItem.opex_nominal || selectedItem.capex_nominal) ? (
-                  <div className="grid grid-cols-[min-content_auto_min-content_auto] gap-x-3 gap-y-2.5 items-center bg-white dark:bg-[#181B25] transition-colors border border-[#F3D5DB] rounded-[10px] p-3 shadow-sm mt-1 whitespace-nowrap">
+                  <div className="grid grid-cols-[min-content_auto_min-content_auto] gap-x-3 gap-y-2.5 items-center bg-white transition-colors border border-[#F3D5DB] rounded-[10px] p-3 shadow-sm mt-1 whitespace-nowrap">
                     {selectedItem.opex_nominal !== undefined && selectedItem.opex_nominal > 0 && (
                       <>
                         <span className="bg-[#FDF6F7] text-[#8F2438] px-2 py-0.5 rounded-full font-bold text-[9px] border border-[#F3D5DB]">OPEX</span>
@@ -495,20 +495,20 @@ export function ProgressJADPage() {
                       { label: 'BELUM TERCAPAI', value: 'BELUM TERCAPAI' },
                       { label: 'TERCAPAI', value: 'TERCAPAI' }
                     ]}
-                    buttonClassName="w-full text-xs font-medium bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[6px] px-2.5 py-1.5 text-[#1F2937] outline-none"
+                    buttonClassName="w-full text-xs font-medium bg-white transition-colors border border-[#E4E7EC] rounded-[6px] px-2.5 py-1.5 text-[#1F2937] outline-none"
                   />
                 </FormField>
               </div>
 
               <div className="mb-1.5">
                 <FormField label="Nomor SK (Opsional)">
-                  <input type="text" value={form.nomorSk || ''} onChange={e => setForm({ ...form, nomorSk: e.target.value })} className="w-full text-xs bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[6px] px-2.5 py-1.5 outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" placeholder="Contoh: 123/SK/2026" />
+                  <input type="text" value={form.nomorSk || ''} onChange={e => setForm({ ...form, nomorSk: e.target.value })} className="w-full text-xs bg-white transition-colors border border-[#E4E7EC] rounded-[6px] px-2.5 py-1.5 outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" placeholder="Contoh: 123/SK/2026" />
                 </FormField>
               </div>
               
               <div className="mb-1.5">
                 <FormField label={<span>Tanggal SK {form.status === 'TERCAPAI' && <span className="text-[#8F2438]">*</span>}</span>}>
-                  <input type="date" value={form.tanggalSk || ''} onChange={e => setForm({ ...form, tanggalSk: e.target.value })} className="w-full text-xs bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[6px] px-2.5 py-1.5 outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" />
+                  <input type="date" value={form.tanggalSk || ''} onChange={e => setForm({ ...form, tanggalSk: e.target.value })} className="w-full text-xs bg-white transition-colors border border-[#E4E7EC] rounded-[6px] px-2.5 py-1.5 outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20" />
                 </FormField>
               </div>
 
@@ -517,7 +517,7 @@ export function ProgressJADPage() {
                   {(file || form.dokumenPath) ? (
                     <div className="flex items-center justify-between p-2 pr-3 border border-[#E4E7EC] hover:border-[#F3D5DB] hover:bg-[#FDF6F7]/50 transition-all rounded-[10px] bg-[#FCFAFA] mt-1 group shadow-sm">
                       <div className="flex items-center gap-3 overflow-hidden">
-                        <div className="relative flex items-center justify-center w-10 h-10 bg-white dark:bg-[#181B25] transition-colors rounded-[8px] border border-[#E4E7EC] shadow-sm shrink-0 group-hover:border-[#F3D5DB]">
+                        <div className="relative flex items-center justify-center w-10 h-10 bg-white transition-colors rounded-[8px] border border-[#E4E7EC] shadow-sm shrink-0 group-hover:border-[#F3D5DB]">
                           <svg className="w-5 h-5 text-[#8F2438]" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
                           </svg>

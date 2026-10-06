@@ -119,7 +119,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   return (
     <div className="min-h-screen bg-[#F7F7F8]">
       {/* Header */}
-      <header className="bg-white dark:bg-[#181B25] transition-colors border-b border-[#E4E7EC] sticky top-0 z-40">
+      <header className="bg-white transition-colors border-b border-[#E4E7EC] sticky top-0 z-40">
         <div className="max-w-full mx-auto px-4 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-[#8F2438] rounded-[8px] flex items-center justify-center">
@@ -151,13 +151,13 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               <button
                 key={val}
                 onClick={() => setFilter(val)}
-                className={`px-3.5 py-1.5 rounded-[8px] text-sm font-medium transition-colors cursor-pointer ${filter === val ? 'bg-[#8F2438] text-white' : 'bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] text-[#344054] hover:bg-[#F7F7F8]'}`}
+                className={`px-3.5 py-1.5 rounded-[8px] text-sm font-medium transition-colors cursor-pointer ${filter === val ? 'bg-[#8F2438] text-white' : 'bg-white transition-colors border border-[#E4E7EC] text-[#344054] hover:bg-[#F7F7F8]'}`}
               >
                 {label}
               </button>
             ))}
             {/* Year selector */}
-            <div className="flex items-center gap-1.5 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
+            <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
               <svg className="w-4 h-4 text-[#8F2438]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
               </svg>
@@ -173,7 +173,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
         </div>
 
         {/* ── MAIN SUMMARY CARD (mirrors admin dashboard) ─────────────── */}
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-base font-semibold text-[#1F2937]">
@@ -250,14 +250,14 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
         </div>
 
         {/* ── YEARLY COMPARISON CHART ─────────────── */}
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div>
               <h3 className="text-base font-semibold text-[#1F2937]">Anggaran dan Realisasi per Tahun</h3>
               <p className="text-xs text-[#98A2B3] mt-0.5">Perbandingan anggaran vs realisasi dari {chartStartYear || minYear}–{chartEndYear || maxYear}</p>
             </div>
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
+              <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
                 <span className="text-xs text-[#98A2B3]">Dari</span>
                 <CustomSelect
                   value={chartStartYear || minYear}
@@ -267,7 +267,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                   dropdownClassName="w-auto min-w-[80px]"
                 />
               </div>
-              <div className="flex items-center gap-1.5 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
+              <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
                 <span className="text-xs text-[#98A2B3]">Hingga</span>
                 <CustomSelect
                   value={chartEndYear || maxYear}
@@ -290,7 +290,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
         </div>
 
         {/* ── PENERIMA ANGGARAN ─────────────── */}
-        <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
           <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-5">
             <div>
               <h2 className="text-base font-semibold text-[#1F2937]">Penerima Anggaran Tahun {year}</h2>
@@ -309,13 +309,13 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                   placeholder="Cari nama dosen..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-[#181B25] border border-[#E4E7EC] rounded-[10px] text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-shadow"
+                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-[10px] text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-shadow"
                 />
               </div>
               
               <div className="flex w-full sm:w-auto items-center gap-3">
                 {/* Year Selector */}
-                <div className="flex flex-1 sm:flex-none items-center gap-1.5 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
+                <div className="flex flex-1 sm:flex-none items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
                   <svg className="w-4 h-4 text-[#8F2438]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
                   </svg>
@@ -335,7 +335,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                     { label: 'OPEX', value: 'OPEX' },
                     { label: 'CAPEX', value: 'CAPEX' }
                   ]}
-                  buttonClassName="flex-1 sm:flex-none appearance-none text-xs font-semibold bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 dark:hover:bg-[#1E293B] cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
+                  buttonClassName="flex-1 sm:flex-none appearance-none text-xs font-semibold bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
                 />
               </div>
             </div>
@@ -358,7 +358,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
                   <tr><td colSpan={7} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
                 ) : filteredPenerima.length > 0 ? (
                   filteredPenerima.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-[#1E293B] transition-colors">
+                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
                       <td className="py-2.5 px-3 text-xs text-[#667085] text-center whitespace-nowrap">{idx + 1}</td>
                       <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.nip}</td>
                       <td className="py-2.5 px-3 text-xs font-medium whitespace-nowrap">

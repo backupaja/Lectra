@@ -260,7 +260,7 @@ export function RealisasiAnggaranPage() {
             value={year}
             onChange={(val) => setYear(Number(val))}
             options={getDynamicYearOptions()}
-            buttonClassName="appearance-none text-xs font-semibold bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 dark:hover:bg-[#1E293B] cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 w-fit"
+            buttonClassName="appearance-none text-xs font-semibold bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 w-fit"
             dropdownClassName="w-full mt-1 right-0"
           />
           <Button variant="secondary" size="sm" className="whitespace-nowrap" onClick={handleExport} icon={
@@ -296,7 +296,7 @@ export function RealisasiAnggaranPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Cari nama dosen, NIP..."
-                className="w-full pl-9 pr-4 py-2 text-sm bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 placeholder-[#98A2B3]"
+                className="w-full pl-9 pr-4 py-2 text-sm bg-white transition-colors border border-[#E4E7EC] rounded-[10px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 placeholder-[#98A2B3]"
               />
             </div>
           </div>
@@ -309,7 +309,7 @@ export function RealisasiAnggaranPage() {
                 className={`flex-1 py-1 text-[11px] font-semibold rounded-[8px] transition-colors border ${
                   filterJenis === j
                     ? 'bg-[#8F2438] text-white border-[#8F2438]'
-                    : 'bg-white dark:bg-[#181B25] transition-colors text-[#667085] border-[#E4E7EC] hover:border-[#8F2438]/40 dark:hover:border-[#FCA5A5]/40'
+                    : 'bg-white transition-colors text-[#667085] border-[#E4E7EC] hover:border-[#8F2438]/40'
                 }`}
               >
                 {j === 'SEMUA' ? 'Semua' : j}
@@ -319,11 +319,11 @@ export function RealisasiAnggaranPage() {
 
           <div className="flex flex-col gap-2 flex-1 overflow-y-auto pr-1 min-h-0">
             {isLoading ? (
-              <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[14px] border border-[#E4E7EC] p-6 text-center">
+              <div className="bg-white transition-colors rounded-[14px] border border-[#E4E7EC] p-6 text-center">
                 <p className="text-sm text-[#98A2B3]">Memuat data...</p>
               </div>
             ) : filtered.length === 0 ? (
-              <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[14px] border border-[#E4E7EC] p-6 text-center">
+              <div className="bg-white transition-colors rounded-[14px] border border-[#E4E7EC] p-6 text-center">
                 <p className="text-sm text-[#98A2B3]">Tidak ada data ditemukan.</p>
               </div>
             ) : filtered.map(alok => {
@@ -339,11 +339,11 @@ export function RealisasiAnggaranPage() {
                   className={`text-left w-full p-4 rounded-[14px] border transition-all cursor-pointer ${
                     isSelected
                       ? 'border-[#8F2438] bg-[#F8E9ED] shadow-sm'
-                      : 'border-[#E4E7EC] bg-white dark:bg-[#181B25] transition-colors hover:border-[#8F2438]/40 dark:hover:border-[#FCA5A5]/40 hover:bg-[#FEFAF9]'
+                      : 'border-[#E4E7EC] bg-white transition-colors hover:border-[#8F2438]/40 hover:bg-[#FEFAF9]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-2">
-                    <div className="w-8 h-8 bg-[#8F2438]/10 dark:bg-[#8F2438]/20 rounded-full flex items-center justify-center text-xs font-bold text-[#8F2438]">
+                    <div className="w-8 h-8 bg-[#8F2438]/10 rounded-full flex items-center justify-center text-xs font-bold text-[#8F2438]">
                       {dosen.nama.split(' ').map(w => w[0]).join('').slice(0, 2)}
                     </div>
                     <BudgetTypeBadge type={alok.jenis} />
@@ -367,7 +367,7 @@ export function RealisasiAnggaranPage() {
         {/* Right — Detail */}
         <div className={`flex-1 min-w-0 min-h-0 overflow-y-auto ${!selectedAlokasiId ? 'hidden lg:block' : 'block'}`}>
           {!selectedAlokasi ? (
-            <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC] h-full min-h-[400px] flex items-center justify-center">
+            <div className="bg-white transition-colors rounded-[16px] border border-[#E4E7EC] h-full min-h-[400px] flex items-center justify-center">
               <EmptyState
                 title="Pilih alokasi anggaran"
                 description="Klik pada salah satu dosen di sebelah kiri untuk melihat detail realisasi."
@@ -387,7 +387,7 @@ export function RealisasiAnggaranPage() {
               </button>
 
               {/* Header info */}
-              <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC] p-5">
+              <div className="bg-white transition-colors rounded-[16px] border border-[#E4E7EC] p-5">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
@@ -454,7 +454,7 @@ export function RealisasiAnggaranPage() {
               </div>
 
               {/* Realization table */}
-              <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[16px] border border-[#E4E7EC]">
+              <div className="bg-white transition-colors rounded-[16px] border border-[#E4E7EC]">
                 <div className="flex items-center justify-between p-4 border-b border-[#E4E7EC]">
                   <h3 className="text-sm font-semibold text-[#1F2937]">Riwayat Realisasi</h3>
                   <Button
@@ -500,7 +500,7 @@ export function RealisasiAnggaranPage() {
                             <td className="px-3 py-1.5 text-[#667085] max-w-[200px] truncate text-[11px]">{r.keterangan}</td>
                             <td className="px-3 py-1.5">
                               <div className="flex items-center gap-1">
-                                <button onClick={() => window.open('https://loremflickr.com/800/600/invoice', '_blank')} className="px-2 py-1 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] text-[#344054] text-[10px] font-medium rounded-md hover:bg-[#F9FAFB] hover:text-[#8F2438] transition-colors flex items-center gap-1" title="Lihat Bukti">
+                                <button onClick={() => window.open('https://loremflickr.com/800/600/invoice', '_blank')} className="px-2 py-1 bg-white transition-colors border border-[#E4E7EC] text-[#344054] text-[10px] font-medium rounded-md hover:bg-[#F9FAFB] hover:text-[#8F2438] transition-colors flex items-center gap-1" title="Lihat Bukti">
                                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zm3.75 11.625a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
                                   </svg>
@@ -612,7 +612,7 @@ export function RealisasiAnggaranPage() {
           </div>
 
           <FormField label="Dokumen Pendukung" optional>
-            <div className="border border-dashed border-[#E4E7EC] rounded-[8px] py-2 px-3 flex items-center gap-2 hover:border-[#8F2438]/40 dark:hover:border-[#FCA5A5]/40 transition-colors cursor-pointer bg-[#F7F7F8]">
+            <div className="border border-dashed border-[#E4E7EC] rounded-[8px] py-2 px-3 flex items-center gap-2 hover:border-[#8F2438]/40 transition-colors cursor-pointer bg-[#F7F7F8]">
               <svg className="w-4 h-4 text-[#98A2B3] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
@@ -630,7 +630,7 @@ export function RealisasiAnggaranPage() {
         <div className="flex flex-col gap-2">
           {viewKeperluanList?.items.map((k, i) => (
             <div key={i} className="flex items-start gap-3 p-3 bg-[#F9FAFB] border border-[#E4E7EC] rounded-lg">
-              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-6 h-6 rounded-md bg-white transition-colors border border-[#E4E7EC] text-[10px] font-bold text-[#667085] shrink-0 mt-0.5">
                 {i + 1}
               </div>
               <p className="text-sm text-[#344054] leading-snug pt-0.5">{k}</p>

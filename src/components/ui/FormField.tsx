@@ -28,7 +28,7 @@ export function Input({ error, className = '', ...props }: InputProps) {
   return (
     <input
       {...props}
-      className={`w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#181B25] transition-colors border rounded-[8px] outline-none transition-colors placeholder-[#98A2B3] text-[#1F2937]
+      className={`w-full px-2.5 py-1.5 text-xs bg-white transition-colors border rounded-[8px] outline-none transition-colors placeholder-[#98A2B3] text-[#1F2937]
         ${error ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#E4E7EC] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}
         ${className}`}
     />
@@ -43,7 +43,7 @@ export function Select({ error, className = '', children, ...props }: SelectProp
   return (
     <select
       {...props}
-      className={`w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#181B25] transition-colors border rounded-[8px] outline-none transition-colors text-[#1F2937] cursor-pointer
+      className={`w-full px-2.5 py-1.5 text-xs bg-white transition-colors border rounded-[8px] outline-none transition-colors text-[#1F2937] cursor-pointer
         ${error ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#E4E7EC] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}
         ${className}`}
     >
@@ -56,7 +56,7 @@ export function Textarea({ error, className = '', ...props }: React.TextareaHTML
   return (
     <textarea
       {...props}
-      className={`w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#181B25] transition-colors border rounded-[8px] outline-none transition-colors resize-none placeholder-[#98A2B3] text-[#1F2937]
+      className={`w-full px-2.5 py-1.5 text-xs bg-white transition-colors border rounded-[8px] outline-none transition-colors resize-none placeholder-[#98A2B3] text-[#1F2937]
         ${error ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#E4E7EC] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}
         ${className}`}
     />

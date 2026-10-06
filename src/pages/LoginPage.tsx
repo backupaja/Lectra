@@ -35,7 +35,7 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#181B25] transition-colors flex p-3 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-white transition-colors flex p-3 sm:p-6 lg:p-8">
       {/* Left — Lottie Animation Panel */}
       <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden">
         
@@ -82,7 +82,7 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="Enter your email"
-                className={`w-full px-3.5 py-2.5 text-[13px] bg-white dark:bg-[#181B25] transition-colors border rounded-lg outline-none transition-colors placeholder-[#98A2B3] text-[#1F2937] ${error && !email ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#D0D5DD] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}`}
+                className={`w-full px-3.5 py-2.5 text-[13px] bg-white transition-colors border rounded-lg outline-none transition-colors placeholder-[#98A2B3] text-[#1F2937] ${error && !email ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#D0D5DD] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}`}
               />
             </div>
 
@@ -95,7 +95,7 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className={`w-full px-3.5 py-2.5 pr-10 text-[13px] bg-white dark:bg-[#181B25] transition-colors border rounded-lg outline-none transition-colors placeholder-[#98A2B3] text-[#1F2937] ${error && !password ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#D0D5DD] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}`}
+                  className={`w-full px-3.5 py-2.5 pr-10 text-[13px] bg-white transition-colors border rounded-lg outline-none transition-colors placeholder-[#98A2B3] text-[#1F2937] ${error && !password ? 'border-[#B42318] focus:ring-2 focus:ring-[#B42318]/20' : 'border-[#D0D5DD] focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15'}`}
                 />
                 <button
                   type="button"

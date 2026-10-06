@@ -87,11 +87,11 @@ export function ChatBot() {
       </button>
 
       {/* Chat Window */}
-      <div className={`fixed bottom-6 right-6 w-full max-w-sm sm:w-[350px] bg-white dark:bg-[#181B25] transition-colors rounded-[20px] shadow-2xl border border-[#E4E7EC] flex flex-col z-50 overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`} style={{ height: '500px', maxHeight: 'calc(100vh - 48px)' }}>
+      <div className={`fixed bottom-6 right-6 w-full max-w-sm sm:w-[350px] bg-white transition-colors rounded-[20px] shadow-2xl border border-[#E4E7EC] flex flex-col z-50 overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'}`} style={{ height: '500px', maxHeight: 'calc(100vh - 48px)' }}>
         {/* Header */}
         <div className="bg-[#8F2438] px-4 py-3 flex items-center justify-between text-white shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-white dark:bg-[#181B25] transition-colors/20 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
               <span className="text-sm font-bold">AI</span>
             </div>
             <div>
@@ -113,7 +113,7 @@ export function ChatBot() {
         <div className="flex-1 p-4 overflow-y-auto bg-[#F9FAFB] flex flex-col gap-4">
           {messages.map((msg, idx) => (
             <div key={idx} className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'self-end' : 'self-start'}`}>
-              <div className={`px-3.5 py-2.5 rounded-[14px] text-[13px] shadow-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#8F2438] text-white rounded-tr-sm' : 'bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] text-[#1F2937] rounded-tl-sm'}`}>
+              <div className={`px-3.5 py-2.5 rounded-[14px] text-[13px] shadow-sm leading-relaxed ${msg.role === 'user' ? 'bg-[#8F2438] text-white rounded-tr-sm' : 'bg-white transition-colors border border-[#E4E7EC] text-[#1F2937] rounded-tl-sm'}`}>
                 {msg.role === 'user' ? (
                   msg.text.split('\n').map((line, i) => (
                     <React.Fragment key={i}>
@@ -134,7 +134,7 @@ export function ChatBot() {
           ))}
           {isLoading && (
              <div className="flex flex-col max-w-[85%] self-start">
-               <div className="px-4 py-3.5 rounded-[14px] shadow-sm bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-tl-sm flex gap-1.5">
+               <div className="px-4 py-3.5 rounded-[14px] shadow-sm bg-white transition-colors border border-[#E4E7EC] rounded-tl-sm flex gap-1.5">
                  <div className="w-1.5 h-1.5 bg-[#98A2B3] rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
                  <div className="w-1.5 h-1.5 bg-[#98A2B3] rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
                  <div className="w-1.5 h-1.5 bg-[#98A2B3] rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
@@ -145,7 +145,7 @@ export function ChatBot() {
         </div>
 
         {/* Input Area */}
-        <div className="p-3 bg-white dark:bg-[#181B25] transition-colors border-t border-[#E4E7EC] shrink-0">
+        <div className="p-3 bg-white transition-colors border-t border-[#E4E7EC] shrink-0">
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
             className="flex items-center gap-2"
@@ -155,7 +155,7 @@ export function ChatBot() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ketik pesan Anda..."
-              className="flex-1 text-[13px] bg-[#F7F7F8] border border-transparent rounded-full px-4 py-2.5 outline-none focus:bg-white dark:bg-[#181B25] transition-colors focus:border-[#8F2438]/30 focus:ring-2 focus:ring-[#8F2438]/10 transition-all placeholder:text-[#98A2B3]"
+              className="flex-1 text-[13px] bg-[#F7F7F8] border border-transparent rounded-full px-4 py-2.5 outline-none focus:bg-white transition-colors focus:border-[#8F2438]/30 focus:ring-2 focus:ring-[#8F2438]/10 transition-all placeholder:text-[#98A2B3]"
               disabled={isLoading}
             />
             <button
