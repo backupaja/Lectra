@@ -40,16 +40,20 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export function MonthlyChart({ data }: MonthlyChartProps) {
   return (
-    <ResponsiveContainer width="100%" height="100%">
-      <BarChart data={data} barSize={6} barGap={2} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-        <CartesianGrid vertical={false} stroke={COLOR_DIVIDER} strokeDasharray="3 3" />
-        <XAxis dataKey="bulan" tick={{ fontSize: 10, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} />
-        <YAxis tickFormatter={formatAxis} tick={{ fontSize: 10, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} width={32} />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: CHART_CURSOR_FILL, radius: 4 }} />
-        <Bar dataKey="realisasi" name="Realisasi" fill={CHART_COLOR_BUDGET} radius={[3, 3, 0, 0]} />
-        <Bar dataKey="sisa" name="Sisa Anggaran" fill={CHART_COLOR_REMAINING} radius={[3, 3, 0, 0]} />
-        <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-[10px] text-[#667085]">{v}</span>} />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="relative w-full h-full min-h-[140px]">
+      <div className="absolute inset-0">
+        <ResponsiveContainer width="99%" height="99%" debounce={50}>
+          <BarChart data={data} barSize={6} barGap={2} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke={COLOR_DIVIDER} strokeDasharray="3 3" />
+            <XAxis dataKey="bulan" tick={{ fontSize: 10, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} />
+            <YAxis tickFormatter={formatAxis} tick={{ fontSize: 10, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} width={32} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: CHART_CURSOR_FILL, radius: 4 }} />
+            <Bar dataKey="realisasi" name="Realisasi" fill={CHART_COLOR_BUDGET} radius={[3, 3, 0, 0]} />
+            <Bar dataKey="sisa" name="Sisa Anggaran" fill={CHART_COLOR_REMAINING} radius={[3, 3, 0, 0]} />
+            <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-[10px] text-[#667085]">{v}</span>} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }

@@ -91,12 +91,6 @@ export function TopNavigation({ currentPage, onNavigate, onLogout }: TopNavigati
                     <p className="text-sm font-medium text-[#1F2937]">Admin LECTRA</p>
                     <p className="text-xs text-[#98A2B3]">admin@univ.ac.id</p>
                   </div>
-                  <button className="w-full text-left px-4 py-2.5 text-sm text-[#667085] hover:bg-[#F7F7F8] flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                    </svg>
-                    Profil
-                  </button>
                   <button
                     onClick={() => { setProfileOpen(false); onLogout(); }}
                     className="w-full text-left px-4 py-2.5 text-sm text-[#B42318] hover:bg-[#FDECEC] flex items-center gap-2"

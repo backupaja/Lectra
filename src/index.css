@@ -60,3 +60,14 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #98A2B3;
 }
+
+/* Remove default focus outline from recharts elements */
+.recharts-wrapper,
+.recharts-surface {
+  outline: none !important;
+}
+
+/* Remove tap highlight color on mobile devices */
+* {
+  -webkit-tap-highlight-color: transparent;
+}

@@ -467,7 +467,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <p className="text-sm">Belum ada data</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <div className="relative w-full h-full min-h-[200px]">
+                <div className="absolute inset-0">
+                  <ResponsiveContainer width="99%" height="99%" debounce={50}>
                 <AreaChart data={trenData.map(d => ({ ...d, persentase: Number(d.persentase.toFixed(2)) }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorTren" x1="0" y1="0" x2="0" y2="1">
@@ -528,7 +530,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                     dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: COLOR_PRIMARY }}
                   />
                 </AreaChart>
-              </ResponsiveContainer>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -549,7 +553,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <p className="text-sm">Belum ada data JAD</p>
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <div className="relative w-full h-full min-h-[200px]">
+                <div className="absolute inset-0">
+                  <ResponsiveContainer width="99%" height="99%" debounce={50}>
                 <AreaChart data={trenJadData.map(d => ({ ...d, persenTercapai: Number(d.persenTercapai.toFixed(2)) }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorJad" x1="0" y1="0" x2="0" y2="1">
@@ -610,7 +616,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                     dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#12B76A' }}
                   />
                 </AreaChart>
-              </ResponsiveContainer>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             )}
           </div>
         </div>
@@ -648,8 +656,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <p className="text-sm">Belum ada data realisasi</p>
               </div>
             ) : (
-              <div className="h-full w-full">
-                <ResponsiveContainer width="100%" height="100%">
+              <div className="relative w-full h-full min-h-[180px]" style={{ minHeight: rankingNValue === 10 ? '320px' : '180px' }}>
+                <div className="absolute inset-0">
+                  <ResponsiveContainer width="99%" height="99%" debounce={50}>
                   <BarChart
                     data={combinedDosenData.map((d, index) => ({
                       ...d,
@@ -693,7 +702,8 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                       ))}
                     </Bar>
                   </BarChart>
-                </ResponsiveContainer>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )}
           </div>

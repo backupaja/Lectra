@@ -80,7 +80,7 @@ export function ProgressJADPage() {
   const handleOpenModal = (item: AdminJadListItem) => {
     setSelectedItem(item);
     setForm({
-      id: item.progress_jad_id,
+      id: item.progress_id,
       dosenId: item.dosen_id,
       tahun: year,
       jabatanAwal: item.jabatan_awal || '',
@@ -120,8 +120,8 @@ export function ProgressJADPage() {
         id: form.id,
         dosenId: form.dosenId!,
         tahun: year,
-        jabatanAwal: form.jabatanAwal,
-        jabatanTarget: form.jabatanTarget,
+        jabatanAwal: form.jabatanAwal || '',
+        jabatanTarget: form.jabatanTarget || '',
         status: form.status as JADStatus,
         tanggalSk: form.tanggalSk,
         nomorSk: form.nomorSk,
@@ -420,7 +420,7 @@ export function ProgressJADPage() {
                 </div>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-[#667085] text-[11px] font-medium">Total Anggaran</span>
-                  <span className="font-bold text-[#1F2937] text-right">{formatRupiah(selectedItem.nominal_anggaran)}</span>
+                  <span className="font-bold text-[#1F2937] text-right">{formatRupiah(selectedItem.nominal_anggaran || 0)}</span>
                 </div>
                 
                 {(selectedItem.opex_nominal || selectedItem.capex_nominal) ? (

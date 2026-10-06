@@ -88,16 +88,20 @@ export function YearlyBarChart({ data, filter }: YearlyBarChartProps) {
   });
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
-      <BarChart data={chartData} barSize={24} barGap={4} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-        <CartesianGrid vertical={false} stroke={COLOR_DIVIDER} strokeDasharray="3 3" />
-        <XAxis dataKey="tahun" tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} />
-        <YAxis tickFormatter={formatAxis} tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} width={36} />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: CHART_CURSOR_FILL, radius: 4 }} />
-        <Bar dataKey="Anggaran" fill={CHART_COLOR_BUDGET} radius={[4, 4, 0, 0]} />
-        <Bar dataKey="Realisasi" fill={CHART_COLOR_REMAINING} radius={[4, 4, 0, 0]} />
-        <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-xs text-[#667085]">{v}</span>} />
-      </BarChart>
-    </ResponsiveContainer>
+    <div className="relative w-full h-full min-h-[220px]">
+      <div className="absolute inset-0">
+        <ResponsiveContainer width="99%" height="99%" debounce={50}>
+          <BarChart data={chartData} barSize={24} barGap={4} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
+            <CartesianGrid vertical={false} stroke={COLOR_DIVIDER} strokeDasharray="3 3" />
+            <XAxis dataKey="tahun" tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} />
+            <YAxis tickFormatter={formatAxis} tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} width={36} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: CHART_CURSOR_FILL, radius: 4 }} />
+            <Bar dataKey="Anggaran" fill={CHART_COLOR_BUDGET} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Realisasi" fill={CHART_COLOR_REMAINING} radius={[4, 4, 0, 0]} />
+            <Legend iconType="circle" iconSize={8} formatter={(v) => <span className="text-xs text-[#667085]">{v}</span>} />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
   );
 }
