@@ -9,7 +9,7 @@ export interface RealisasiItem {
 // Teks kop surat — ubah di sini bila perlu
 const KOP = {
   instansi: 'TELKOM UNIVERSITY',
-  unit: 'Lecturer Budget System (LECTRA)',
+  unit: 'Lecturer Budget System (DigiLectra)',
   sub: 'Laporan Realisasi Anggaran Dosen',
 };
 
@@ -53,7 +53,7 @@ function safeSheetName(base: string, used: Set<string>) {
 export async function exportRealisasiExcel(items: RealisasiItem[], year: number, jenisLabel: string): Promise<void> {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'LECTRA';
+  wb.creator = 'DigiLectra';
 
   const thin = { style: 'thin' as const, color: { argb: 'FF000000' } };
   const border = { top: thin, left: thin, bottom: thin, right: thin };

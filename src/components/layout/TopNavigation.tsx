@@ -39,15 +39,7 @@ export function TopNavigation({ currentPage, onNavigate, onLogout }: TopNavigati
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center gap-6">
         {/* Logo */}
         <div className="flex items-center gap-2.5 shrink-0">
-          <div className="w-8 h-8 bg-[#8F2438] rounded-[8px] flex items-center justify-center">
-            <svg className="w-4.5 h-4.5 text-white" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-            </svg>
-          </div>
-          <div>
-            <div className="text-sm font-bold text-[#1F2937] leading-none">LECTRA</div>
-            <div className="text-[10px] text-[#98A2B3] leading-none mt-0.5">Lecturer Budget System</div>
-          </div>
+          <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-9 object-contain object-left -ml-3 rounded-lg" />
         </div>
 
         {/* Desktop Nav */}
@@ -88,7 +80,7 @@ export function TopNavigation({ currentPage, onNavigate, onLogout }: TopNavigati
                 <div className="fixed inset-0 z-10" onClick={() => setProfileOpen(false)} />
                 <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-[12px] border border-[#E4E7EC] shadow-lg z-20 overflow-hidden">
                   <div className="px-4 py-3 border-b border-[#E4E7EC]">
-                    <p className="text-sm font-medium text-[#1F2937]">Admin LECTRA</p>
+                    <p className="text-sm font-medium text-[#1F2937]">Admin DigiLectra</p>
                     <p className="text-xs text-[#98A2B3]">admin@univ.ac.id</p>
                   </div>
                   <button

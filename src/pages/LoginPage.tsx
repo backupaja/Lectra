@@ -62,12 +62,7 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
           {/* Logo & Header */}
           <div className="mb-10">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-9 h-9 bg-[#8F2438] rounded-lg flex items-center justify-center shadow-sm">
-                <svg className="w-4 h-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-                </svg>
-              </div>
-              <span className="font-bold text-[#1F2937] text-xl tracking-tight">LECTRA</span>
+              <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-16 object-contain object-left -ml-5 rounded-[12px]" />
             </div>
             <h1 className="text-2xl font-bold text-[#8F2438] mb-1.5">Lecturer Budget System</h1>
           </div>
@@ -131,9 +126,21 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
             </Button>
           </form>
 
-          <div className="mt-8 text-center">
-             <button type="button" onClick={onPublic} className="text-[13px] text-[#98A2B3] hover:text-[#8F2438] font-medium transition-colors">
-               Lihat Dashboard Publik
+          <div className="mt-6 text-center">
+             <div className="relative flex items-center justify-center my-6">
+               <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-[#E4E7EC]"></div></div>
+               <div className="relative bg-white px-4 text-[12px] font-medium text-[#98A2B3]">Atau</div>
+             </div>
+             
+             <button 
+               type="button" 
+               onClick={onPublic} 
+               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-[#E4E7EC] bg-white hover:bg-gray-50 text-[#1F2937] font-semibold transition-all shadow-sm text-[14px] hover:border-[#8F2438]/30 group"
+             >
+               <svg className="w-5 h-5 text-[#8F2438] group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+               </svg>
+               Akses Dashboard Publik
              </button>
           </div>
         </div>

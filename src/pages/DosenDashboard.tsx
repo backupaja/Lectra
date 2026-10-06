@@ -196,14 +196,9 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
       <header className="bg-white transition-colors border-b border-[#E4E7EC] sticky top-0 z-40">
         <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-[#8F2438] rounded-[8px] flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-              </svg>
-            </div>
-            <div>
-              <div className="text-sm font-bold text-[#1F2937] leading-none">LECTRA</div>
-              <div className="text-[10px] text-[#98A2B3] leading-none mt-0.5">Dashboard Dosen</div>
+            <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-9 object-contain object-left -ml-3 rounded-lg" />
+            <div className="pl-2 border-l border-[#E4E7EC] mt-1">
+              <div className="text-[11px] font-medium text-[#667085] leading-none">Dashboard Dosen</div>
             </div>
           </div>
           <div className="flex items-center gap-2">

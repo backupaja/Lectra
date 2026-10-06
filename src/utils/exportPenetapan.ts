@@ -32,7 +32,7 @@ const RP_FORMAT = '_-[$Rp-421]* #,##0_-;\\-[$Rp-421]* #,##0_-;_-[$Rp-421]* "-"_-
 export async function exportPenetapanExcel(rows: Row[], dosenList: Dosen[], year: number): Promise<number> {
   const ExcelJS = (await import('exceljs')).default;
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'LECTRA';
+  wb.creator = 'DigiLectra';
 
   const thin = { style: 'thin' as const, color: { argb: 'FF000000' } };
   const border = { top: thin, left: thin, bottom: thin, right: thin };

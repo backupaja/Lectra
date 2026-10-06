@@ -11,6 +11,7 @@ import { AnalitikService } from '../services/analitikService';
 import type { PublicJadSummary, PublicPenerimaAnggaran, BudgetType } from '../types';
 import { EmptyState } from '../components/ui/EmptyState';
 import { AnimatedNumber } from '../components/ui/AnimatedNumber';
+import { Modal } from '../components/ui/Modal';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -50,7 +51,13 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const [trenLoading, setTrenLoading] = useState(true);
   const [trenMode, setTrenMode] = useState<'Persentase' | 'Nominal'>('Persentase');
 
-  // New features state
+  // Yearly Chart specific filter
+  const [chartFakultas, setChartFakultas] = useState('SEMUA');
+  const [chartYearlyData, setChartYearlyData] = useState<any[]>([]);
+  const [chartYearlyLoading, setChartYearlyLoading] = useState(true);
+
+  // Modal and Table state
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [penerimaAnggaran, setPenerimaAnggaran] = useState<PublicPenerimaAnggaran[]>([]);
   const [jadSummary, setJadSummary] = useState<PublicJadSummary | null>(null);
   const [isJadLoading, setIsJadLoading] = useState(true);
@@ -80,6 +87,34 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   React.useEffect(() => {
     fetchTren();
   }, [filterTrenTahunAwal, filterTrenTahunAkhir, filterTrenJenis]);
+
+  const fetchChartYearly = async () => {
+    setChartYearlyLoading(true);
+    try {
+      const { data } = await supabase.rpc('get_public_yearly_summary', { p_fakultas: chartFakultas });
+      if (data) {
+        setChartYearlyData(data.map((y: any) => ({
+          tahun: y.tahun,
+          totalAnggaran: y.total_anggaran || 0,
+          totalRealisasi: y.total_realisasi || 0,
+          opex: y.opex || 0,
+          opexRealisasi: y.opex_realisasi || 0,
+          capex: y.capex || 0,
+          capexRealisasi: y.capex_realisasi || 0
+        })));
+      } else {
+        setChartYearlyData([]);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setChartYearlyLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchChartYearly();
+  }, [chartFakultas]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -159,18 +194,10 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
       <header className="bg-white transition-colors border-b border-[#E4E7EC] sticky top-0 z-40">
         <div className="max-w-full mx-auto px-4 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-[#8F2438] rounded-[8px] flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zm6-4a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zm6-3a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z" />
-              </svg>
+            <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-9 object-contain object-left -ml-3 rounded-lg" />
+            <div className="pl-2 border-l border-[#E4E7EC] mt-1">
+              <div className="text-[11px] font-medium text-[#667085] leading-none">Dashboard Publik</div>
             </div>
-            <div>
-              <div className="text-sm font-bold text-[#1F2937] leading-none">LECTRA</div>
-              <div className="text-[10px] text-[#98A2B3] leading-none mt-0.5">Dashboard Publik</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Button size="sm" onClick={onLogin}>Masuk sebagai Admin</Button>
           </div>
         </div>
       </header>
@@ -286,6 +313,53 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
           </div>
         </div>
 
+        {/* ── PENERIMA ANGGARAN BUTTONS ─────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+          <button
+            onClick={() => { setFilterJenis('OPEX'); setIsModalOpen(true); }}
+            className="bg-white hover:bg-gray-50 transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#FDF5F6] text-[#8F2438] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-bold text-[#1F2937]">Daftar Penerima OPEX</h3>
+                <p className="text-sm text-[#667085] mt-0.5">Lihat rincian nama dosen penerima</p>
+              </div>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-white border border-[#E4E7EC] flex items-center justify-center text-[#98A2B3] group-hover:bg-[#8F2438] group-hover:text-white group-hover:border-[#8F2438] transition-all shrink-0">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </button>
+          
+          <button
+            onClick={() => { setFilterJenis('CAPEX'); setIsModalOpen(true); }}
+            className="bg-white hover:bg-gray-50 transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#F4F5F7] text-[#1F2937] flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-bold text-[#1F2937]">Daftar Penerima CAPEX</h3>
+                <p className="text-sm text-[#667085] mt-0.5">Lihat rincian nama dosen penerima</p>
+              </div>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-white border border-[#E4E7EC] flex items-center justify-center text-[#98A2B3] group-hover:bg-[#1F2937] group-hover:text-white group-hover:border-[#1F2937] transition-all shrink-0">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
         {/* ── YEARLY COMPARISON CHART ─────────────── */}
         <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
@@ -294,6 +368,29 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               <p className="text-xs text-[#98A2B3] mt-0.5">Perbandingan anggaran vs realisasi dari {chartStartYear || minYear}–{chartEndYear || maxYear}</p>
             </div>
             <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
+                <span className="text-xs text-[#98A2B3]">Fakultas</span>
+                <CustomSelect
+                  value={chartFakultas}
+                  onChange={val => setChartFakultas(val)}
+                  options={[
+                    { label: 'Semua Fakultas', value: 'SEMUA' },
+                    { label: 'FRI', value: 'FRI' },
+                    { label: 'FTE', value: 'FTE' },
+                    { label: 'FIT', value: 'FIT' },
+                    { label: 'FKS', value: 'FKS' },
+                    { label: 'FKB', value: 'FKB' },
+                    { label: 'FIF', value: 'FIF' },
+                    { label: 'FEB', value: 'FEB' },
+                    { label: 'FIK', value: 'FIK' },
+                    { label: 'TUP', value: 'TUP' },
+                    { label: 'TUS', value: 'TUS' },
+                    { label: 'TUJ', value: 'TUJ' }
+                  ]}
+                  buttonClassName="bg-transparent border-none text-xs font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
+                  dropdownClassName="w-auto min-w-[120px]"
+                />
+              </div>
               <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
                 <span className="text-xs text-[#98A2B3]">Dari</span>
                 <CustomSelect
@@ -316,14 +413,18 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               </div>
             </div>
           </div>
-          <YearlyBarChart
-            data={yearlyData.filter(d => {
-              const start = Math.min(chartStartYear || minYear, chartEndYear || maxYear);
-              const end = Math.max(chartStartYear || minYear, chartEndYear || maxYear);
-              return d.tahun >= start && d.tahun <= end;
-            })}
-            filter={filter}
-          />
+          {chartYearlyLoading ? (
+            <div className="h-[250px] w-full flex items-center justify-center text-sm text-[#98A2B3]">Memuat...</div>
+          ) : (
+            <YearlyBarChart
+              data={chartYearlyData.filter(d => {
+                const start = Math.min(chartStartYear || minYear, chartEndYear || maxYear);
+                const end = Math.max(chartStartYear || minYear, chartEndYear || maxYear);
+                return d.tahun >= start && d.tahun <= end;
+              })}
+              filter={filter}
+            />
+          )}
         </div>
 
         {/* ── TREN PENYERAPAN DAN PENCAPAIAN JAD ─────────────── */}
@@ -473,102 +574,85 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
             </div>
           </div>
         </div>
+      </main>
 
-        {/* ── PENERIMA ANGGARAN ─────────────── */}
-        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
-          <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-5">
-            <div>
-              <h2 className="text-base font-semibold text-[#1F2937]">Penerima Anggaran Tahun {year}</h2>
-              <p className="text-xs text-[#98A2B3] mt-0.5">Daftar dosen yang menerima alokasi anggaran terpilih.</p>
+      <Modal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={`Daftar Penerima ${filterJenis}`}
+        subtitle={`Rincian dosen penerima anggaran ${filterJenis} tahun ${year}.`}
+        size="2xl"
+      >
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full mb-4">
+          <div className="relative w-full flex-1">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
-              {/* Search Bar */}
-              <div className="relative w-full sm:w-64">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Cari nama dosen..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-[#E4E7EC] rounded-[10px] text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-shadow"
-                />
-              </div>
-              
-              <div className="flex w-full sm:w-auto items-center gap-3">
-                {/* Year Selector */}
-                <div className="flex flex-1 sm:flex-none items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
-                  <svg className="w-4 h-4 text-[#8F2438]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
-                  </svg>
-                  <CustomSelect
-                    value={year}
-                    onChange={val => setYear(Number(val))}
-                    options={getDynamicYearOptions()}
-                    buttonClassName="bg-transparent border-none text-xs font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
-                    dropdownClassName="w-auto min-w-[80px]"
-                  />
-                </div>
-
-                <CustomSelect
-                  value={filterJenis}
-                  onChange={val => setFilterJenis(val as BudgetType)}
-                  options={[
-                    { label: 'OPEX', value: 'OPEX' },
-                    { label: 'CAPEX', value: 'CAPEX' }
-                  ]}
-                  buttonClassName="flex-1 sm:flex-none appearance-none text-xs font-semibold bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
-                />
-              </div>
-            </div>
+            <input
+              type="text"
+              placeholder="Cari nama dosen..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 text-sm bg-white border border-[#E4E7EC] rounded-lg text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-shadow"
+            />
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#F7F7F8] border-b border-[#E4E7EC]">
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] w-10 text-center whitespace-nowrap">No</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">NIP</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Nama Dosen</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Fakultas</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Prodi</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Jenis</th>
-                  <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] text-right whitespace-nowrap">Nominal</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E4E7EC]">
-                {isJadLoading ? (
-                  <tr><td colSpan={7} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
-                ) : filteredPenerima.length > 0 ? (
-                  filteredPenerima.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-2.5 px-3 text-xs text-[#667085] text-center whitespace-nowrap">{idx + 1}</td>
-                      <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.nip}</td>
-                      <td className="py-2.5 px-3 text-xs font-medium whitespace-nowrap">
-                        <span className="text-[#1F2937] font-semibold">{item.nama}</span>
-                      </td>
-                      <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.fakultas}</td>
-                      <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.program_studi}</td>
-                      <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.jenis_anggaran}</td>
-                      <td className="py-2.5 px-3 text-xs font-medium text-[#1F2937] text-right whitespace-nowrap">{formatRupiah(item.nominal_anggaran)}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={7} className="py-8">
-                      <EmptyState title="Tidak ada data" description={`Tidak ada penerima ${filterJenis} pada tahun ${year}.`} />
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+          <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-lg px-3 py-1.5 shrink-0">
+            <svg className="w-4 h-4 text-[#8F2438]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
+            </svg>
+            <CustomSelect
+              value={year}
+              onChange={val => setYear(Number(val))}
+              options={getDynamicYearOptions()}
+              buttonClassName="bg-transparent border-none text-sm font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
+              dropdownClassName="w-auto min-w-[80px] right-0"
+            />
           </div>
         </div>
 
-
-      </main>
+        <div className="overflow-x-auto border border-[#E4E7EC] rounded-xl">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-[#F7F7F8] border-b border-[#E4E7EC]">
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] w-10 text-center whitespace-nowrap">No</th>
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">NIP</th>
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Nama Dosen</th>
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Fakultas</th>
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Prodi</th>
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Jenis</th>
+                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] text-right whitespace-nowrap">Nominal</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E4E7EC]">
+              {isJadLoading ? (
+                <tr><td colSpan={7} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
+              ) : filteredPenerima.length > 0 ? (
+                filteredPenerima.map((item, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
+                    <td className="py-2.5 px-3 text-xs text-[#667085] text-center whitespace-nowrap">{idx + 1}</td>
+                    <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.nip}</td>
+                    <td className="py-2.5 px-3 text-xs font-medium whitespace-nowrap">
+                      <span className="text-[#1F2937] font-semibold">{item.nama}</span>
+                    </td>
+                    <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.fakultas}</td>
+                    <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.program_studi}</td>
+                    <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.jenis_anggaran}</td>
+                    <td className="py-2.5 px-3 text-xs font-medium text-[#1F2937] text-right whitespace-nowrap">{formatRupiah(item.nominal_anggaran)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="py-8">
+                    <EmptyState title="Tidak ada data" description={`Tidak ada penerima ${filterJenis} pada tahun ${year}.`} />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Modal>
     </div>
   );
 }

@@ -1,0 +1,149 @@
+[
+  {
+    "No": 1,
+    "Nama Dosen": "DENNY DARLIS",
+    "NIP": "13770026-1",
+    "Fakultas/Kampus Cabang": "FIT",
+    "Kelompok Keahlian": "KK Applied \r\nInformation \r\nTechnology and \r\nMultimedia / Bengkel \r\nTelemektronika \r\nLaboratorium",
+    "JAD": "L",
+    "Target": "LK",
+    "Kebutuhan Pendanaan": "1. Zybo Z7 - Zynq-7000 ARM/FPGA SoC \r\nDevelopment Board - Zybo Z7-10\r\n2. AMD Kria KV260 Vision AI Starter Kit\r\n3. Cyclone® V SoC with Dual-core ARM Cortex\u0002A9 (HPS)",
+    "Nilai Pendanaan": 48940000,
+    "JENIS": "CAPEX",
+    "Status Realisasi": " ",
+    "JAD Saat Ini": "L"
+  },
+  {
+    "No": 2,
+    "Nama Dosen": "ERNA HIKMAWATI",
+    "NIP": "26920004-1",
+    "Fakultas/Kampus Cabang": "FIT",
+    "Kelompok Keahlian": "KK Applied \r\nInformation \r\nTechnology and \r\nMultimedia / Bengkel \r\nTelemektronika \r\nLaboratorium",
+    "JAD": "L",
+    "Target": "LK",
+    "Kebutuhan Pendanaan": "VGA MSI Geforce RTX 3060 Ventus 2X OC 12GB -12 GB DDR6",
+    "Nilai Pendanaan": 11798000,
+    "JENIS": "CAPEX",
+    "Status Realisasi": " ",
+    "JAD Saat Ini": "L"
+  },
+  {
+    "No": 3,
+    "Nama Dosen": "LEANNA VIDYA YOVITA",
+    "NIP": "08830038-1",
+    "Fakultas/Kampus Cabang": "FTE",
+    "Kelompok Keahlian": "Intelligent \r\nCommunications and \r\nNetworks / Adaptive \r\nNetwork",
+    "JAD": "L",
+    "Target": "LK",
+    "Kebutuhan Pendanaan": "Leadtek NVIDIA DGX Spark Founders Edition",
+    "Nilai Pendanaan": 118220867,
+    "JENIS": "CAPEX",
+    "Status Realisasi": " ",
+    "JAD Saat Ini": "L"
+  },
+  {
+    "No": 4,
+    "Nama Dosen": "WILLY ANUGRAH CAHYADI",
+    "NIP": "22850009-1",
+    "Fakultas/Kampus Cabang": "FTE",
+    "Kelompok Keahlian": "Control, Electronics \r\nand Intelligent \r\nSystem / Advanced \r\nBiomedical \r\nIntelligent \r\nEngineering \r\nLaboratory",
+    "JAD": "L",
+    "Target": "LK",
+    "Kebutuhan Pendanaan": "1. 1mm Sq/ 10 Sq Divisons, Stage Micrometer\r\n2. 125mm, English Micrometer Z-Stage\r\n3. HP1700 380n-1700nm Model Nir\r\nSpectrometer Portable Power Analyzer",
+    "Nilai Pendanaan": 32500000,
+    "JENIS": "CAPEX",
+    "Status Realisasi": " ",
+    "JAD Saat Ini": "L"
+  },
+  {
+    "No": 5,
+    "Nama Dosen": "ARINI ARUMSARI",
+    "NIP": "14850026-1",
+    "Fakultas/Kampus Cabang": "FIK",
+    "Kelompok Keahlian": "Environment, \r\nSustainability and \r\nCommunity / 3D \r\nPrinting",
+    "JAD": "LK",
+    "Target": "GB",
+    "Kebutuhan Pendanaan": "Mini Shredder / Mesin Pencacah / Mesin \r\nPenghancur - Precious Plastic Machine Pisau ",
+    "Nilai Pendanaan": 11500000,
+    "JENIS": "CAPEX",
+    "JAD Saat Ini": "LK"
+  },
+  {
+    "No": 6,
+    "Nama Dosen": "GIVA ANDRIANA MUTIARA",
+    "NIP": "14760020-1",
+    "Fakultas/Kampus Cabang": "FIT",
+    "Kelompok Keahlian": "Applied Information \r\nTechnology and \r\nMultimedia / Bengkel \r\nTelemektronika ",
+    "JAD": "LK",
+    "Target": "GB",
+    "Kebutuhan Pendanaan": "Pull Force gauge with Manual Test Stand \r\nTension - AST-S (0-500N) Push",
+    "Nilai Pendanaan": 23000000,
+    "JENIS": "CAPEX",
+    "JAD Saat Ini": "LK"
+  },
+  {
+    "No": 7,
+    "Nama Dosen": "HILAL HUDAN NUHA",
+    "NIP": "13860093-1",
+    "Fakultas/Kampus Cabang": "FIF",
+    "Kelompok Keahlian": "Communication and \r\nInformation \r\nTechnology \r\nInfrastructure ",
+    "JAD": "LK",
+    "Target": "GB",
+    "Kebutuhan Pendanaan": "Lenovo PC ThinkCentre M70t Gen 3 Intel Raven \r\nBlack ",
+    "Nilai Pendanaan": 25600000,
+    "JENIS": "CAPEX",
+    "JAD Saat Ini": "LK"
+  },
+  {
+    "No": 8,
+    "Nama Dosen": "Z. K. ABDURAHMAN BAIZAL",
+    "NIP": "99750047-1",
+    "Fakultas/Kampus Cabang": "FIF",
+    "Kelompok Keahlian": "Data Science and \r\nIntelligent Systems / \r\nBig Data ",
+    "JAD": "LK",
+    "Target": "GB",
+    "Kebutuhan Pendanaan": "PC Gaming Core i7 13700F I 32GB I RTX 4070 Ti \r\nI NVME I Gaming Editing",
+    "Nilai Pendanaan": 28000000,
+    "JENIS": "CAPEX",
+    "JAD Saat Ini": "LK"
+  },
+  {
+    "No": 9,
+    "Nama Dosen": "ALFIN HIKMATUROKHMAN",
+    "NIP": "03780042-1",
+    "Fakultas/Kampus Cabang": "TUP",
+    "Kelompok Keahlian": "Electronics and \r\nTelecomunications \r\nScience / Riset Lab ",
+    "JAD": "LK",
+    "Target": "GB",
+    "Kebutuhan Pendanaan": "PC Intel Core 5 210H 8GB SSD 512GB",
+    "Nilai Pendanaan": 15000000,
+    "JENIS": "CAPEX",
+    "JAD Saat Ini": "LK"
+  },
+  {
+    "No": 10,
+    "Nama Dosen": "KAMELIA",
+    "NIP": "23850013-1",
+    "Fakultas/Kampus Cabang": "TUJ",
+    "Kelompok Keahlian": "Integrated Systems, \r\nIntelligence, \r\nand Human-Oriented \r\nTechnologies / \r\nAntena",
+    "JAD": "L",
+    "Target": "LK",
+    "Kebutuhan Pendanaan": "1. Rogers RT Duroid 5880\r\n2. Anritsu MS2028C 20 GHz Handheld VNA",
+    "Nilai Pendanaan": 35441133,
+    "JENIS": "CAPEX",
+    "Status Realisasi": " ",
+    "JAD Saat Ini": "L"
+  },
+  {
+    "Nilai Pendanaan": 350000000
+  },
+  {
+    "Nama Dosen": "Keterangan:"
+  },
+  {
+    "Nama Dosen": "R : Realisasi"
+  },
+  {
+    "Nama Dosen": "N : Tidak Realisasi"
+  }
+]

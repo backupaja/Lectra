@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 export function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{role: 'user'|'model', text: string}[]>([
-    { role: 'model', text: 'Halo! Saya LECTRA AI. Ada yang bisa saya bantu terkait informasi anggaran Anda hari ini?' }
+    { role: 'model', text: 'Halo! Saya DigiLectra AI. Ada yang bisa saya bantu terkait informasi anggaran Anda hari ini?' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -95,7 +95,7 @@ export function ChatBot() {
               <span className="text-sm font-bold">AI</span>
             </div>
             <div>
-              <h3 className="font-semibold text-sm leading-tight">LECTRA Assistant</h3>
+              <h3 className="font-semibold text-sm leading-tight">DigiLectra Assistant</h3>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
                 <p className="text-[10px] text-white/80 leading-none">Online</p>
@@ -128,7 +128,7 @@ export function ChatBot() {
                 )}
               </div>
               <span className={`text-[10px] text-[#98A2B3] mt-1.5 ${msg.role === 'user' ? 'text-right' : 'text-left px-1'}`}>
-                {msg.role === 'user' ? 'Anda' : 'LECTRA AI'}
+                {msg.role === 'user' ? 'Anda' : 'DigiLectra AI'}
               </span>
             </div>
           ))}
