@@ -653,7 +653,8 @@ export function PenetapanAnggaranPage() {
                         <div
                           key={d.id}
                           className="px-3 py-2 cursor-pointer hover:bg-[#F8E9ED] border-b border-[#E4E7EC] last:border-none"
-                          onClick={() => {
+                          onMouseDown={(e) => {
+                            e.preventDefault();
                             setSelectedDosenId(d.id);
                             setDosenSearchQuery(`${d.nama} (${d.nip})`);
                             setIsDosenDropdownOpen(false);
@@ -792,7 +793,7 @@ export function PenetapanAnggaranPage() {
                               </div>
                               <div className="overflow-y-auto flex-1 custom-scrollbar">
                                 {masterFakultas.filter(f => f.kode.toLowerCase().includes(fakultasSearchQuery.toLowerCase()) || f.nama.toLowerCase().includes(fakultasSearchQuery.toLowerCase())).map((f) => (
-                                  <div key={f.kode} className="px-3 py-2 cursor-pointer hover:bg-[#FDF5F6] border-b border-[#E4E7EC] last:border-none flex flex-col" onClick={() => { setDosenForm({ ...dosenForm, fakultas: f.kode }); setIsFakultasDropdownOpen(false); }}>
+                                  <div key={f.kode} className="px-3 py-2 cursor-pointer hover:bg-[#FDF5F6] border-b border-[#E4E7EC] last:border-none flex flex-col" onMouseDown={(e) => { e.preventDefault(); setDosenForm({ ...dosenForm, fakultas: f.kode }); setIsFakultasDropdownOpen(false); }}>
                                     <span className="text-[11px] font-bold text-[#1F2937]">{f.kode}</span>
                                     <span className="text-[10px] text-[#667085]">{f.nama}</span>
                                   </div>
@@ -828,7 +829,7 @@ export function PenetapanAnggaranPage() {
                               </div>
                               <div className="overflow-y-auto flex-1 custom-scrollbar">
                                 {masterProdi.filter(p => p.toLowerCase().includes(prodiSearchQuery.toLowerCase())).map((p) => (
-                                  <div key={p} className="px-3 py-2 cursor-pointer hover:bg-[#FDF5F6] border-b border-[#E4E7EC] last:border-none flex flex-col" onClick={() => { setDosenForm({ ...dosenForm, programStudi: p }); setIsProdiDropdownOpen(false); }}>
+                                  <div key={p} className="px-3 py-2 cursor-pointer hover:bg-[#FDF5F6] border-b border-[#E4E7EC] last:border-none flex flex-col" onMouseDown={(e) => { e.preventDefault(); setDosenForm({ ...dosenForm, programStudi: p }); setIsProdiDropdownOpen(false); }}>
                                     <span className="text-[11px] font-medium text-[#1F2937]">{p}</span>
                                   </div>
                                 ))}
