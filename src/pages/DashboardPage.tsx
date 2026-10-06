@@ -324,8 +324,8 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:grid-rows-[auto_1fr] gap-4 flex-1 min-h-0 pb-2">
 
         {/* Filter Tren */}
-        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-3 lg:col-span-2 flex flex-nowrap items-end gap-2 lg:gap-4 order-1 lg:order-1 h-fit">
-          <div className="flex items-center gap-2 lg:gap-3 px-1 lg:px-2 border-r border-[#E4E7EC] pr-1 lg:pr-4 pb-0.5">
+        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-2.5 sm:p-3 lg:col-span-2 flex flex-nowrap items-end gap-1.5 lg:gap-4 order-1 lg:order-1 h-fit">
+          <div className="flex items-center gap-1.5 lg:gap-3 px-1 lg:px-2 border-r border-[#E4E7EC] pr-1 lg:pr-4 pb-0.5">
             <div className="w-8 h-8 bg-[#FDF5F6] rounded-lg flex items-center justify-center text-[#8F2438]">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -339,7 +339,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 value={filterTrenTahunAwal}
                 onChange={(val) => setFilterTrenTahunAwal(Number(val))}
                 options={yearOptions}
-                buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2 py-1 pr-5 text-[#1F2937] outline-none w-[75px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all"
+                buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 lg:px-2 py-1 pr-4 lg:pr-5 text-[#1F2937] outline-none w-[64px] lg:w-[75px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all"
               />
             </div>
             <span className="text-[11px] text-[#98A2B3] mb-1.5">-</span>
@@ -349,7 +349,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 value={filterTrenTahunAkhir}
                 onChange={(val) => setFilterTrenTahunAkhir(Number(val))}
                 options={yearOptions}
-                buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2 py-1 pr-5 text-[#1F2937] outline-none w-[75px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all"
+                buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 lg:px-2 py-1 pr-4 lg:pr-5 text-[#1F2937] outline-none w-[64px] lg:w-[75px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all"
               />
             </div>
           </div>
@@ -366,14 +366,14 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 { label: 'OPEX', value: 'OPEX' },
                 { label: 'CAPEX', value: 'CAPEX' },
               ]}
-              buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2.5 py-1 pr-6 text-[#1F2937] outline-none w-[95px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
+              buttonClassName="appearance-none text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-2 lg:px-2.5 py-1 pr-5 lg:pr-6 text-[#1F2937] outline-none w-[84px] lg:w-[95px] cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
             />
           </div>
         </div>
 
         {/* Filter Dosen */}
-        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-3 flex flex-nowrap items-end gap-2 lg:gap-3 order-4 lg:order-2 h-fit">
-          <div className="flex items-center gap-2 px-1 lg:px-2 border-r border-[#E4E7EC] pr-2 pb-0.5">
+        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-2.5 sm:p-3 flex flex-nowrap items-end gap-1.5 lg:gap-3 order-4 lg:order-2 h-fit">
+          <div className="flex items-center gap-1.5 lg:gap-2 px-1 lg:px-2 border-r border-[#E4E7EC] pr-1 lg:pr-2 pb-0.5">
             <div className="w-7 h-7 bg-[#FDF5F6] rounded-lg flex items-center justify-center text-[#8F2438]">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
