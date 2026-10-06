@@ -7,9 +7,17 @@ import { formatRupiah, getDynamicYearOptions } from '../data/mockData';
 import { supabase } from '../lib/supabase';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { JadService } from '../services/jadService';
+import { AnalitikService } from '../services/analitikService';
 import type { PublicJadSummary, PublicPenerimaAnggaran, BudgetType } from '../types';
 import { EmptyState } from '../components/ui/EmptyState';
 import { AnimatedNumber } from '../components/ui/AnimatedNumber';
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+} from 'recharts';
+import {
+  COLOR_PRIMARY, COLOR_TEXT_MUTED, COLOR_DIVIDER, COLOR_BORDER
+} from '../lib/designTokens';
+
 interface PublicDashboardProps {
   onLogin: () => void;
 }
@@ -33,6 +41,15 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const [chartStartYear, setChartStartYear] = useState<number | null>(null);
   const [chartEndYear, setChartEndYear] = useState<number | null>(null);
 
+  // Tren Analytics state
+  const [trenData, setTrenData] = useState<any[]>([]);
+  const [trenJadData, setTrenJadData] = useState<any[]>([]);
+  const [filterTrenTahunAwal, setFilterTrenTahunAwal] = useState(2022);
+  const [filterTrenTahunAkhir, setFilterTrenTahunAkhir] = useState(new Date().getFullYear());
+  const [filterTrenJenis, setFilterTrenJenis] = useState<string>('SEMUA');
+  const [trenLoading, setTrenLoading] = useState(true);
+  const [trenMode, setTrenMode] = useState<'Persentase' | 'Nominal'>('Persentase');
+
   // New features state
   const [penerimaAnggaran, setPenerimaAnggaran] = useState<PublicPenerimaAnggaran[]>([]);
   const [jadSummary, setJadSummary] = useState<PublicJadSummary | null>(null);
@@ -43,6 +60,26 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const filteredPenerima = penerimaAnggaran.filter(item => 
     item.nama.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const fetchTren = async () => {
+    setTrenLoading(true);
+    try {
+      const [tren, trenJad] = await Promise.all([
+        AnalitikService.getTrenPenyerapan(filterTrenTahunAwal, filterTrenTahunAkhir, filterTrenJenis),
+        AnalitikService.getTrenJad(filterTrenTahunAwal, filterTrenTahunAkhir, filterTrenJenis)
+      ]);
+      setTrenData(tren);
+      setTrenJadData(trenJad);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setTrenLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchTren();
+  }, [filterTrenTahunAwal, filterTrenTahunAkhir, filterTrenJenis]);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -287,6 +324,154 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
             })}
             filter={filter}
           />
+        </div>
+
+        {/* ── TREN PENYERAPAN DAN PENCAPAIAN JAD ─────────────── */}
+        <div className="bg-white transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
+          <div className="flex flex-wrap items-center gap-4 mb-6 pb-4 border-b border-[#E4E7EC]">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-[10px] bg-[#FDF5F6] text-[#8F2438] flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex flex-col gap-1 border-l border-[#E4E7EC] pl-4">
+                <span className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Tahun Awal</span>
+                <CustomSelect
+                  value={filterTrenTahunAwal}
+                  onChange={val => setFilterTrenTahunAwal(Number(val))}
+                  options={getDynamicYearOptions()}
+                  buttonClassName="bg-white border border-[#E4E7EC] rounded-lg px-2.5 py-1 text-xs font-semibold text-[#1F2937] hover:bg-gray-50 transition-colors h-[28px]"
+                />
+              </div>
+              <span className="text-[#98A2B3] text-xs pt-4">-</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Tahun Akhir</span>
+                <CustomSelect
+                  value={filterTrenTahunAkhir}
+                  onChange={val => setFilterTrenTahunAkhir(Number(val))}
+                  options={getDynamicYearOptions()}
+                  buttonClassName="bg-white border border-[#E4E7EC] rounded-lg px-2.5 py-1 text-xs font-semibold text-[#1F2937] hover:bg-gray-50 transition-colors h-[28px]"
+                />
+              </div>
+              <div className="flex flex-col gap-1 border-l border-[#E4E7EC] pl-4">
+                <span className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Jenis Anggaran</span>
+                <CustomSelect
+                  value={filterTrenJenis}
+                  onChange={val => setFilterTrenJenis(val)}
+                  options={[
+                    { label: 'Semua Jenis', value: 'SEMUA' },
+                    { label: 'OPEX', value: 'OPEX' },
+                    { label: 'CAPEX', value: 'CAPEX' }
+                  ]}
+                  buttonClassName="bg-white border border-[#E4E7EC] rounded-lg px-2.5 py-1 text-xs font-semibold text-[#1F2937] hover:bg-gray-50 transition-colors h-[28px]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 1. TREN PENYERAPAN */}
+            <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-4 flex flex-col min-h-[280px]">
+              <div className="flex items-start justify-between mb-4 shrink-0">
+                <div>
+                  <h3 className="text-sm font-bold text-[#1F2937]">Tren Penyerapan Anggaran</h3>
+                </div>
+                <div className="flex bg-[#F9FAFB] p-0.5 rounded-md border border-[#E4E7EC] shrink-0">
+                  <button onClick={() => setTrenMode('Persentase')} className={`px-2 py-1 text-[10px] font-medium rounded transition-colors ${trenMode === 'Persentase' ? 'bg-[#8F2438] text-white shadow-sm' : 'text-[#667085] hover:text-[#1F2937]'}`}>Persentase</button>
+                  <button onClick={() => setTrenMode('Nominal')} className={`px-2 py-1 text-[10px] font-medium rounded transition-colors ${trenMode === 'Nominal' ? 'bg-[#8F2438] text-white shadow-sm' : 'text-[#667085] hover:text-[#1F2937]'}`}>Nominal</button>
+                </div>
+              </div>
+              <div className="flex-1 min-h-[220px] -ml-3">
+                {trenLoading ? (
+                  <div className="w-full h-full flex items-center justify-center text-sm text-[#98A2B3]">Memuat...</div>
+                ) : trenData.length === 0 ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-[#98A2B3]"><p className="text-sm">Belum ada data</p></div>
+                ) : (
+                  <ResponsiveContainer width="99%" height="100%" debounce={50}>
+                    <AreaChart data={trenData.map(d => ({ ...d, persentase: Number(d.persentase.toFixed(2)) }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorTren" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor={COLOR_PRIMARY} stopOpacity={0.4} />
+                          <stop offset="95%" stopColor={COLOR_PRIMARY} stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid vertical={false} stroke={COLOR_DIVIDER} strokeDasharray="3 3" />
+                      <XAxis dataKey="tahun" tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} dy={10} />
+                      <YAxis tickFormatter={v => trenMode === 'Persentase' ? `${v}%` : v >= 1000000 ? `${(v / 1000000).toFixed(0)}jt` : v} ticks={trenMode === 'Persentase' ? [0, 25, 50, 75, 100] : undefined} tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} width={45} domain={trenMode === 'Persentase' ? [0, 100] : ['auto', 'auto']} />
+                      <Tooltip cursor={{ stroke: COLOR_BORDER, strokeWidth: 1, strokeDasharray: '4 4' }} content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        const d = trenData.find(t => t.tahun === label);
+                        return (
+                          <div className="bg-white/95 backdrop-blur-sm border border-[#E4E7EC] rounded-xl p-3 shadow-lg text-xs min-w-[140px]">
+                            <p className="font-bold text-[#1F2937] mb-2 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#8F2438]"></span>Tahun {label}</p>
+                            <div className="flex justify-between items-center text-[#667085] mb-1"><span>Persentase</span><span className="font-semibold text-[#8F2438]">{d?.persentase.toFixed(2)}%</span></div>
+                            {d && (
+                              <div className="flex flex-col gap-1 text-[#98A2B3] text-[10px] border-t border-[#F2F4F7] pt-2 mt-2">
+                                <div className="flex justify-between"><span>Real</span><span>{formatRupiah(d.totalRealisasi)}</span></div>
+                                <div className="flex justify-between"><span>Total</span><span>{formatRupiah(d.totalAnggaran)}</span></div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }} />
+                      <Area type="monotone" dataKey={trenMode === 'Persentase' ? 'persentase' : 'totalRealisasi'} stroke={COLOR_PRIMARY} strokeWidth={3} fillOpacity={1} fill="url(#colorTren)" activeDot={{ r: 6, strokeWidth: 3, stroke: '#fff', fill: COLOR_PRIMARY }} dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: COLOR_PRIMARY }} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+
+            {/* 2. TREN PENCAPAIAN JAD */}
+            <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-4 flex flex-col min-h-[280px]">
+              <div className="flex items-start justify-between mb-4 shrink-0">
+                <div>
+                  <h3 className="text-sm font-bold text-[#1F2937]">Tren Pencapaian JAD</h3>
+                </div>
+              </div>
+              <div className="flex-1 min-h-[220px] -ml-3">
+                {trenLoading ? (
+                  <div className="w-full h-full flex items-center justify-center text-sm text-[#98A2B3]">Memuat...</div>
+                ) : !trenJadData.some(d => d.totalDosen > 0) ? (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-[#98A2B3]"><p className="text-sm">Belum ada data JAD</p></div>
+                ) : (
+                  <ResponsiveContainer width="99%" height="100%" debounce={50}>
+                    <AreaChart data={trenJadData.map(d => ({ ...d, persenTercapai: Number(d.persenTercapai.toFixed(2)) }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="colorJad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#12B76A" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#12B76A" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid vertical={false} stroke={COLOR_DIVIDER} strokeDasharray="3 3" />
+                      <XAxis dataKey="tahun" tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} dy={10} />
+                      <YAxis tickFormatter={v => `${v}%`} ticks={[0, 25, 50, 75, 100]} tick={{ fontSize: 11, fill: COLOR_TEXT_MUTED }} axisLine={false} tickLine={false} width={45} domain={[0, 100]} />
+                      <Tooltip cursor={{ stroke: COLOR_BORDER, strokeWidth: 1, strokeDasharray: '4 4' }} content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+                        const d = trenJadData.find(t => t.tahun === label);
+                        return (
+                          <div className="bg-white/95 backdrop-blur-sm border border-[#E4E7EC] rounded-xl p-3 shadow-lg text-xs min-w-[140px]">
+                            <p className="font-bold text-[#1F2937] mb-2 flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#12B76A]"></span>Tahun {label}</p>
+                            <div className="flex justify-between items-center text-[#667085] mb-1"><span>Tercapai</span><span className="font-semibold text-[#12B76A]">{d?.persenTercapai.toFixed(2)}%</span></div>
+                            {d && (
+                              <div className="flex flex-col gap-1 text-[#98A2B3] text-[10px] border-t border-[#F2F4F7] pt-2 mt-2">
+                                <div className="flex justify-between"><span>Total Tercapai</span><span>{d.totalTercapai} Dosen</span></div>
+                                <div className="flex justify-between"><span>Total Dosen</span><span>{d.totalDosen} Dosen</span></div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      }} />
+                      <Area type="monotone" dataKey="persenTercapai" stroke="#12B76A" strokeWidth={3} fillOpacity={1} fill="url(#colorJad)" activeDot={{ r: 6, strokeWidth: 3, stroke: '#fff', fill: '#12B76A' }} dot={{ r: 4, strokeWidth: 2, fill: '#fff', stroke: '#12B76A' }} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* ── PENERIMA ANGGARAN ─────────────── */}
