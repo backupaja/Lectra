@@ -63,7 +63,18 @@ body {
 
 /* Remove default focus outline from recharts elements */
 .recharts-wrapper,
-.recharts-surface {
+.recharts-surface,
+.recharts-responsive-container,
+.recharts-responsive-container *,
+.recharts-layer,
+.recharts-bar-rectangle,
+.recharts-active-bar {
+  outline: none !important;
+}
+
+/* Fallback for general svg/div focus inside charts */
+div[role="region"][tabindex]:focus,
+div[tabindex="-1"]:focus {
   outline: none !important;
 }
 
