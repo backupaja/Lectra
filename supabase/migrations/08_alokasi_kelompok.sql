@@ -30,7 +30,7 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
-AS $func
+AS $$
 DECLARE
   v_dosen_id UUID;
 BEGIN
@@ -66,7 +66,7 @@ BEGIN
     AND (p_jenis IS NULL OR a.jenis_anggaran = p_jenis)
   ORDER BY a.created_at DESC;
 END;
-$func;
+$$;
 
 -- Update get_dosen_realisasi
 CREATE OR REPLACE FUNCTION public.get_dosen_realisasi(p_token TEXT, p_tahun SMALLINT, p_jenis TEXT DEFAULT NULL)
@@ -82,7 +82,7 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
-AS $func
+AS $$
 DECLARE
   v_dosen_id UUID;
 BEGIN
@@ -108,7 +108,7 @@ BEGIN
     AND (p_jenis IS NULL OR a.jenis_anggaran = p_jenis)
   ORDER BY r.tanggal_realisasi ASC;
 END;
-$func;
+$$;
 
 -- Update get_dosen_dashboard_stats
 CREATE OR REPLACE FUNCTION public.get_dosen_dashboard_stats(p_token TEXT, p_tahun SMALLINT)
@@ -121,7 +121,7 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql SECURITY DEFINER
 SET search_path = public
-AS $func
+AS $$
 DECLARE
   v_dosen_id UUID;
   v_total_anggaran BIGINT;
@@ -160,4 +160,4 @@ BEGIN
   FROM monthly m
   ORDER BY m.bulan_num;
 END;
-$func;
+$$;
