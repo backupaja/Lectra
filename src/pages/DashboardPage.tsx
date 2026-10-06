@@ -470,7 +470,20 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               <div className="relative w-full h-full min-h-[200px]">
                 <div className="absolute inset-0">
                   <ResponsiveContainer width="99%" height="99%" debounce={50}>
-                <AreaChart data={trenData.map(d => ({ ...d, persentase: Number(d.persentase.toFixed(2)) }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <AreaChart data={(() => {
+                  const start = filterTrenTahunAwal || (trenData.length > 0 ? trenData[0].tahun : new Date().getFullYear());
+                  const end = filterTrenTahunAkhir || (trenData.length > 0 ? trenData[trenData.length - 1].tahun : new Date().getFullYear());
+                  return Array.from({ length: Math.max(1, end - start + 1) }, (_, i) => {
+                    const year = start + i;
+                    const existing = trenData.find(d => d.tahun === year);
+                    return existing ? { ...existing, persentase: Number(existing.persentase.toFixed(2)) } : {
+                      tahun: year,
+                      totalAnggaran: 0,
+                      totalRealisasi: 0,
+                      persentase: 0
+                    };
+                  });
+                })()} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorTren" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor={COLOR_PRIMARY} stopOpacity={0.4} />
@@ -556,7 +569,20 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               <div className="relative w-full h-full min-h-[200px]">
                 <div className="absolute inset-0">
                   <ResponsiveContainer width="99%" height="99%" debounce={50}>
-                <AreaChart data={trenJadData.map(d => ({ ...d, persenTercapai: Number(d.persenTercapai.toFixed(2)) }))} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <AreaChart data={(() => {
+                  const start = filterTrenTahunAwal || (trenJadData.length > 0 ? trenJadData[0].tahun : new Date().getFullYear());
+                  const end = filterTrenTahunAkhir || (trenJadData.length > 0 ? trenJadData[trenJadData.length - 1].tahun : new Date().getFullYear());
+                  return Array.from({ length: Math.max(1, end - start + 1) }, (_, i) => {
+                    const year = start + i;
+                    const existing = trenJadData.find(d => d.tahun === year);
+                    return existing ? { ...existing, persenTercapai: Number(existing.persenTercapai.toFixed(2)) } : {
+                      tahun: year,
+                      totalDosen: 0,
+                      tercapai: 0,
+                      persenTercapai: 0
+                    };
+                  });
+                })()} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorJad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#12B76A" stopOpacity={0.4} />

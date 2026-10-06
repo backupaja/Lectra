@@ -278,11 +278,24 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
             </div>
           </div>
           <YearlyBarChart
-            data={yearlyData.filter(d => {
+            data={(() => {
               const start = Math.min(chartStartYear || minYear, chartEndYear || maxYear);
               const end = Math.max(chartStartYear || minYear, chartEndYear || maxYear);
-              return d.tahun >= start && d.tahun <= end;
-            })}
+              
+              return Array.from({ length: end - start + 1 }, (_, i) => {
+                const currentYear = start + i;
+                const existingData = yearlyData.find(d => d.tahun === currentYear);
+                return existingData || {
+                  tahun: currentYear,
+                  anggaran: 0,
+                  realisasi: 0,
+                  capex: 0,
+                  capexRealisasi: 0,
+                  opex: 0,
+                  opexRealisasi: 0
+                };
+              });
+            })()}
             filter={filter}
           />
         </div>
