@@ -124,16 +124,16 @@ BEGIN
   END IF;
 
   -- Insert Alokasi Anggaran (CAPEX 2026)
-  INSERT INTO public.alokasi_anggaran (id, dosen_id, tahun, jenis_anggaran, keperluan, kelompok_keahlian, nominal_anggaran, jabatan_awal, target_jabatan) VALUES
-  (v_a1, v_d1, 2026, 'CAPEX', '["Zybo Z7 - Zynq-7000 ARM/FPGA SoC", "Development Board - Zybo Z7-10", "AMD Kria KV260 Vision AI Starter Kit", "Cyclone® V SoC with Dual-core ARM CortexA9 (HPS)"]', 'KK Applied Information Technology and Multimedia / Bengkel Telemektronika Laboratorium', 48940000, 'Lektor', 'Lektor Kepala'),
-  (v_a2, v_d2, 2026, 'CAPEX', '["VGA MSI Geforce RTX 3060 Ventus 2X OC 12GB -12 GB DDR6"]', 'KK Applied Information Technology and Multimedia / Bengkel Telemektronika Laboratorium', 11798000, 'Lektor', 'Lektor Kepala'),
-  (v_a3, v_d3, 2026, 'CAPEX', '["Leadtek NVIDIA DGX Spark Founders Edition"]', 'Intelligent Communications and Networks / Adaptive Network', 118220867, 'Lektor', 'Lektor Kepala'),
-  (v_a4, v_d4, 2026, 'CAPEX', '["1mm Sq/ 10 Sq Divisons, Stage Micrometer", "125mm, English Micrometer Z-Stage", "HP1700 380n-1700nm Model Nir", "Spectrometer Portable Power Analyzer"]', 'Control, Electronics and Intelligent System / Advanced Biomedical Intelligent Engineering Laboratory', 32500000, 'Lektor', 'Lektor Kepala'),
-  (v_a5, v_d5, 2026, 'CAPEX', '["Mini Shredder / Mesin Pencacah / Mesin", "Penghancur - Precious Plastic Machine Pisau"]', 'Environment, Sustainability and Community / 3D Printing', 11500000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a6, v_d6, 2026, 'CAPEX', '["Pull Force gauge with Manual Test Stand", "Tension - AST-S (0-500N) Push"]', 'Applied Information Technology and Multimedia / Bengkel Telemektronika ', 23000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a7, v_d7, 2026, 'CAPEX', '["Lenovo PC ThinkCentre M70t Gen 3 Intel Raven", "Black"]', 'Communication and Information Technology Infrastructure ', 25600000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a8, v_d8, 2026, 'CAPEX', '["PC Gaming Core i7 13700F I 32GB I RTX 4070 Ti", "I NVME I Gaming Editing"]', 'Data Science and Intelligent Systems / Big Data ', 28000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a9, v_d9, 2026, 'CAPEX', '["PC Intel Core 5 210H 8GB SSD 512GB"]', 'Electronics and Telecomunications Science / Riset Lab ', 15000000, 'Lektor Kepala', 'Guru Besar'),
-  (v_a10, v_d10, 2026, 'CAPEX', '["Rogers RT Duroid 5880", "Anritsu MS2028C 20 GHz Handheld VNA"]', 'Integrated Systems, Intelligence, and Human-Oriented Technologies / Antena', 35441133, 'Lektor', 'Lektor Kepala');
+  INSERT INTO public.alokasi_anggaran (id, dosen_id, tahun, jenis_anggaran, keperluan, pertanggungan, kelompok_keahlian, nominal_anggaran, jabatan_awal, target_jabatan) VALUES
+  (v_a1, v_d1, 2026, 'CAPEX', '["Zybo Z7 - Zynq-7000 ARM/FPGA SoC", "Development Board - Zybo Z7-10", "AMD Kria KV260 Vision AI Starter Kit", "Cyclone® V SoC with Dual-core ARM CortexA9 (HPS)"]', NULL, 'KK Applied Information Technology and Multimedia / Bengkel Telemektronika Laboratorium', 48940000, 'Lektor', 'Lektor Kepala'),
+  (v_a2, v_d2, 2026, 'CAPEX', '["VGA MSI Geforce RTX 3060 Ventus 2X OC 12GB -12 GB DDR6"]', NULL, 'KK Applied Information Technology and Multimedia / Bengkel Telemektronika Laboratorium', 11798000, 'Lektor', 'Lektor Kepala'),
+  (v_a3, v_d3, 2026, 'CAPEX', '["Leadtek NVIDIA DGX Spark Founders Edition"]', NULL, 'Intelligent Communications and Networks / Adaptive Network', 118220867, 'Lektor', 'Lektor Kepala'),
+  (v_a4, v_d4, 2026, 'CAPEX', '["1mm Sq/ 10 Sq Divisons, Stage Micrometer", "125mm, English Micrometer Z-Stage", "HP1700 380n-1700nm Model Nir", "Spectrometer Portable Power Analyzer"]', NULL, 'Control, Electronics and Intelligent System / Advanced Biomedical Intelligent Engineering Laboratory', 32500000, 'Lektor', 'Lektor Kepala'),
+  (v_a5, v_d5, 2026, 'CAPEX', '["Mini Shredder / Mesin Pencacah / Mesin", "Penghancur - Precious Plastic Machine Pisau"]', NULL, 'Environment, Sustainability and Community / 3D Printing', 11500000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a6, v_d6, 2026, 'CAPEX', '["Pull Force gauge with Manual Test Stand", "Tension - AST-S (0-500N) Push"]', NULL, 'Applied Information Technology and Multimedia / Bengkel Telemektronika ', 23000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a7, v_d7, 2026, 'CAPEX', '["Lenovo PC ThinkCentre M70t Gen 3 Intel Raven", "Black"]', NULL, 'Communication and Information Technology Infrastructure ', 25600000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a8, v_d8, 2026, 'CAPEX', '["PC Gaming Core i7 13700F I 32GB I RTX 4070 Ti", "I NVME I Gaming Editing"]', NULL, 'Data Science and Intelligent Systems / Big Data ', 28000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a9, v_d9, 2026, 'CAPEX', '["PC Intel Core 5 210H 8GB SSD 512GB"]', NULL, 'Electronics and Telecomunications Science / Riset Lab ', 15000000, 'Lektor Kepala', 'Guru Besar'),
+  (v_a10, v_d10, 2026, 'CAPEX', '["Rogers RT Duroid 5880", "Anritsu MS2028C 20 GHz Handheld VNA"]', NULL, 'Integrated Systems, Intelligence, and Human-Oriented Technologies / Antena', 35441133, 'Lektor', 'Lektor Kepala');
 
 END $$;
