@@ -532,7 +532,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           <div className="flex-1 min-h-0 -ml-3">
             {trenLoading ? (
               <div className="w-full h-full flex items-center justify-center text-sm text-[#98A2B3]">Memuat...</div>
-            ) : trenJadData.length === 0 ? (
+            ) : !trenJadData.some(d => d.totalDosen > 0) ? (
               <div className="w-full h-full flex flex-col items-center justify-center text-[#98A2B3]">
                 <p className="text-sm">Belum ada data JAD</p>
               </div>
