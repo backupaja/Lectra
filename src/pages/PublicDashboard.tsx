@@ -209,7 +209,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
             <p className="text-xs text-[#8F2438] font-semibold uppercase tracking-wide mb-1">Transparansi Anggaran</p>
             <h1 className="text-2xl font-bold text-[#1F2937]">Ringkasan Anggaran Dosen</h1>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Filter tabs */}
             {([['all', 'Semua'], ['opex', 'OPEX'], ['capex', 'CAPEX']] as [BudgetFilter, string][]).map(([val, label]) => (
               <button
@@ -248,8 +248,8 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div className="flex gap-8 items-center border-r pr-8 border-[#E4E7EC]">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
+            <div className="flex flex-wrap justify-center gap-6 lg:gap-8 items-center lg:border-r lg:pr-8 border-[#E4E7EC] w-full lg:w-auto">
               {/* Donut Anggaran */}
               <div className="flex flex-col items-center">
                 <DonutChart totalRealisasi={totalRealisasi} totalAnggaran={totalAnggaran} size={140} />
@@ -367,7 +367,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               <h3 className="text-base font-semibold text-[#1F2937]">Anggaran dan Realisasi per Tahun</h3>
               <p className="text-xs text-[#98A2B3] mt-0.5">Perbandingan anggaran vs realisasi dari {chartStartYear || minYear}–{chartEndYear || maxYear}</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-1.5 bg-white transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
                 <span className="text-xs text-[#98A2B3]">Fakultas</span>
                 <CustomSelect
