@@ -38,6 +38,12 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const [jadSummary, setJadSummary] = useState<PublicJadSummary | null>(null);
   const [isJadLoading, setIsJadLoading] = useState(true);
   const [filterJenis, setFilterJenis] = useState<BudgetType>('OPEX');
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const filteredPenerima = penerimaAnggaran.filter(item => 
+    item.nama.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -285,21 +291,53 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
 
         {/* ── PENERIMA ANGGARAN ─────────────── */}
         <div className="bg-white dark:bg-[#181B25] transition-colors rounded-[20px] border border-[#E4E7EC] shadow-sm p-6 mb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5">
+          <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-5">
             <div>
               <h2 className="text-base font-semibold text-[#1F2937]">Penerima Anggaran Tahun {year}</h2>
               <p className="text-xs text-[#98A2B3] mt-0.5">Daftar dosen yang menerima alokasi anggaran terpilih.</p>
             </div>
-            <div className="flex items-center gap-2">
-              <CustomSelect
-                value={filterJenis}
-                onChange={val => setFilterJenis(val as BudgetType)}
-                options={[
-                  { label: 'OPEX', value: 'OPEX' },
-                  { label: 'CAPEX', value: 'CAPEX' }
-                ]}
-                buttonClassName="appearance-none text-xs font-semibold bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 dark:hover:bg-[#1E293B] cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
-              />
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full xl:w-auto">
+              {/* Search Bar */}
+              <div className="relative w-full sm:w-64">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Cari nama dosen..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 text-xs bg-white dark:bg-[#181B25] border border-[#E4E7EC] rounded-[10px] text-[#1F2937] placeholder-gray-400 focus:outline-none focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 transition-shadow"
+                />
+              </div>
+              
+              <div className="flex w-full sm:w-auto items-center gap-3">
+                {/* Year Selector */}
+                <div className="flex flex-1 sm:flex-none items-center gap-1.5 bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5">
+                  <svg className="w-4 h-4 text-[#8F2438]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5" />
+                  </svg>
+                  <CustomSelect
+                    value={year}
+                    onChange={val => setYear(Number(val))}
+                    options={getDynamicYearOptions()}
+                    buttonClassName="bg-transparent border-none text-xs font-semibold text-[#1F2937] p-0 w-auto hover:bg-transparent"
+                    dropdownClassName="w-auto min-w-[80px]"
+                  />
+                </div>
+
+                <CustomSelect
+                  value={filterJenis}
+                  onChange={val => setFilterJenis(val as BudgetType)}
+                  options={[
+                    { label: 'OPEX', value: 'OPEX' },
+                    { label: 'CAPEX', value: 'CAPEX' }
+                  ]}
+                  buttonClassName="flex-1 sm:flex-none appearance-none text-xs font-semibold bg-white dark:bg-[#181B25] transition-colors border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 dark:hover:bg-[#1E293B] cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
+                />
+              </div>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -318,8 +356,8 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               <tbody className="divide-y divide-[#E4E7EC]">
                 {isJadLoading ? (
                   <tr><td colSpan={7} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
-                ) : penerimaAnggaran.length > 0 ? (
-                  penerimaAnggaran.map((item, idx) => (
+                ) : filteredPenerima.length > 0 ? (
+                  filteredPenerima.map((item, idx) => (
                     <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-[#1E293B] transition-colors">
                       <td className="py-2.5 px-3 text-xs text-[#667085] text-center whitespace-nowrap">{idx + 1}</td>
                       <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.nip}</td>
