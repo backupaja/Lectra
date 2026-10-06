@@ -258,7 +258,11 @@ export function PenetapanAnggaranPage() {
     const dosen = dosenList.find(d => d.id === a.dosenId);
     if (!dosen) return false;
     const search_ = search.toLowerCase();
-    const matchSearch = !search || dosen.nama.toLowerCase().includes(search_) || dosen.nip.includes(search_) || a.keperluan.toLowerCase().includes(search_);
+    const isAnggotaMatch = a.anggotaTambahan?.some(at => {
+      const atDosen = dosenList.find(d => d.id === at.dosen_id);
+      return atDosen && (atDosen.nama.toLowerCase().includes(search_) || atDosen.nip.includes(search_));
+    });
+    const matchSearch = !search || dosen.nama.toLowerCase().includes(search_) || dosen.nip.includes(search_) || a.keperluan.toLowerCase().includes(search_) || isAnggotaMatch;
     const matchBudget = budgetFilter === 'all' || a.jenis === budgetFilter;
     const matchStatus = statusFilter === 'all'
       || (statusFilter === 'OVER_BUDGET' && a.status === 'OVER_BUDGET')
@@ -480,8 +484,16 @@ export function PenetapanAnggaranPage() {
                         <tr key={alok.id} className="border-b border-[#E4E7EC] last:border-none hover:bg-[#F7F7F8] transition-colors">
                           <td className="px-2 py-1.5 text-[#98A2B3] text-[10px]">{idx + 1}</td>
                           <td className="px-2 py-1.5">
-                            <p className="font-medium text-[#1F2937] whitespace-nowrap text-[11px]">{dosen.nama}</p>
-                            <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip}</p>
+                            <p className="font-medium text-[#1F2937] text-[11px] max-w-[200px] leading-tight">
+                              {dosen.nama}
+                              {alok.anggotaTambahan?.length > 0 && (
+                                <span className="text-[#667085] font-normal">
+                                  {', '}
+                                  {alok.anggotaTambahan.map(at => dosenList.find(d => d.id === at.dosen_id)?.nama).filter(Boolean).join(', ')}
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-[9.5px] text-[#98A2B3] mt-0.5">{dosen.nip} {alok.anggotaTambahan?.length > 0 ? `(dan ${alok.anggotaTambahan.length} anggota)` : ''}</p>
                           </td>
                           <td className="px-2 py-1.5">
                             <p className="text-[#667085] whitespace-nowrap text-[10px]">{dosen.fakultas}</p>
