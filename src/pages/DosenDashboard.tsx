@@ -25,6 +25,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
   
   const [dosen, setDosen] = useState<Dosen | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchErr, setFetchErr] = useState<any>(null);
   const [selectedKeperluan, setSelectedKeperluan] = useState<{title: string, text: string} | null>(null);
   const [allAlokasi, setAllAlokasi] = useState<(AlokasiAnggaran & { totalRealisasi: number })[]>([]);
   const [allRealisasi, setAllRealisasi] = useState<(RealisasiAnggaran & { alokasiKeperluan: string, alokasiJenis: string })[]>([]);

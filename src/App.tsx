@@ -13,7 +13,7 @@ import { ChatBot } from './components/ui/ChatBot';
 
 function parseDosenToken(): string | null {
   const hash = window.location.hash;
-  const match = hash.match(/^#\/dosen\/(.+)$/);
+  const match = hash.match(/^#\/dosen\/([a-fA-F0-9]{64})/);
   return match ? match[1] : null;
 }
 
