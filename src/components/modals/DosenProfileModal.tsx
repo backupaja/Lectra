@@ -21,14 +21,12 @@ export function DosenProfileModal({ isOpen, onClose, dosenId }: DosenProfileModa
     const fetchProfile = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase
-          .from('dosen')
-          .select('*')
-          .eq('id', dosenId)
-          .single();
+        const { data, error } = await supabase.rpc('get_public_dosen_profile', {
+          p_dosen_id: dosenId
+        });
 
         if (error) throw error;
-        setProfile(data);
+        setProfile(data?.dosen || null);
       } catch (err) {
         console.error('Error fetching dosen profile', err);
       } finally {
