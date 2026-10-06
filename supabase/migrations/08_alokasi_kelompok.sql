@@ -16,6 +16,7 @@ CREATE POLICY "Enable insert for all" ON public.alokasi_dosen_tambahan FOR INSER
 DROP POLICY IF EXISTS "Enable delete for all" ON public.alokasi_dosen_tambahan;
 CREATE POLICY "Enable delete for all" ON public.alokasi_dosen_tambahan FOR DELETE USING (true);
 
+DROP FUNCTION IF EXISTS public.get_dosen_alokasi(text, smallint, text);
 -- Update get_dosen_alokasi
 CREATE OR REPLACE FUNCTION public.get_dosen_alokasi(p_token TEXT, p_tahun SMALLINT, p_jenis TEXT DEFAULT NULL)
 RETURNS TABLE (
@@ -68,6 +69,7 @@ BEGIN
 END;
 $$;
 
+DROP FUNCTION IF EXISTS public.get_dosen_realisasi(text, smallint, text);
 -- Update get_dosen_realisasi
 CREATE OR REPLACE FUNCTION public.get_dosen_realisasi(p_token TEXT, p_tahun SMALLINT, p_jenis TEXT DEFAULT NULL)
 RETURNS TABLE (
@@ -110,6 +112,7 @@ BEGIN
 END;
 $$;
 
+DROP FUNCTION IF EXISTS public.get_dosen_dashboard_stats(text, smallint);
 -- Update get_dosen_dashboard_stats
 CREATE OR REPLACE FUNCTION public.get_dosen_dashboard_stats(p_token TEXT, p_tahun SMALLINT)
 RETURNS TABLE (
