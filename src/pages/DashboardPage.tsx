@@ -323,17 +323,8 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
       {/* FILTER ANALITIK CARD */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-3 shrink-0">
 
-        {/* KIRI: Filter Tren (Untuk 2 Grafik Tren) */}
-        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-3 lg:col-span-2 flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-3 px-2 border-r border-[#E4E7EC] pr-4">
-            <div className="w-8 h-8 bg-[#FDF5F6] rounded-lg flex items-center justify-center text-[#8F2438]">
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-            <span className="text-[13px] font-bold text-[#1F2937]">Filter Tren</span>
-          </div>
-
+        {/* Filter Tren (Untuk 2 Grafik Tren) */}
+        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-3 lg:col-span-3 flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-medium text-[#667085]">Tahun Awal</span>
@@ -373,57 +364,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           </div>
         </div>
 
-        {/* KANAN: Filter Dosen (Untuk 1 Grafik Ranking) */}
-        <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-3 flex flex-nowrap items-center gap-2 lg:gap-3">
-          <div className="flex items-center gap-2 px-1 lg:px-2 border-r border-[#E4E7EC] pr-2 shrink-0">
-            <div className="w-7 h-7 bg-[#FDF5F6] rounded-lg flex items-center justify-center text-[#8F2438]">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
-              </svg>
-            </div>
-            <span className="text-[12px] font-bold text-[#1F2937] hidden 2xl:block">Filter Dosen</span>
-          </div>
 
-          <div className="flex flex-nowrap items-center gap-1.5 lg:gap-2 flex-1">
-            <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-              <span className="text-[9px] font-medium text-[#667085] truncate">Tahun</span>
-              <CustomSelect
-                value={filterTahun}
-                onChange={(val) => setFilterTahun(Number(val))}
-                options={yearOptions}
-                buttonClassName="appearance-none text-[10px] sm:text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 sm:px-2 py-1 pr-4 sm:pr-5 text-[#1F2937] outline-none w-full cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 truncate"
-              />
-            </div>
-
-            <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-              <span className="text-[9px] font-medium text-[#667085] truncate">Bulan</span>
-              <CustomSelect
-                value={filterBulan}
-                onChange={(val) => setFilterBulan(val === '' ? null : Number(val))}
-                options={[
-                  { label: 'Semua', value: '' },
-                  ...['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'].map((b, i) => ({ label: b, value: i + 1 }))
-                ]}
-                buttonClassName="appearance-none text-[10px] sm:text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 sm:px-2 py-1 pr-4 sm:pr-5 text-[#1F2937] outline-none w-full cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 truncate"
-              />
-            </div>
-
-            <div className="flex flex-col gap-0.5 flex-[1.2] min-w-0">
-              <span className="text-[9px] font-medium text-[#667085] truncate">Jenis Anggaran</span>
-              <CustomSelect
-                value={filterJenis}
-                onChange={(val) => setFilterJenis(val)}
-                options={[
-                  { label: 'Semua Jenis', value: 'SEMUA' },
-                  { label: 'OPEX', value: 'OPEX' },
-                  { label: 'CAPEX', value: 'CAPEX' },
-                ]}
-                buttonClassName="appearance-none text-[10px] sm:text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 sm:px-2 py-1 pr-4 sm:pr-5 text-[#1F2937] outline-none w-full cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 truncate"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* 3 ANALYTICS CARDS GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 min-h-0 pb-2">
@@ -635,6 +576,53 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 ]}
                 buttonClassName="appearance-none text-[10px] font-medium bg-white border border-[#E4E7EC] rounded px-2 py-1 text-[#344054] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[90px]"
                 dropdownClassName="w-full mt-1 right-0"
+              />
+            </div>
+          </div>
+
+          {/* Filter Dosen (Moved from top) */}
+          <div className="flex flex-nowrap items-center gap-1.5 lg:gap-2 mb-4 bg-gray-50 p-2 rounded-lg border border-[#E4E7EC]">
+            <div className="flex items-center gap-1.5 px-1 lg:px-2 border-r border-[#E4E7EC] pr-1.5 shrink-0">
+              <svg className="w-3.5 h-3.5 text-[#8F2438]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+              </svg>
+              <span className="text-[10px] font-bold text-[#1F2937] hidden xl:block">Filter Dosen</span>
+            </div>
+
+            <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+              <span className="text-[9px] font-medium text-[#667085] truncate">Tahun</span>
+              <CustomSelect
+                value={filterTahun}
+                onChange={(val) => setFilterTahun(Number(val))}
+                options={yearOptions}
+                buttonClassName="appearance-none text-[10px] sm:text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 sm:px-2 py-1 pr-4 sm:pr-5 text-[#1F2937] outline-none w-full cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 truncate"
+              />
+            </div>
+
+            <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+              <span className="text-[9px] font-medium text-[#667085] truncate">Bulan</span>
+              <CustomSelect
+                value={filterBulan}
+                onChange={(val) => setFilterBulan(val === '' ? null : Number(val))}
+                options={[
+                  { label: 'Semua', value: '' },
+                  ...['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'].map((b, i) => ({ label: b, value: i + 1 }))
+                ]}
+                buttonClassName="appearance-none text-[10px] sm:text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 sm:px-2 py-1 pr-4 sm:pr-5 text-[#1F2937] outline-none w-full cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 truncate"
+              />
+            </div>
+
+            <div className="flex flex-col gap-0.5 flex-[1.2] min-w-0">
+              <span className="text-[9px] font-medium text-[#667085] truncate">Jenis</span>
+              <CustomSelect
+                value={filterJenis}
+                onChange={(val) => setFilterJenis(val)}
+                options={[
+                  { label: 'Semua', value: 'SEMUA' },
+                  { label: 'OPEX', value: 'OPEX' },
+                  { label: 'CAPEX', value: 'CAPEX' },
+                ]}
+                buttonClassName="appearance-none text-[10px] sm:text-[11px] font-medium bg-white border border-[#E4E7EC] rounded-md px-1.5 sm:px-2 py-1 pr-4 sm:pr-5 text-[#1F2937] outline-none w-full cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 truncate"
               />
             </div>
           </div>
