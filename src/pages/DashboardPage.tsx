@@ -325,6 +325,13 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
 
         {/* Filter Tren */}
         <div className="bg-white rounded-[16px] border border-[#E4E7EC] shadow-sm p-3 lg:col-span-2 flex flex-wrap items-center gap-4 order-1 lg:order-1 h-fit">
+          <div className="flex items-center gap-3 px-1 lg:px-2 border-r border-[#E4E7EC] pr-2 lg:pr-4">
+            <div className="w-8 h-8 bg-[#FDF5F6] rounded-lg flex items-center justify-center text-[#8F2438]">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+          </div>
           <div className="flex items-center gap-2">
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-medium text-[#667085]">Tahun Awal</span>
