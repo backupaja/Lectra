@@ -15,7 +15,7 @@ export interface Dosen {
 export interface AlokasiAnggaran {
   id: string;
   dosenId: string;
-  anggotaTambahan?: { dosen_id: string, dosen?: { nama: string } }[];
+  anggotaTambahan?: { dosen_id: string, jabatan_awal?: string, target_jabatan?: string, dosen?: { nama: string } }[];
   tahun: number;
   keperluan: string;
   pertanggungan?: string;

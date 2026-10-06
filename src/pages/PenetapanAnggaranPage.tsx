@@ -717,18 +717,57 @@ export function PenetapanAnggaranPage() {
                   {alokasiForm.anggotaTambahan.map((anggota, i) => {
                     const d = dosenList.find(x => x.id === anggota.dosen_id);
                     return (
-                      <div key={i} className="flex items-center justify-between px-3 py-2 bg-[#F9FAFB] border border-[#E4E7EC] rounded-lg">
-                        <div>
-                          <p className="text-[11px] font-bold text-[#1F2937]">{d?.nama || 'Unknown'}</p>
-                          <p className="text-[10px] text-[#667085]">{d?.nip}</p>
+                      <div key={i} className="flex flex-col p-3 bg-[#F9FAFB] border border-[#E4E7EC] rounded-lg mb-2">
+                        <div className="flex items-center justify-between mb-2">
+                          <div>
+                            <p className="text-[11px] font-bold text-[#1F2937]">{d?.nama || 'Unknown'}</p>
+                            <p className="text-[10px] text-[#667085]">{d?.nip}</p>
+                          </div>
+                          <button
+                            onClick={() => setAlokasiForm({ ...alokasiForm, anggotaTambahan: alokasiForm.anggotaTambahan.filter((_, idx) => idx !== i) })}
+                            className="text-[#98A2B3] hover:text-[#B42318] p-1 rounded transition-colors"
+                            title="Hapus anggota"
+                          >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
                         </div>
-                        <button
-                          onClick={() => setAlokasiForm({ ...alokasiForm, anggotaTambahan: alokasiForm.anggotaTambahan.filter((_, idx) => idx !== i) })}
-                          className="text-[#98A2B3] hover:text-[#B42318] p-1 rounded transition-colors"
-                          title="Hapus anggota"
-                        >
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
+                        <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-[#E4E7EC]">
+                          <div>
+                            <label className="block text-[10px] text-[#667085] mb-1">Jabatan Awal</label>
+                            <select
+                              value={anggota.jabatan_awal || ''}
+                              onChange={(e) => {
+                                const baru = [...alokasiForm.anggotaTambahan];
+                                baru[i].jabatan_awal = e.target.value;
+                                setAlokasiForm({ ...alokasiForm, anggotaTambahan: baru });
+                              }}
+                              className="w-full px-2 py-1.5 text-[10px] bg-white border border-[#E4E7EC] rounded outline-none focus:border-[#8F2438]"
+                            >
+                              <option value="" disabled>Pilih...</option>
+                              <option value="Asisten Ahli">Asisten Ahli</option>
+                              <option value="Lektor">Lektor</option>
+                              <option value="Lektor Kepala">Lektor Kepala</option>
+                              <option value="Guru Besar">Guru Besar</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block text-[10px] text-[#667085] mb-1">Target Jabatan</label>
+                            <select
+                              value={anggota.target_jabatan || ''}
+                              onChange={(e) => {
+                                const baru = [...alokasiForm.anggotaTambahan];
+                                baru[i].target_jabatan = e.target.value;
+                                setAlokasiForm({ ...alokasiForm, anggotaTambahan: baru });
+                              }}
+                              className="w-full px-2 py-1.5 text-[10px] bg-white border border-[#E4E7EC] rounded outline-none focus:border-[#8F2438]"
+                            >
+                              <option value="" disabled>Pilih...</option>
+                              <option value="Lektor">Lektor</option>
+                              <option value="Lektor Kepala">Lektor Kepala</option>
+                              <option value="Guru Besar">Guru Besar</option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     );
                   })}

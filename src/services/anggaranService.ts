@@ -74,7 +74,7 @@ export const AnggaranService = {
   getAlokasi: async (tahun: number): Promise<(AlokasiAnggaran & { totalRealisasi: number })[]> => {
     const { data: alokasiData, error: alokasiError } = await supabase
       .from('alokasi_anggaran')
-      .select('*, realisasi_anggaran(nominal), alokasi_dosen_tambahan(dosen_id, dosen(nama))')
+      .select('*, realisasi_anggaran(nominal), alokasi_dosen_tambahan(dosen_id, jabatan_awal, target_jabatan, dosen(nama))')
       .eq('tahun', tahun);
       
     if (alokasiError) throw alokasiError;
@@ -134,7 +134,7 @@ export const AnggaranService = {
     if (alokasiData && data.anggotaTambahan && data.anggotaTambahan.length > 0) {
       const { error: anggotaError } = await supabase
         .from('alokasi_dosen_tambahan')
-        .insert(data.anggotaTambahan.map(a => ({ alokasi_id: alokasiData.id, dosen_id: a.dosen_id })));
+        .insert(data.anggotaTambahan.map(a => ({ alokasi_id: alokasiData.id, dosen_id: a.dosen_id, jabatan_awal: a.jabatan_awal || null, target_jabatan: a.target_jabatan || null })));
       if (anggotaError) throw anggotaError;
     }
   },
@@ -171,7 +171,7 @@ export const AnggaranService = {
       if (data.anggotaTambahan.length > 0) {
         const { error: insError } = await supabase
           .from('alokasi_dosen_tambahan')
-          .insert(data.anggotaTambahan.map(a => ({ alokasi_id: id, dosen_id: a.dosen_id })));
+          .insert(data.anggotaTambahan.map(a => ({ alokasi_id: id, dosen_id: a.dosen_id, jabatan_awal: a.jabatan_awal || null, target_jabatan: a.target_jabatan || null })));
         if (insError) throw insError;
       }
     }
