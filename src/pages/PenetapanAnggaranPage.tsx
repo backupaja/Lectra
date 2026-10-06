@@ -87,7 +87,7 @@ export function PenetapanAnggaranPage() {
     nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif'
   });
   const [alokasiForm, setAlokasiForm] = useState({
-    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala', anggotaTambahan: [] as { dosen_id: string }[]
+    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala', anggotaTambahan: [] as { dosen_id: string; jabatan_awal?: string; target_jabatan?: string }[]
   });
   const [viewKeperluanList, setViewKeperluanList] = useState<{ items: string[], name: string } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -137,7 +137,7 @@ export function PenetapanAnggaranPage() {
     setSelectedDosenId('');
     setEditingAlokasiId(null);
     setDosenForm({ nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif' });
-    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala' });
+    setAlokasiForm({ tahun: year, jenis: 'OPEX', keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala', anggotaTambahan: [] });
     setDosenSearchQuery('');
   };
 
@@ -953,7 +953,7 @@ export function PenetapanAnggaranPage() {
                             setSelectedDosenId(created.id);
                             setDosenSearchQuery(`${created.nama} (${created.nip})`);
                           } catch (err: any) {
-                            showToast(err.message || 'Gagal menambah dosen', 'error');
+                            showToast(err?.code === '23505' ? 'NIP sudah terdaftar. Cari dosennya lewat kolom pencarian di atas.' : (err.message || 'Gagal menambah dosen'), 'error');
                           }
                         }}>Simpan & Pilih</Button>
                       </div>
