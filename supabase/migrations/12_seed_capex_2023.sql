@@ -30,7 +30,7 @@ BEGIN
     v_a2, v_d2, 2023, 'CAPEX', 
     '["Tempat penyimpanan sample yang bisa disesuaikan suhu dan kelembaban untuk menghindari oksidasi", "Screen printed electrode untuk testing pendeteksian logam berat dan bakteri", "Electrochemical adaptor for screen printed electrode for electrochemical process", "Elektroda pasta silver Silver Conductive Paste, 735825-25G", "Platinum electrode for electrochemical process", "Ag/AgCl counter electrode for electrochemical process", "Electrochemical Impedance Spectroscopy (EIS) Potensiotat Cortest CS350M EIS Potentiostat /Galvanostat"]', 
     'Rekayasa Instrumen dan Energi', 
-    182000000, 'Lektor', 'Lektor Kepala'
+    212000000, 'Lektor', 'Lektor Kepala'
   ),
   (
     v_a3, v_d3, 2023, 'CAPEX', 
