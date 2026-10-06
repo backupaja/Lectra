@@ -85,7 +85,7 @@ export const JadService = {
   getDokumenUrl: async (path: string): Promise<string> => {
     const { data, error } = await supabase.storage
       .from('dokumen_jad')
-      .createSignedUrl(path, 315360000); // 10 years validity
+      .createSignedUrl(path, 60); // 60 seconds validity
 
     if (error) throw error;
     return data.signedUrl;

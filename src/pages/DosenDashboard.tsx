@@ -34,9 +34,7 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
     const fetchDosenByToken = async () => {
       try {
         const { data, error } = await supabase
-          .from('dosen')
-          .select('*')
-          .eq('share_token', token)
+          .rpc('get_dosen_profile', { p_token: token })
           .single();
           
         if (error || !data) {
@@ -47,11 +45,11 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
         const d: Dosen = {
           id: data.id,
           nama: data.nama,
-          nip: data.nip,
-          fakultas: data.fakultas,
-          programStudi: data.program_studi,
-          statusDosen: data.status,
-          shareToken: data.share_token
+          nip: '', // Not returned by RPC
+          fakultas: data.fakultas || '',
+          programStudi: data.program_studi || '',
+          statusDosen: data.status || 'AKTIF',
+          shareToken: token
         };
         if (mounted) setDosen(d);
       } catch (err) {
@@ -70,45 +68,25 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
     const fetchAnggaran = async () => {
       setIsLoading(true);
       try {
-        let alokasiQuery = supabase
-          .from('alokasi_anggaran')
-          .select('*, realisasi_anggaran(nominal)')
-          .eq('tahun', year)
-          .eq('dosen_id', dosen.id);
+        const [alokasiRes, realisasiRes] = await Promise.all([
+          supabase.rpc('get_dosen_alokasi', { p_token: token, p_tahun: year }),
+          supabase.rpc('get_dosen_realisasi', { p_token: token, p_tahun: year })
+        ]);
 
-        const { data: alokasiData, error: alokasiError } = await alokasiQuery;
-        
-        let realisasiQuery = supabase
-          .from('realisasi_anggaran')
-          .select('*, alokasi_anggaran!inner(jenis_anggaran, keperluan)')
-          .eq('alokasi_anggaran.dosen_id', dosen.id)
-          .eq('alokasi_anggaran.tahun', year);
-
-        const { data: realisasiData, error: realisasiError } = await realisasiQuery;
-
-        if (alokasiData) {
-          const myAlokasi = alokasiData.map((a: any) => {
-            const totalRealisasi = a.realisasi_anggaran?.reduce((sum: number, r: any) => sum + Number(r.nominal), 0) || 0;
-            const nominalAnggaran = Number(a.nominal_anggaran);
-            const persen = nominalAnggaran > 0 ? (totalRealisasi / nominalAnggaran) : 0;
-            let status = 'NORMAL';
-            if (totalRealisasi > nominalAnggaran) status = 'OVER_BUDGET';
-            else if (persen >= 0.8) status = 'NEAR_LIMIT';
-
+        if (alokasiRes.data) {
+          const myAlokasi = alokasiRes.data.map((a: any) => {
+            const nominalAnggaran = Number(a.nominal_anggaran || 0);
+            const totalRealisasi = Number(a.total_realisasi || 0);
             return {
-              id: a.id,
-              dosenId: a.dosen_id,
+              id: a.alokasi_id,
+              dosenId: dosen.id,
               tahun: year,
               jenis: a.jenis_anggaran,
               keperluan: a.keperluan,
-              pertanggungan: a.pertanggungan || undefined,
-              kelompokKeahlian: a.kelompok_keahlian || undefined,
               nominal: nominalAnggaran,
               keterangan: a.keterangan || '',
-              jabatanAwal: a.jabatan_awal || undefined,
-              targetJabatan: a.target_jabatan || undefined,
               totalRealisasi,
-              status: status as BudgetStatus
+              status: a.budget_status as BudgetStatus
             };
           });
           if (mounted) setAllAlokasi(myAlokasi);
@@ -116,17 +94,17 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
           if (mounted) setAllAlokasi([]);
         }
         
-        if (realisasiData) {
-          const myRealisasi = realisasiData.map((r: any) => ({
-            id: r.id,
+        if (realisasiRes.data) {
+          const myRealisasi = realisasiRes.data.map((r: any) => ({
+            id: r.realisasi_id,
             alokasiId: r.alokasi_id,
             tanggal: r.tanggal_realisasi,
-            nominal: r.nominal,
+            nominal: Number(r.nominal || 0),
             keterangan: r.keterangan || '',
             nomorSimkug: r.nomor_simkug || '',
-            alokasiKeperluan: r.alokasi_anggaran?.keperluan || '',
-            alokasiJenis: r.alokasi_anggaran?.jenis_anggaran || ''
-          })).sort((a, b) => b.tanggal.localeCompare(a.tanggal));
+            alokasiKeperluan: r.keperluan || '',
+            alokasiJenis: r.jenis_anggaran || ''
+          }));
           if (mounted) setAllRealisasi(myRealisasi);
         } else {
           if (mounted) setAllRealisasi([]);

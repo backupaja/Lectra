@@ -50,7 +50,7 @@ export const BaPenetapanService = {
   getUrl: async (filePath: string, download?: string): Promise<string> => {
     const { data, error } = await supabase.storage
       .from(BUCKET)
-      .createSignedUrl(filePath, 315360000, download ? { download } : undefined);
+      .createSignedUrl(filePath, 300, download ? { download } : undefined);
     if (error) throw error;
     return data.signedUrl;
   },
