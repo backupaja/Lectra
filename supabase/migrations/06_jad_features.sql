@@ -24,6 +24,7 @@ CREATE INDEX IF NOT EXISTS idx_progress_jad_lookup ON public.progress_jad(dosen_
 ALTER TABLE public.progress_jad ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.progress_jad FORCE ROW LEVEL SECURITY;
 REVOKE ALL ON TABLE public.progress_jad FROM anon, authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.progress_jad TO authenticated;
 
 -- Admin Policy (Full Access)
 DROP POLICY IF EXISTS "Admin full access progress_jad" ON public.progress_jad;
