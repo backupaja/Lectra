@@ -59,7 +59,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [filterJenis, setFilterJenis] = useState<'SEMUA' | 'OPEX' | 'CAPEX'>('SEMUA');
   const [filterTrenJenis, setFilterTrenJenis] = useState<string>('SEMUA');
   const [trenJadData, setTrenJadData] = useState<any[]>([]);
-  const [filterTrenTahunAwal, setFilterTrenTahunAwal] = useState(2023);
+  const [filterTrenTahunAwal, setFilterTrenTahunAwal] = useState(2022);
   const [filterTrenTahunAkhir, setFilterTrenTahunAkhir] = useState(new Date().getFullYear());
 
   const [jadSummary, setJadSummary] = useState<PublicJadSummary | null>(null);

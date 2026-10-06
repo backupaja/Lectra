@@ -102,7 +102,7 @@ export const AnalitikService = {
   // 3. Tren Pencapaian JAD per Tahun
   getTrenJad: async (tahunAwal?: number, tahunAkhir?: number, jenis?: string): Promise<{ tahun: number; persenTercapai: number; totalDosen: number; totalTercapai: number }[]> => {
     try {
-      const start = tahunAwal || 2023;
+      const start = tahunAwal || 2022;
       const end = tahunAkhir || 2026;
       let result = [];
       

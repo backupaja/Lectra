@@ -135,8 +135,8 @@ export const REALISASI_LIST: RealisasiAnggaran[] = [
 export function getDynamicYearOptions() {
   const currentYear = new Date().getFullYear();
   return Array.from(
-    { length: Math.max(5, currentYear + 3 - 2023 + 1) },
-    (_, i) => ({ label: String(2023 + i), value: 2023 + i })
+    { length: Math.max(5, currentYear + 3 - 2022 + 1) },
+    (_, i) => ({ label: String(2022 + i), value: 2022 + i })
   );
 }
 
