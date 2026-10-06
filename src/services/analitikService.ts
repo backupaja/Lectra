@@ -127,20 +127,6 @@ export const AnalitikService = {
         }
       }
 
-      // FALLBACK MOCK DATA IF DB IS EMPTY (For Demo Purposes)
-      const hasAnyData = result.some(r => r.totalDosen > 0);
-      if (!hasAnyData) {
-        let mockResult = [
-          { tahun: 2023, persenTercapai: 25, totalDosen: 4, totalTercapai: 1 },
-          { tahun: 2024, persenTercapai: 50, totalDosen: 4, totalTercapai: 2 },
-          { tahun: 2025, persenTercapai: 75, totalDosen: 4, totalTercapai: 3 },
-          { tahun: 2026, persenTercapai: 100, totalDosen: 4, totalTercapai: 4 },
-        ];
-        if (tahunAwal) mockResult = mockResult.filter(r => r.tahun >= tahunAwal);
-        if (tahunAkhir) mockResult = mockResult.filter(r => r.tahun <= tahunAkhir);
-        return mockResult;
-      }
-
       return result.sort((a, b) => a.tahun - b.tahun);
     } catch (e) {
       console.error("Catch error in getTrenJad:", e);
