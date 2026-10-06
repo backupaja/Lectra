@@ -16,6 +16,9 @@ CREATE POLICY "Enable insert for all" ON public.alokasi_dosen_tambahan FOR INSER
 DROP POLICY IF EXISTS "Enable delete for all" ON public.alokasi_dosen_tambahan;
 CREATE POLICY "Enable delete for all" ON public.alokasi_dosen_tambahan FOR DELETE USING (true);
 
+GRANT ALL ON TABLE public.alokasi_dosen_tambahan TO anon;
+GRANT ALL ON TABLE public.alokasi_dosen_tambahan TO authenticated;
+
 DROP FUNCTION IF EXISTS public.get_dosen_alokasi(text, smallint, text);
 -- Update get_dosen_alokasi
 CREATE OR REPLACE FUNCTION public.get_dosen_alokasi(p_token TEXT, p_tahun SMALLINT, p_jenis TEXT DEFAULT NULL)
@@ -164,3 +167,7 @@ BEGIN
   ORDER BY m.bulan_num;
 END;
 $$;
+
+GRANT EXECUTE ON FUNCTION public.get_dosen_alokasi(TEXT, SMALLINT, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_dosen_realisasi(TEXT, SMALLINT, TEXT) TO anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.get_dosen_dashboard_stats(TEXT, SMALLINT) TO anon, authenticated;
