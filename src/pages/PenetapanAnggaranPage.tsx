@@ -44,12 +44,16 @@ export function PenetapanAnggaranPage() {
   const [prodiSearchQuery, setProdiSearchQuery] = useState('');
   const prodiDropdownRef = useRef<HTMLDivElement>(null);
 
+  const fakultasMenuRef = useRef<HTMLDivElement>(null);
+  const prodiMenuRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (fakultasDropdownRef.current && !fakultasDropdownRef.current.contains(event.target as Node)) {
+      const t = event.target as Node;
+      if (fakultasDropdownRef.current && !fakultasDropdownRef.current.contains(t) && !fakultasMenuRef.current?.contains(t)) {
         setIsFakultasDropdownOpen(false);
       }
-      if (prodiDropdownRef.current && !prodiDropdownRef.current.contains(event.target as Node)) {
+      if (prodiDropdownRef.current && !prodiDropdownRef.current.contains(t) && !prodiMenuRef.current?.contains(t)) {
         setIsProdiDropdownOpen(false);
       }
     }
@@ -876,7 +880,7 @@ export function PenetapanAnggaranPage() {
                             <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                           </div>
                           {isFakultasDropdownOpen && (
-                            <div className="absolute z-50 w-[240px] left-0 mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl flex flex-col max-h-[220px]">
+                            <div ref={fakultasMenuRef} className="absolute z-50 w-[240px] left-0 mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl flex flex-col max-h-[220px]">
                               <div className="p-2 border-b border-[#E4E7EC]">
                                 <div className="relative">
                                   <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
@@ -892,7 +896,7 @@ export function PenetapanAnggaranPage() {
                                 ))}
                               </div>
                               <div className="p-2 border-t border-[#E4E7EC] bg-[#F9FAFB] rounded-b-[8px]">
-                                <button onClick={() => { setIsFakultasDropdownOpen(false); setAddFakultasModalOpen(true); }} className="text-[11px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded transition-colors w-full text-left px-2 flex items-center gap-1">
+                                <button type="button" onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setIsFakultasDropdownOpen(false); setAddFakultasModalOpen(true); }} className="text-[11px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded transition-colors w-full text-left px-2 flex items-center gap-1">
                                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg> Tambah Fakultas Baru
                                 </button>
                               </div>
@@ -912,7 +916,7 @@ export function PenetapanAnggaranPage() {
                             <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#98A2B3] pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
                           </div>
                           {isProdiDropdownOpen && (
-                            <div className="absolute z-50 w-[240px] right-0 mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl flex flex-col max-h-[220px]">
+                            <div ref={prodiMenuRef} className="absolute z-50 w-[240px] right-0 mt-1 bg-white border border-[#E4E7EC] rounded-[8px] shadow-xl flex flex-col max-h-[220px]">
                               <div className="p-2 border-b border-[#E4E7EC]">
                                 <div className="relative">
                                   <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
@@ -927,7 +931,7 @@ export function PenetapanAnggaranPage() {
                                 ))}
                               </div>
                               <div className="p-2 border-t border-[#E4E7EC] bg-[#F9FAFB] rounded-b-[8px]">
-                                <button onClick={() => { setIsProdiDropdownOpen(false); setAddProdiModalOpen(true); }} className="text-[11px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded transition-colors w-full text-left px-2 flex items-center gap-1">
+                                <button type="button" onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); setIsProdiDropdownOpen(false); setAddProdiModalOpen(true); }} className="text-[11px] font-semibold text-[#8F2438] hover:bg-[#FDF5F6] py-1.5 rounded transition-colors w-full text-left px-2 flex items-center gap-1">
                                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg> Tambah Prodi Baru
                                 </button>
                               </div>
