@@ -12,6 +12,7 @@ import { AnggaranService } from '../services/anggaranService';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import type { AlokasiAnggaran, Dosen, BudgetType } from '../types';
 import { AnimatedNumber } from '../components/ui/AnimatedNumber';
+import { exportPenetapanExcel } from '../utils/exportPenetapan';
 
 type BudgetFilter = 'all' | 'OPEX' | 'CAPEX';
 type StatusFilter = 'all' | 'OVER_BUDGET' | 'TERSEDIA';
@@ -268,6 +269,16 @@ export function PenetapanAnggaranPage() {
     return 0;
   });
 
+  const handleExport = async () => {
+    try {
+      const n = await exportPenetapanExcel(filtered, dosenList, year);
+      if (n === 0) showToast('Tidak ada data untuk diexport sesuai filter.', 'error');
+      else showToast('Excel berhasil diexport.');
+    } catch (err: any) {
+      showToast(err.message || 'Gagal export Excel.', 'error');
+    }
+  };
+
   const totalAnggaran = alokasiList.reduce((s, a) => s + a.nominal, 0);
 
   const selectedDosen = dosenList.find(d => d.id === selectedDosenId);
@@ -285,7 +296,7 @@ export function PenetapanAnggaranPage() {
             buttonClassName="text-xs font-semibold bg-white border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
             dropdownClassName="w-full mt-1 right-0"
           />
-          <Button variant="secondary" size="sm" icon={
+          <Button variant="secondary" size="sm" onClick={handleExport} icon={
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
