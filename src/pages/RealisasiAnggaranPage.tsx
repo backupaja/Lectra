@@ -11,7 +11,7 @@ import { AnggaranService } from '../services/anggaranService';
 import { RealisasiService } from '../services/realisasiService';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import type { AlokasiAnggaran, RealisasiAnggaran, Dosen } from '../types';
-import { exportPenetapanExcel } from '../utils/exportPenetapan';
+import { ExportRealisasiModal } from '../components/ExportRealisasiModal';
 
 const parseKeperluan = (str: string): string[] => {
   try {
@@ -137,15 +137,8 @@ export function RealisasiAnggaranPage() {
     return matchSearch && matchJenis;
   });
 
-  const handleExport = async () => {
-    try {
-      const n = await exportPenetapanExcel(filtered, dosenList, year);
-      if (n === 0) showToast('Tidak ada data untuk diexport sesuai filter.', 'error');
-      else showToast('Excel berhasil diexport.');
-    } catch (err: any) {
-      showToast(err.message || 'Gagal export Excel.', 'error');
-    }
-  };
+  const [exportOpen, setExportOpen] = useState(false);
+  const handleExport = () => setExportOpen(true);
 
   const selectedAlokasi = selectedAlokasiId ? alokasiList.find(a => a.id === selectedAlokasiId) : null;
   const selectedDosen = selectedAlokasi ? dosenList.find(d => d.id === selectedAlokasi.dosenId) : null;
@@ -279,6 +272,16 @@ export function RealisasiAnggaranPage() {
           </Button>
         </div>
       </div>
+
+      <ExportRealisasiModal
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        year={year}
+        alokasiList={alokasiList}
+        dosenList={dosenList}
+        initialJenis={filterJenis}
+        onDone={(msg, type) => showToast(msg, type)}
+      />
 
       <div className="flex gap-5 flex-1 min-h-0 flex-col lg:flex-row">
         {/* Left — Allocation list */}
