@@ -2,6 +2,10 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+:root {
+  color-scheme: only light;
+}
+
 @theme {
   --color-primary: #8F2438;
   --color-primary-hover: #761D2E;
