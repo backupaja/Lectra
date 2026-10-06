@@ -289,23 +289,23 @@ export function PenetapanAnggaranPage() {
       {/* Page header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <h1 className="text-xl font-bold text-[#1F2937]">Penetapan Anggaran</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 lg:gap-3 w-full lg:w-auto">
           <CustomSelect
             value={year}
             onChange={(val) => setYear(Number(val))}
             options={getDynamicYearOptions()}
-            buttonClassName="text-xs font-semibold bg-white border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 min-w-[80px]"
+            buttonClassName="text-xs font-semibold bg-white border border-[#E4E7EC] rounded-[10px] px-3 py-1.5 text-[#1F2937] outline-none hover:bg-gray-50 cursor-pointer shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20 w-fit"
             dropdownClassName="w-full mt-1 right-0"
           />
           <BaPenetapanButton year={year} onToast={(m, t) => showToast(m, t)} />
-          <Button variant="secondary" size="sm" onClick={handleExport} icon={
+          <Button variant="secondary" size="sm" className="whitespace-nowrap" onClick={handleExport} icon={
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
           }>
             Export Excel
           </Button>
-          <Button onClick={() => { setAlokasiForm(f => ({ ...f, tahun: year })); setModalOpen(true); }} icon={
+          <Button size="sm" className="whitespace-nowrap" onClick={() => { setAlokasiForm(f => ({ ...f, tahun: year })); setModalOpen(true); }} icon={
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
