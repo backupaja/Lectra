@@ -83,7 +83,7 @@ export function PenetapanAnggaranPage() {
     nama: '', nip: '', fakultas: '', programStudi: '', statusDosen: 'Aktif'
   });
   const [alokasiForm, setAlokasiForm] = useState({
-    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala'
+    tahun: 2026, jenis: 'OPEX' as BudgetType, keperluanList: [''], pertanggunganList: [''], kelompokKeahlian: '', nominal: '', keterangan: '', jabatanAwal: 'Lektor', targetJabatan: 'Lektor Kepala', anggotaTambahan: [] as { dosen_id: string }[]
   });
   const [viewKeperluanList, setViewKeperluanList] = useState<{ items: string[], name: string } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -171,7 +171,8 @@ export function PenetapanAnggaranPage() {
       nominal: alok.nominal ? 'Rp ' + alok.nominal.toLocaleString('id-ID') : '',
       keterangan: alok.keterangan || '',
       jabatanAwal: alok.jabatanAwal || 'Lektor',
-      targetJabatan: alok.targetJabatan || 'Lektor Kepala'
+      targetJabatan: alok.targetJabatan || 'Lektor Kepala',
+      anggotaTambahan: alok.anggotaTambahan || []
     });
     setModalOpen(true);
   };
@@ -200,6 +201,7 @@ export function PenetapanAnggaranPage() {
       if (editingAlokasiId) {
         await AnggaranService.updateAlokasi(editingAlokasiId, {
           dosenId: finalDosenId,
+          anggotaTambahan: alokasiForm.anggotaTambahan,
           tahun: alokasiForm.tahun,
           jenis: alokasiForm.jenis,
           keperluan: stringifiedKeperluan,
@@ -214,6 +216,7 @@ export function PenetapanAnggaranPage() {
       } else {
         await AnggaranService.createAlokasi({
           dosenId: finalDosenId,
+          anggotaTambahan: alokasiForm.anggotaTambahan,
           tahun: alokasiForm.tahun,
           jenis: alokasiForm.jenis,
           keperluan: stringifiedKeperluan,
@@ -701,6 +704,52 @@ export function PenetapanAnggaranPage() {
                     <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                     Ganti Dosen
                   </button>
+                </div>
+              </div>
+            )}
+
+            {/* Anggota Tambahan Selection */}
+            {selectedDosen && (
+              <div className="mt-4 p-3 bg-white border border-[#E4E7EC] rounded-[10px] shadow-sm">
+                <p className="text-[11px] font-semibold text-[#667085] uppercase tracking-wide mb-2.5">Anggota Tim (Opsional)</p>
+                <div className="flex flex-col gap-2">
+                  {alokasiForm.anggotaTambahan.map((anggota, i) => {
+                    const d = dosenList.find(x => x.id === anggota.dosen_id);
+                    return (
+                      <div key={i} className="flex items-center justify-between px-3 py-2 bg-[#F9FAFB] border border-[#E4E7EC] rounded-lg">
+                        <div>
+                          <p className="text-[11px] font-bold text-[#1F2937]">{d?.nama || 'Unknown'}</p>
+                          <p className="text-[10px] text-[#667085]">{d?.nip}</p>
+                        </div>
+                        <button
+                          onClick={() => setAlokasiForm({ ...alokasiForm, anggotaTambahan: alokasiForm.anggotaTambahan.filter((_, idx) => idx !== i) })}
+                          className="text-[#98A2B3] hover:text-[#B42318] p-1 rounded transition-colors"
+                          title="Hapus anggota"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                      </div>
+                    );
+                  })}
+                  
+                  <div className="relative">
+                    <select
+                      className="w-full px-3 py-2 text-xs bg-white border border-[#E4E7EC] rounded-[8px] outline-none focus:border-[#8F2438] focus:ring-2 focus:ring-[#8F2438]/15 text-[#1F2937]"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val && !alokasiForm.anggotaTambahan.find(a => a.dosen_id === val) && val !== selectedDosenId) {
+                          setAlokasiForm({ ...alokasiForm, anggotaTambahan: [...alokasiForm.anggotaTambahan, { dosen_id: val }] });
+                        }
+                        e.target.value = "";
+                      }}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>+ Tambah Anggota Tim...</option>
+                      {dosenList.filter(d => d.id !== selectedDosenId && !alokasiForm.anggotaTambahan.find(a => a.dosen_id === d.id)).map(d => (
+                        <option key={d.id} value={d.id}>{d.nama} ({d.nip})</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
             )}

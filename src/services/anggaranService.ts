@@ -71,11 +71,10 @@ export const AnggaranService = {
     if (error) throw error;
   },
 
-  // 4. Ambil data alokasi
   getAlokasi: async (tahun: number): Promise<(AlokasiAnggaran & { totalRealisasi: number })[]> => {
     const { data: alokasiData, error: alokasiError } = await supabase
       .from('alokasi_anggaran')
-      .select('*, realisasi_anggaran(nominal)')
+      .select('*, realisasi_anggaran(nominal), alokasi_dosen_tambahan(dosen_id, dosen(nama))')
       .eq('tahun', tahun);
       
     if (alokasiError) throw alokasiError;
@@ -95,6 +94,7 @@ export const AnggaranService = {
       return {
         id: a.id,
         dosenId: a.dosen_id,
+        anggotaTambahan: a.alokasi_dosen_tambahan || [],
         tahun: a.tahun,
         keperluan: a.keperluan,
         pertanggungan: a.pertanggungan,
@@ -112,7 +112,7 @@ export const AnggaranService = {
 
   // 4. Tambah alokasi
   createAlokasi: async (data: Omit<AlokasiAnggaran, 'id' | 'status'>): Promise<void> => {
-    const { error } = await supabase
+    const { data: alokasiData, error } = await supabase
       .from('alokasi_anggaran')
       .insert({
         dosen_id: data.dosenId,
@@ -125,9 +125,18 @@ export const AnggaranService = {
         keterangan: data.keterangan || null,
         jabatan_awal: data.jabatanAwal || null,
         target_jabatan: data.targetJabatan || null
-      });
+      })
+      .select('id')
+      .single();
       
     if (error) throw error;
+
+    if (alokasiData && data.anggotaTambahan && data.anggotaTambahan.length > 0) {
+      const { error: anggotaError } = await supabase
+        .from('alokasi_dosen_tambahan')
+        .insert(data.anggotaTambahan.map(a => ({ alokasi_id: alokasiData.id, dosen_id: a.dosen_id })));
+      if (anggotaError) throw anggotaError;
+    }
   },
 
   // 5. Update alokasi
@@ -144,12 +153,28 @@ export const AnggaranService = {
     if (data.jabatanAwal !== undefined) updates.jabatan_awal = data.jabatanAwal;
     if (data.targetJabatan !== undefined) updates.target_jabatan = data.targetJabatan;
 
-    const { error } = await supabase
-      .from('alokasi_anggaran')
-      .update(updates)
-      .eq('id', id);
-      
-    if (error) throw error;
+    if (Object.keys(updates).length > 0) {
+      const { error } = await supabase
+        .from('alokasi_anggaran')
+        .update(updates)
+        .eq('id', id);
+        
+      if (error) throw error;
+    }
+
+    if (data.anggotaTambahan !== undefined) {
+      // Hapus yang lama
+      const { error: delError } = await supabase.from('alokasi_dosen_tambahan').delete().eq('alokasi_id', id);
+      if (delError) throw delError;
+
+      // Insert yang baru
+      if (data.anggotaTambahan.length > 0) {
+        const { error: insError } = await supabase
+          .from('alokasi_dosen_tambahan')
+          .insert(data.anggotaTambahan.map(a => ({ alokasi_id: id, dosen_id: a.dosen_id })));
+        if (insError) throw insError;
+      }
+    }
   },
 
   // 6. Hapus alokasi
