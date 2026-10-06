@@ -311,16 +311,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           <div className="w-full lg:w-[420px]">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-[13px] font-bold text-[#1F2937]">Realisasi per Bulan ({year})</h3>
-              <CustomSelect
-                value="Nominal"
-                onChange={() => { }}
-                options={[
-                  { label: 'Nominal', value: 'Nominal' },
-                  { label: 'Persentase', value: 'Persentase' },
-                ]}
-                buttonClassName="appearance-none text-[10px] font-medium bg-white border border-[#E4E7EC] rounded px-1.5 py-0.5 text-[#667085] outline-none cursor-pointer hover:bg-gray-50 shadow-sm transition-all focus:border-[#8F2438] focus:ring-1 focus:ring-[#8F2438]/20"
-                dropdownClassName="w-[100px] right-0 mt-1"
-              />
+
             </div>
             <div className="h-[140px]">
               <MonthlyChart data={monthlyData} />
