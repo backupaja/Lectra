@@ -78,14 +78,13 @@ function main() {
 
   // ── Migration 25: Add new columns ─────────────────────────────────────────
   const sql25 = `-- 25_add_dosen_columns.sql
--- Adds nuptk and loker columns to dosen table (non-destructive)
+-- Adds nuptk column to dosen table (non-destructive)
+-- Note: program_studi and fakultas already exist; loker is parsed into those two columns
 
 ALTER TABLE public.dosen
-  ADD COLUMN IF NOT EXISTS nuptk TEXT,
-  ADD COLUMN IF NOT EXISTS loker TEXT;
+  ADD COLUMN IF NOT EXISTS nuptk TEXT;
 
 COMMENT ON COLUMN public.dosen.nuptk IS 'Nomor Unik Pendidik dan Tenaga Kependidikan';
-COMMENT ON COLUMN public.dosen.loker IS 'Lokasi Kerja (raw dari DATABASE DOSEN LECTRA)';
 `;
 
   // ── Migration 26: UPSERT all dosen ────────────────────────────────────────
