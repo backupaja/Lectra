@@ -19,13 +19,26 @@ function parseDosenToken(): string | null {
 
 export default function App() {
   const [page, setPage] = useState<Page>(() => {
+    const path = window.location.pathname;
+    if (path === '/login' || path === '/admin') return 'login';
+    
     const saved = localStorage.getItem('lectra_page');
-    return (saved as Page) || 'login';
+    // If not authenticated, force public unless explicitly at /login
+    return (saved as Page) === 'dashboard' ? 'dashboard' : 'public';
   });
+  
+  const [cameFromLogin, setCameFromLogin] = useState(() => 
+    window.location.pathname === '/login' || window.location.pathname === '/admin'
+  );
+  
   const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('lectra_page', page);
+    if (page !== 'login' && page !== 'public') {
+      localStorage.setItem('lectra_page', page);
+    } else if (page === 'login') {
+      localStorage.removeItem('lectra_page');
+    }
   }, [page]);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [dosenToken, setDosenToken] = useState<string | null>(parseDosenToken);
@@ -49,11 +62,11 @@ export default function App() {
           setIsAuthed(true);
           setPage(prev => prev === 'login' ? 'dashboard' : prev);
         } else {
-          setPage(prev => (prev !== 'login' && prev !== 'public') ? 'login' : prev);
+          setPage(prev => (prev !== 'login' && prev !== 'public') ? 'public' : prev);
         }
       } catch (err) {
         console.error('Error checking auth:', err);
-        setPage(prev => (prev !== 'login' && prev !== 'public') ? 'login' : prev);
+        setPage(prev => (prev !== 'login' && prev !== 'public') ? 'public' : prev);
       } finally {
         setIsAuthLoading(false);
       }
@@ -94,11 +107,11 @@ export default function App() {
   }
 
   if (page === 'login') {
-    return <LoginPage onLogin={handleLogin} onPublic={() => setPage('public')} />;
+    return <LoginPage onLogin={handleLogin} onPublic={() => { setCameFromLogin(true); setPage('public'); }} />;
   }
 
   if (page === 'public') {
-    return <PublicDashboard onLogin={() => setPage('login')} />;
+    return <PublicDashboard onLogin={() => setPage('login')} showLoginButton={cameFromLogin} />;
   }
 
   return (

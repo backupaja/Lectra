@@ -21,11 +21,12 @@ import {
 
 interface PublicDashboardProps {
   onLogin: () => void;
+  showLoginButton?: boolean;
 }
 
 type BudgetFilter = 'all' | 'opex' | 'capex';
 
-export function PublicDashboard({ onLogin }: PublicDashboardProps) {
+export function PublicDashboard({ onLogin, showLoginButton }: PublicDashboardProps) {
   const [filter, setFilter] = useState<BudgetFilter>('all');
   const [year, setYear] = useState(2026);
   const [isLoading, setIsLoading] = useState(true);
@@ -224,6 +225,16 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
               <div className="text-[11px] font-medium text-[#667085] leading-none">Dashboard Publik</div>
             </div>
           </div>
+          {showLoginButton && (
+            <div className="flex items-center">
+              <button 
+                onClick={onLogin}
+                className="text-xs font-medium text-[#8F2438] hover:bg-[#FDF5F6] px-3 py-1.5 rounded-lg transition-colors border border-transparent hover:border-[#F9D0D6]"
+              >
+                Login Admin
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
