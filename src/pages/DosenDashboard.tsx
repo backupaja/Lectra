@@ -46,7 +46,9 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
         const d: Dosen = {
           id: data.id,
           nama: data.nama,
-          nip: '', // Not returned by RPC
+          nip: data.nip || '',
+          nuptk: data.nuptk || '-',
+          jabatanFungsional: data.jabatan_fungsional || '-',
           fakultas: data.fakultas || '',
           programStudi: data.program_studi || '',
           statusDosen: data.status || 'AKTIF',
@@ -225,8 +227,18 @@ export function DosenDashboard({ token, onBack }: DosenDashboardProps) {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-[#1F2937]">{dosen.nama}</h1>
-                <p className="text-sm text-[#667085] mt-0.5">{dosen.fakultas} · {dosen.programStudi}</p>
-                <p className="text-xs text-[#98A2B3] mt-0.5">{dosen.programStudi}</p>
+                <p className="text-sm text-[#667085] mt-1 font-medium font-mono">{dosen.nip} {dosen.nuptk && dosen.nuptk !== '-' ? `· NUPTK: ${dosen.nuptk}` : ''}</p>
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+                    {dosen.jabatanFungsional}
+                  </span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    {dosen.statusDosen}
+                  </span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-[#FDECEC] text-[#B42318] border border-[#FDECEC]">
+                    {dosen.programStudi} · {dosen.fakultas}
+                  </span>
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">

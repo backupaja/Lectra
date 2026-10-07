@@ -6,6 +6,8 @@ export interface Dosen {
   id: string;
   nama: string;
   nip: string;
+  nuptk?: string;
+  jabatanFungsional?: string;
   fakultas: string;
   programStudi: string;
   statusDosen: string;
