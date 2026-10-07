@@ -55,8 +55,8 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-[#8F2438] uppercase tracking-wider mb-0.5">Transparansi</p>
-                <p className="text-sm font-bold text-[#1F2937] leading-none">Real-time Data</p>
+                <p className="text-[10px] font-bold text-[#8F2438] uppercase tracking-wider mb-0.5">Tahun Anggaran</p>
+                <p className="text-sm font-bold text-[#1F2937] leading-none">Periode 2026</p>
               </div>
             </div>
           </div>
@@ -71,8 +71,8 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-[10px] font-bold text-[#047857] uppercase tracking-wider mb-0.5">Keamanan</p>
-                <p className="text-sm font-bold text-[#1F2937] leading-none">Sistem Terpadu</p>
+                <p className="text-[10px] font-bold text-[#047857] uppercase tracking-wider mb-0.5">Status Portal</p>
+                <p className="text-sm font-bold text-[#1F2937] leading-none">Aktif & Online</p>
               </div>
             </div>
           </div>
