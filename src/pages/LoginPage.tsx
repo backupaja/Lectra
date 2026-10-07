@@ -34,57 +34,75 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex bg-white font-sans">
+    <div className="h-screen w-full overflow-hidden flex bg-white font-sans">
       {/* Left side - Animation & Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-[#FAFAFA] flex-col justify-between overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 relative bg-[#FAFAFA] flex-col overflow-hidden">
         {/* Abstract Background Element */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-[#8F2438]/5 to-transparent blur-3xl" />
+          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-[#8F2438]/5 to-transparent blur-3xl animate-pulse" />
           <div className="absolute -bottom-[20%] -right-[10%] w-[80%] h-[80%] rounded-full bg-gradient-to-tl from-[#8F2438]/5 to-transparent blur-3xl" />
         </div>
 
         <div className="relative z-10 p-12 flex flex-col h-full">
-          <div>
-            <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-10 object-contain" />
-          </div>
           
-          <div className="flex-1 flex flex-col justify-center items-center -mt-10">
-            <div className="w-full max-w-lg aspect-square relative">
+          <div className="flex-1 flex flex-col justify-center items-center -mt-8">
+            <div className="w-full max-w-lg aspect-square relative hover:scale-[1.02] transition-transform duration-700">
               <DotLottieReact
                 src="/employee-content.json"
                 loop
                 autoplay
-                className="w-full h-full object-contain scale-110 drop-shadow-xl"
+                className="w-full h-full object-contain scale-110 drop-shadow-2xl"
               />
             </div>
           </div>
           
-          <div className="mt-auto">
-            <h2 className="text-2xl font-bold text-[#1F2937] mb-2">Lecturer Budget System</h2>
-            <p className="text-[#667085] leading-relaxed max-w-md">
-              Platform transparansi dan manajemen anggaran dosen terintegrasi.
-              Kelola alokasi, realisasi, dan pantau pencapaian JAD dengan mudah.
-            </p>
+          {/* Interactive Info Panel */}
+          <div className="mt-auto group cursor-default relative w-full max-w-lg mx-auto">
+            {/* Glowing backdrop */}
+            <div className="absolute -inset-1 bg-gradient-to-r from-[#8F2438]/20 to-[#631826]/20 rounded-2xl blur-lg group-hover:opacity-100 opacity-0 transition duration-500"></div>
+            
+            <div className="relative bg-white/50 backdrop-blur-md border border-white/80 p-7 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform duration-300">
+              <h2 className="text-2xl font-bold text-[#1F2937] mb-2 bg-gradient-to-r from-[#8F2438] to-[#4A0D18] bg-clip-text text-transparent">Lecturer Budget System</h2>
+              <p className="text-[#475467] leading-relaxed text-sm">
+                Platform transparansi dan manajemen anggaran dosen terintegrasi.
+                Kelola alokasi, pantau realisasi, dan track pencapaian JAD secara cerdas.
+              </p>
+              
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-[#8F2438] font-semibold text-xs">
+                <div className="flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  Real-time Tracking
+                </div>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#D0D5DD]"></div>
+                <div className="flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300 delay-75">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Secure System
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Right side - Login Form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-16 xl:px-24 2xl:px-32 relative bg-white">
-        <div className="w-full max-w-[400px] mx-auto">
-          {/* Mobile Logo */}
-          <div className="lg:hidden mb-12 flex justify-center">
-            <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-12 object-contain" />
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 sm:px-16 xl:px-24 2xl:px-32 relative bg-white overflow-y-auto">
+        <div className="w-full max-w-[400px] mx-auto py-8">
+          
+          <div className="mb-10 text-center lg:text-left">
+            <div className="flex justify-center lg:justify-start items-center mb-8">
+              <img src="/logo-wide.png" alt="DigiLectra Logo" className="h-14 object-contain lg:-ml-3" />
+            </div>
+            <h1 className="text-3xl font-bold text-[#1F2937] mb-2">Selamat Datang</h1>
+            <p className="text-[#667085] text-sm">Masuk ke akun Anda untuk mengakses sistem.</p>
           </div>
 
-          <div className="mb-10">
-            <h1 className="text-3xl font-bold text-[#1F2937] mb-3">Selamat Datang</h1>
-            <p className="text-[#667085] text-sm">Masuk ke akun Anda untuk melanjutkan ke dashboard admin.</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-[#344054]">Alamat Email</label>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[13px] font-semibold text-[#344054]">Alamat Email</label>
               <input
                 type="email"
                 value={email}
@@ -94,8 +112,8 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
               />
             </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-[#344054]">Kata Sandi</label>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[13px] font-semibold text-[#344054]">Kata Sandi</label>
               <div className="relative">
                 <input
                   type={showPass ? 'text' : 'password'}
@@ -124,7 +142,7 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
             </div>
 
             {error && (
-              <div className="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-100 mt-2">
+              <div className="flex items-start gap-3 p-3.5 bg-red-50 rounded-xl border border-red-100 mt-1">
                 <svg className="w-5 h-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
@@ -142,15 +160,15 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
           </form>
 
           {/* Subtle text link for public dashboard */}
-          <div className="mt-10 flex flex-col items-center gap-6">
+          <div className="mt-8 flex flex-col items-center gap-6">
             <div className="h-px w-full bg-gradient-to-r from-transparent via-[#E4E7EC] to-transparent"></div>
-            <p className="text-sm text-[#667085]">
+            <p className="text-[13px] text-[#667085]">
               Ingin melihat transparansi data?{' '}
               <button 
                 onClick={onPublic}
                 className="font-semibold text-[#8F2438] hover:text-[#631826] transition-colors hover:underline focus:outline-none"
               >
-                Akses Dashboard Publik &rarr;
+                Dashboard Publik &rarr;
               </button>
             </p>
           </div>
