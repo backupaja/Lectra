@@ -16,43 +16,38 @@ export interface PenyerapanPerDosen {
 
 export const AnalitikService = {
 
-  // 1. Tren penyerapan per tahun
   getTrenPenyerapan: async (tahunAwal?: number, tahunAkhir?: number, jenis?: string): Promise<TrenPenyerapan[]> => {
-    let query = supabase
-      .from('alokasi_anggaran')
-      .select('tahun, nominal_anggaran, jenis_anggaran, realisasi_anggaran(nominal)')
-      .order('tahun', { ascending: true });
-
-    if (tahunAwal) query = query.gte('tahun', tahunAwal);
-    if (tahunAkhir) query = query.lte('tahun', tahunAkhir);
-    if (jenis && jenis !== 'SEMUA') query = query.eq('jenis_anggaran', jenis);
-
-    const { data, error } = await query;
-
+    // Gunakan RPC yang sama dengan dashboard agar RLS tidak memblokir query anon
+    const { data, error } = await supabase.rpc('get_public_yearly_summary');
     if (error) throw error;
 
-    // Group by tahun
-    const byTahun = new Map<number, { anggaran: number; realisasi: number }>();
-    for (const row of data as any[]) {
-      const t = row.tahun as number;
-      const nominal = Number(row.nominal_anggaran);
-      const real = (row.realisasi_anggaran as any[]).reduce(
-        (s: number, r: any) => s + Number(r.nominal),
-        0
-      );
-      const existing = byTahun.get(t) ?? { anggaran: 0, realisasi: 0 };
-      byTahun.set(t, {
-        anggaran: existing.anggaran + nominal,
-        realisasi: existing.realisasi + real,
-      });
-    }
+    let results = data || [];
 
-    return Array.from(byTahun.entries()).map(([tahun, v]) => ({
-      tahun,
-      totalAnggaran: v.anggaran,
-      totalRealisasi: v.realisasi,
-      persentase: v.anggaran > 0 ? (v.realisasi / v.anggaran) * 100 : 0,
-    }));
+    // Filter berdasarkan tahun
+    if (tahunAwal) results = results.filter((r: any) => r.tahun >= tahunAwal);
+    if (tahunAkhir) results = results.filter((r: any) => r.tahun <= tahunAkhir);
+
+    return results.map((r: any) => {
+      let anggaran = 0;
+      let realisasi = 0;
+      if (jenis === 'OPEX') {
+        anggaran = Number(r.opex || 0);
+        realisasi = Number(r.opex_realisasi || 0);
+      } else if (jenis === 'CAPEX') {
+        anggaran = Number(r.capex || 0);
+        realisasi = Number(r.capex_realisasi || 0);
+      } else {
+        anggaran = Number(r.total_anggaran || 0);
+        realisasi = Number(r.total_realisasi || 0);
+      }
+
+      return {
+        tahun: r.tahun,
+        totalAnggaran: anggaran,
+        totalRealisasi: realisasi,
+        persentase: anggaran > 0 ? (realisasi / anggaran) * 100 : 0
+      };
+    });
   },
 
   // 2. Penyerapan per dosen dengan filter tahun, bulan, jenis
