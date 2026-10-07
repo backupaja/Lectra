@@ -581,7 +581,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
         onClose={() => setIsModalOpen(false)}
         title={`Daftar Penerima ${filterJenis}`}
         subtitle={`Rincian dosen penerima anggaran ${filterJenis} tahun ${year}.`}
-        size="2xl"
+        size="4xl"
       >
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full mb-4">
           <div className="relative w-full flex-1">
@@ -616,35 +616,47 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#F7F7F8] border-b border-[#E4E7EC]">
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] w-10 text-center whitespace-nowrap">No</th>
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">NIP</th>
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Nama Dosen</th>
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Fakultas</th>
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Prodi</th>
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] whitespace-nowrap">Jenis</th>
-                <th className="py-2.5 px-3 text-[11px] font-semibold text-[#667085] text-right whitespace-nowrap">Nominal</th>
+                <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] w-10 text-center whitespace-nowrap">No</th>
+                <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] whitespace-nowrap">NIP</th>
+                <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] whitespace-nowrap">Nama Dosen</th>
+                <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] whitespace-nowrap">Fakultas</th>
+                <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] whitespace-nowrap">Prodi</th>
+                <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] text-right whitespace-nowrap">Nominal</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E4E7EC]">
               {isJadLoading ? (
-                <tr><td colSpan={7} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
+                <tr><td colSpan={6} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
               ) : filteredPenerima.length > 0 ? (
-                filteredPenerima.map((item, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                    <td className="py-2.5 px-3 text-xs text-[#667085] text-center whitespace-nowrap">{idx + 1}</td>
-                    <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.nip}</td>
-                    <td className="py-2.5 px-3 text-xs font-medium whitespace-nowrap">
-                      <span className="text-[#1F2937] font-semibold">{item.nama}</span>
-                    </td>
-                    <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.fakultas}</td>
-                    <td className="py-2.5 px-3 text-xs text-[#667085] whitespace-nowrap">{item.program_studi}</td>
-                    <td className="py-2.5 px-3 text-xs text-[#1F2937] whitespace-nowrap">{item.jenis_anggaran}</td>
-                    <td className="py-2.5 px-3 text-xs font-medium text-[#1F2937] text-right whitespace-nowrap">{formatRupiah(item.nominal_anggaran)}</td>
-                  </tr>
+                Object.values(
+                  filteredPenerima.reduce((acc, item) => {
+                    if (!acc[item.alokasi_id]) acc[item.alokasi_id] = [];
+                    acc[item.alokasi_id].push(item);
+                    return acc;
+                  }, {} as Record<string, typeof filteredPenerima>)
+                ).map((group, groupIdx) => (
+                  <React.Fragment key={`group-${groupIdx}`}>
+                    {group.map((item, idx) => (
+                      <tr key={`${item.alokasi_id}-${item.dosen_id}`} className="hover:bg-gray-50 transition-colors">
+                        <td className="py-2 px-2 text-[11px] text-[#667085] text-center whitespace-nowrap">{groupIdx + 1}{group.length > 1 ? `.${idx + 1}` : ''}</td>
+                        <td className="py-2 px-2 text-[11px] text-[#667085] whitespace-nowrap">{item.nip}</td>
+                        <td className="py-2 px-2 text-[11px] font-medium whitespace-nowrap">
+                          <span className="text-[#1F2937] font-semibold">{item.nama}</span>
+                        </td>
+                        <td className="py-2 px-2 text-[11px] text-[#1F2937] whitespace-nowrap">{item.fakultas}</td>
+                        <td className="py-2 px-2 text-[11px] text-[#667085] whitespace-nowrap">{item.program_studi}</td>
+                        {idx === 0 && (
+                          <>
+                            <td rowSpan={group.length} className={`py-2 px-2 text-[11px] font-medium text-[#1F2937] text-right whitespace-nowrap align-top pt-2 ${group.length > 1 ? 'border-l border-[#E4E7EC] bg-gray-50/50' : ''}`}>{formatRupiah(item.nominal_anggaran)}</td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  </React.Fragment>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={7} className="py-8">
+                  <td colSpan={6} className="py-8">
                     <EmptyState title="Tidak ada data" description={`Tidak ada penerima ${filterJenis} pada tahun ${year}.`} />
                   </td>
                 </tr>
