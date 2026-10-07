@@ -119,12 +119,32 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const [{ data: yearly }, { data: monthly }, penerimaData, summaryData] = await Promise.all([
-        supabase.rpc('get_public_yearly_summary'),
-        supabase.rpc('get_public_monthly_summary', { p_tahun: year }),
-        JadService.getPublicPenerimaAnggaran(year, filterJenis),
-        JadService.getPublicJadSummary(year, filter === 'opex' ? 'OPEX' : filter === 'capex' ? 'CAPEX' : 'all')
-      ]);
+      // Fetch data individually to prevent one failure from breaking the whole page
+      let yearly = null;
+      let monthly = null;
+      let penerimaData: PublicPenerimaAnggaran[] = [];
+      let summaryData: PublicJadSummary | null = null;
+
+      try {
+        const res = await supabase.rpc('get_public_yearly_summary');
+        yearly = res.data;
+        if (res.error) console.error('Yearly error:', res.error);
+      } catch (e) { console.error(e); }
+
+      try {
+        const res = await supabase.rpc('get_public_monthly_summary', { p_tahun: year });
+        monthly = res.data;
+        if (res.error) console.error('Monthly error:', res.error);
+      } catch (e) { console.error(e); }
+
+      try {
+        penerimaData = await JadService.getPublicPenerimaAnggaran(year, filterJenis);
+      } catch (e) { console.error('Penerima error:', e); }
+
+      try {
+        summaryData = await JadService.getPublicJadSummary(year, filter === 'opex' ? 'OPEX' : filter === 'capex' ? 'CAPEX' : 'all');
+      } catch (e) { console.error('JAD Summary error:', e); }
+
       setPenerimaAnggaran(penerimaData);
       setJadSummary(summaryData);
       setIsJadLoading(false);
