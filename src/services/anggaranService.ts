@@ -31,6 +31,8 @@ export const AnggaranService = {
       id: d.id,
       nama: d.nama,
       nip: d.nip,
+      nuptk: d.nuptk,
+      jabatanFungsional: d.jabatan_fungsional,
       fakultas: d.fakultas,
       programStudi: d.program_studi,
       statusDosen: d.status,
@@ -45,6 +47,8 @@ export const AnggaranService = {
       .insert({
         nama: data.nama,
         nip: data.nip,
+        nuptk: data.nuptk || null,
+        jabatan_fungsional: data.jabatanFungsional || null,
         fakultas: data.fakultas,
         program_studi: data.programStudi,
         status: data.statusDosen
@@ -58,6 +62,8 @@ export const AnggaranService = {
       id: result.id,
       nama: result.nama,
       nip: result.nip,
+      nuptk: result.nuptk,
+      jabatanFungsional: result.jabatan_fungsional,
       fakultas: result.fakultas,
       programStudi: result.program_studi,
       statusDosen: result.status,
@@ -70,6 +76,8 @@ export const AnggaranService = {
     const updates: any = {};
     if (data.nama !== undefined) updates.nama = data.nama;
     if (data.nip !== undefined) updates.nip = data.nip;
+    if (data.nuptk !== undefined) updates.nuptk = data.nuptk || null;
+    if (data.jabatanFungsional !== undefined) updates.jabatan_fungsional = data.jabatanFungsional || null;
     if (data.fakultas !== undefined) updates.fakultas = data.fakultas;
     if (data.programStudi !== undefined) updates.program_studi = data.programStudi;
     if (data.statusDosen !== undefined) updates.status = data.statusDosen;

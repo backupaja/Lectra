@@ -7,10 +7,10 @@ interface ModalProps {
   subtitle?: string;
   children: React.ReactNode;
   footer?: React.ReactNode;
-  size?: 'md' | 'lg' | 'xl' | '2xl';
+  size?: 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl';
 }
 
-const sizeClasses = { md: 'max-w-md', lg: 'max-w-2xl', xl: 'max-w-3xl', '2xl': 'max-w-4xl' };
+const sizeClasses = { md: 'max-w-md', lg: 'max-w-2xl', xl: 'max-w-3xl', '2xl': 'max-w-4xl', '3xl': 'max-w-5xl', '4xl': 'max-w-6xl', '5xl': 'max-w-7xl' };
 
 export function Modal({ open, onClose, title, subtitle, children, footer, size = 'lg' }: ModalProps) {
   useEffect(() => {

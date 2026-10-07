@@ -10,12 +10,50 @@ import type {
 export const JadService = {
   // Public RPC: Penerima Anggaran
   getPublicPenerimaAnggaran: async (tahun: number, jenis: BudgetType): Promise<PublicPenerimaAnggaran[]> => {
-    const { data, error } = await supabase.rpc('get_public_penerima_anggaran', {
-      p_tahun: tahun,
-      p_jenis: jenis
-    });
+    const { data, error } = await supabase
+      .from('alokasi_anggaran')
+      .select('id, jenis_anggaran, nominal_anggaran, dosen(id, nip, nama, fakultas, program_studi), alokasi_dosen_tambahan(dosen(id, nip, nama, fakultas, program_studi))')
+      .eq('tahun', tahun)
+      .eq('jenis_anggaran', jenis);
+      
     if (error) throw error;
-    return data || [];
+    
+    const results: PublicPenerimaAnggaran[] = [];
+    (data || []).forEach(a => {
+      const d = a.dosen as any;
+      if (d) {
+        results.push({
+          dosen_id: d.id,
+          nip: d.nip,
+          nama: d.nama,
+          fakultas: d.fakultas,
+          program_studi: d.program_studi,
+          jenis_anggaran: a.jenis_anggaran,
+          nominal_anggaran: Number(a.nominal_anggaran),
+          alokasi_id: a.id
+        });
+      }
+      if (a.alokasi_dosen_tambahan) {
+        a.alokasi_dosen_tambahan.forEach((dt: any) => {
+          const td = dt.dosen;
+          if (td) {
+            results.push({
+              dosen_id: td.id,
+              nip: td.nip,
+              nama: td.nama,
+              fakultas: td.fakultas,
+              program_studi: td.program_studi,
+              jenis_anggaran: a.jenis_anggaran,
+              nominal_anggaran: Number(a.nominal_anggaran),
+              alokasi_id: a.id
+            });
+          }
+        });
+      }
+    });
+
+    results.sort((a, b) => a.nama.localeCompare(b.nama));
+    return results;
   },
 
   // Public RPC: JAD Summary

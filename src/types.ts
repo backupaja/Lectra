@@ -72,6 +72,7 @@ export interface PublicPenerimaAnggaran {
   program_studi: string;
   jenis_anggaran: string;
   nominal_anggaran: number;
+  alokasi_id: string;
 }
 
 export type JADStatus = 'BELUM ADA DATA' | 'DALAM PROSES' | 'TERCAPAI' | 'BELUM TERCAPAI' | 'TIDAK DITARGETKAN';
