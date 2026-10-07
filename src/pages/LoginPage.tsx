@@ -45,6 +45,38 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
 
         <div className="relative z-10 p-12 flex flex-col h-full w-full justify-center items-center">
           
+          {/* Floating Badge 1 - Top Left */}
+          <div className="absolute top-[15%] left-[10%] group cursor-default z-20 transition-all hover:-translate-y-2 duration-300">
+            <div className="absolute -inset-2 bg-gradient-to-r from-[#8F2438]/20 to-[#631826]/20 rounded-2xl blur-lg group-hover:opacity-100 opacity-0 transition duration-500"></div>
+            <div className="relative bg-white/70 backdrop-blur-md border border-white/90 px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8F2438] to-[#631826] flex items-center justify-center shadow-inner">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-[#8F2438] uppercase tracking-wider mb-0.5">Transparansi</p>
+                <p className="text-sm font-bold text-[#1F2937] leading-none">Real-time Data</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Badge 2 - Bottom Right */}
+          <div className="absolute bottom-[15%] right-[10%] group cursor-default z-20 transition-all hover:-translate-y-2 duration-300 hidden xl:block">
+            <div className="absolute -inset-2 bg-gradient-to-r from-emerald-500/20 to-emerald-700/20 rounded-2xl blur-lg group-hover:opacity-100 opacity-0 transition duration-500"></div>
+            <div className="relative bg-white/70 backdrop-blur-md border border-white/90 px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#10B981] to-[#047857] flex items-center justify-center shadow-inner">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-[#047857] uppercase tracking-wider mb-0.5">Keamanan</p>
+                <p className="text-sm font-bold text-[#1F2937] leading-none">Sistem Terpadu</p>
+              </div>
+            </div>
+          </div>
+
           <div className="w-full max-w-lg aspect-square relative hover:scale-[1.02] transition-transform duration-700 cursor-pointer">
             <DotLottieReact
               src="/employee-content.json"
