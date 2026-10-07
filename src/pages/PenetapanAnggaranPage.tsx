@@ -680,7 +680,7 @@ export function PenetapanAnggaranPage() {
                     {(() => {
                       const matches = dosenList.filter(d =>
                         d.nama.toLowerCase().includes(dosenSearchQuery.toLowerCase()) ||
-                        d.nip.includes(dosenSearchQuery)
+                        (d.nip || '').includes(dosenSearchQuery)
                       ).slice(0, 5);
                       if (matches.length === 0) return (
                         <div className="p-3 text-xs text-[#98A2B3] text-center">Data tidak ditemukan</div>

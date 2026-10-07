@@ -12,6 +12,7 @@ export const AnggaranService = {
     const { data, error } = await supabase
       .from('dosen')
       .select('*')
+      .limit(5000)
       .order('nama', { ascending: true });
       
     if (error) throw error;
