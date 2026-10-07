@@ -96,7 +96,7 @@ COMMENT ON COLUMN public.dosen.loker IS 'Lokasi Kerja (raw dari DATABASE DOSEN L
   lines.push(`-- Strategy: ON CONFLICT (nip) DO UPDATE → safe to re-run`);
   lines.push(``);
   lines.push(`INSERT INTO public.dosen`);
-  lines.push(`  (id, nip, nama, jabatan_fungsional, nuptk, status, program_studi, fakultas, loker)`);
+  lines.push(`  (id, nip, nama, jabatan_fungsional, nuptk, status, program_studi, fakultas)`);
   lines.push(`VALUES`);
 
   const valueLines = [];
@@ -115,7 +115,7 @@ COMMENT ON COLUMN public.dosen.loker IS 'Lokasi Kerja (raw dari DATABASE DOSEN L
     const { prodi, fakultas } = parseLoker(lokerRaw);
 
     valueLines.push(
-      `  (gen_random_uuid(), ${esc(nip)}, ${esc(nama)}, ${esc(jabatan)}, ${esc(nuptk)}, ${esc(status)}, ${esc(prodi)}, ${esc(fakultas)}, ${esc(lokerRaw)})`
+      `  (gen_random_uuid(), ${esc(nip)}, ${esc(nama)}, ${esc(jabatan)}, ${esc(nuptk)}, ${esc(status)}, ${esc(prodi)}, ${esc(fakultas)})`
     );
   }
 
@@ -127,7 +127,6 @@ COMMENT ON COLUMN public.dosen.loker IS 'Lokasi Kerja (raw dari DATABASE DOSEN L
   lines.push(`  status             = EXCLUDED.status,`);
   lines.push(`  program_studi      = EXCLUDED.program_studi,`);
   lines.push(`  fakultas           = EXCLUDED.fakultas,`);
-  lines.push(`  loker              = EXCLUDED.loker,`);
   lines.push(`  updated_at         = NOW();`);
   lines.push(``);
   lines.push(`-- Done. Total rows processed: ${dataRows.length}, skipped (empty): ${skipped}`);
