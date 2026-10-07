@@ -29,6 +29,7 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
   const [filter, setFilter] = useState<BudgetFilter>('all');
   const [year, setYear] = useState(2026);
   const [isLoading, setIsLoading] = useState(true);
+  const [apiError, setApiError] = useState<string | null>(null);
   const [stats, setStats] = useState({
     totalAnggaran: 0, totalRealisasi: 0,
     opex: 0, opexRealisasi: 0,
@@ -124,26 +125,30 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
       let monthly = null;
       let penerimaData: PublicPenerimaAnggaran[] = [];
       let summaryData: PublicJadSummary | null = null;
+      let errs: string[] = [];
 
       try {
         const res = await supabase.rpc('get_public_yearly_summary');
         yearly = res.data;
-        if (res.error) console.error('Yearly error:', res.error);
-      } catch (e) { console.error(e); }
+        if (res.error) errs.push('yearly: ' + res.error.message);
+      } catch (e: any) { errs.push('yearly (exc): ' + e.message); }
 
       try {
         const res = await supabase.rpc('get_public_monthly_summary', { p_tahun: year });
         monthly = res.data;
-        if (res.error) console.error('Monthly error:', res.error);
-      } catch (e) { console.error(e); }
+        if (res.error) errs.push('monthly: ' + res.error.message);
+      } catch (e: any) { errs.push('monthly (exc): ' + e.message); }
 
       try {
         penerimaData = await JadService.getPublicPenerimaAnggaran(year, filterJenis);
-      } catch (e) { console.error('Penerima error:', e); }
+      } catch (e: any) { errs.push('penerima: ' + e.message); }
 
       try {
         summaryData = await JadService.getPublicJadSummary(year, filter === 'opex' ? 'OPEX' : filter === 'capex' ? 'CAPEX' : 'all');
-      } catch (e) { console.error('JAD Summary error:', e); }
+      } catch (e: any) { errs.push('jadSummary: ' + e.message); }
+      
+      if (errs.length > 0) setApiError(errs.join(' | '));
+      else setApiError(null);
 
       setPenerimaAnggaran(penerimaData);
       setJadSummary(summaryData);
@@ -223,6 +228,13 @@ export function PublicDashboard({ onLogin }: PublicDashboardProps) {
       </header>
 
       <main className="max-w-full mx-auto px-4 lg:px-8 py-8">
+        {apiError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+            <strong className="font-bold">Error API: </strong>
+            <span className="block sm:inline">{apiError}</span>
+          </div>
+        )}
+        
         {/* Welcome + controls */}
         <div className="flex flex-wrap items-start justify-between gap-4 mb-7">
           <div>
