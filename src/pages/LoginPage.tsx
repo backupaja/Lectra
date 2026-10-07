@@ -36,40 +36,24 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
   return (
     <div className="h-screen w-full overflow-hidden flex bg-white font-sans">
       {/* Left side - Animation & Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-[#FAFAFA] flex-col overflow-hidden">
-        {/* Abstract Background Element */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-[#FAFAFA] flex-col items-center justify-center overflow-hidden">
+        {/* Subtle Grid Background */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8F24380D_1px,transparent_1px),linear-gradient(to_bottom,#8F24380D_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+        
+        {/* Abstract Glowing Orbs */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-[#8F2438]/5 to-transparent blur-3xl animate-pulse" />
+          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-[#8F2438]/10 to-transparent blur-3xl animate-pulse" />
           <div className="absolute -bottom-[20%] -right-[10%] w-[80%] h-[80%] rounded-full bg-gradient-to-tl from-[#8F2438]/5 to-transparent blur-3xl" />
         </div>
 
-        <div className="relative z-10 p-12 lg:p-16 flex flex-col h-full w-full">
-          
-          {/* Top Text Area */}
-          <div className="max-w-lg relative z-20">
-            <div className="inline-block px-3.5 py-1.5 bg-[#8F2438]/10 text-[#8F2438] text-[11px] font-bold rounded-full mb-5 uppercase tracking-widest border border-[#8F2438]/20 shadow-sm">
-              Sistem Admin Terpadu
-            </div>
-            <h2 className="text-3xl xl:text-4xl font-extrabold text-[#1F2937] leading-tight mb-4">
-              Manajemen Anggaran <br/> <span className="bg-gradient-to-r from-[#8F2438] to-[#631826] bg-clip-text text-transparent">Dosen & JAD</span>
-            </h2>
-            <p className="text-[#667085] text-base xl:text-lg leading-relaxed max-w-md">
-              Platform transparansi dan monitoring alokasi anggaran, realisasi dana, hingga target pencapaian akademik secara *real-time*.
-            </p>
-          </div>
-          
-          {/* Lottie Animation */}
-          <div className="flex-1 flex justify-center items-center mt-4">
-            <div className="w-full max-w-md xl:max-w-lg aspect-square relative hover:scale-[1.03] transition-transform duration-700 cursor-pointer">
-              <DotLottieReact
-                src="/employee-content.json"
-                loop
-                autoplay
-                className="w-full h-full object-contain drop-shadow-2xl"
-              />
-            </div>
-          </div>
-          
+        {/* Centered Animation */}
+        <div className="relative z-10 w-full max-w-lg aspect-square hover:scale-[1.02] transition-transform duration-700 cursor-pointer p-8">
+          <DotLottieReact
+            src="/employee-content.json"
+            loop
+            autoplay
+            className="w-full h-full object-contain drop-shadow-2xl"
+          />
         </div>
       </div>
 
