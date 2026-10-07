@@ -18,7 +18,8 @@ export const RealisasiService = {
       tanggal: r.tanggal_realisasi,
       nominal: Number(r.nominal),
       nomorSimkug: r.nomor_simkug || '',
-      keterangan: r.keterangan || ''
+      keterangan: r.keterangan || '',
+      dokumen: r.dokumen_path || ''
     }));
   },
 
@@ -31,7 +32,8 @@ export const RealisasiService = {
         tanggal_realisasi: data.tanggal,
         nominal: data.nominal,
         nomor_simkug: data.nomorSimkug || null,
-        keterangan: data.keterangan || null
+        keterangan: data.keterangan || null,
+        dokumen_path: data.dokumen || null
       });
       
     if (error) throw error;
@@ -45,6 +47,7 @@ export const RealisasiService = {
     if (data.nominal !== undefined) updates.nominal = data.nominal;
     if (data.nomorSimkug !== undefined) updates.nomor_simkug = data.nomorSimkug;
     if (data.keterangan !== undefined) updates.keterangan = data.keterangan;
+    if (data.dokumen !== undefined) updates.dokumen_path = data.dokumen;
 
     const { error } = await supabase
       .from('realisasi_anggaran')
@@ -80,7 +83,25 @@ export const RealisasiService = {
       nominal: Number(r.nominal),
       nomorSimkug: r.nomor_simkug || '',
       keterangan: r.keterangan || '',
+      dokumen: r.dokumen_path || '',
       jenis: r.alokasi_anggaran?.jenis_anggaran || 'SEMUA'
     }));
+  },
+
+  // 6. Upload dokumen
+  uploadDokumen: async (file: File, prefix: string): Promise<string> => {
+    const ext = file.name.split('.').pop();
+    const fileName = `${prefix}-${Date.now()}.${ext}`;
+    const { data, error } = await supabase.storage
+      .from('dokumen_realisasi')
+      .upload(fileName, file, { cacheControl: '3600', upsert: false });
+      
+    if (error) throw error;
+    
+    const { data: { publicUrl } } = supabase.storage
+      .from('dokumen_realisasi')
+      .getPublicUrl(data.path);
+      
+    return publicUrl;
   }
 };

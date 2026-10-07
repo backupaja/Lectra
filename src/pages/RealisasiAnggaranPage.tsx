@@ -79,6 +79,7 @@ export function RealisasiAnggaranPage() {
   const [keterangan, setKeterangan] = useState('');
   const [nominalError, setNominalError] = useState('');
   const [capexWarning, setCapexWarning] = useState('');
+  const [fileDokumen, setFileDokumen] = useState<File | null>(null);
   const [fileDokumenName, setFileDokumenName] = useState('');
 
   const showToast = (msg: string, type: 'success' | 'error' | 'warning' = 'success') => {
@@ -182,7 +183,7 @@ export function RealisasiAnggaranPage() {
       setEditingRealisasiId(null);
       setTanggal(''); setNominalInput(''); setSimkug(''); setKeterangan('');
     }
-    setNominalError(''); setCapexWarning(''); setFileDokumenName('');
+    setNominalError(''); setCapexWarning(''); setFileDokumen(null); setFileDokumenName('');
     setModalOpen(true);
   };
 
@@ -202,12 +203,20 @@ export function RealisasiAnggaranPage() {
 
     setIsSaving(true);
     try {
+      let uploadedDokumenUrl = undefined;
+      
+      if (fileDokumen) {
+        showToast('Mengunggah dokumen...', 'success');
+        uploadedDokumenUrl = await RealisasiService.uploadDokumen(fileDokumen, `realisasi-${selectedAlokasiId}`);
+      }
+
       if (editingRealisasiId) {
         await RealisasiService.updateRealisasi(editingRealisasiId, {
           tanggal: tanggal,
           nominal: num,
           nomorSimkug: simkug,
-          keterangan: keterangan
+          keterangan: keterangan,
+          ...(uploadedDokumenUrl && { dokumen: uploadedDokumenUrl })
         });
         showToast('Realisasi anggaran berhasil diperbarui.');
       } else {
@@ -216,7 +225,8 @@ export function RealisasiAnggaranPage() {
           tanggal: tanggal,
           nominal: num,
           nomorSimkug: simkug,
-          keterangan: keterangan
+          keterangan: keterangan,
+          dokumen: uploadedDokumenUrl
         });
         if (capexWarning) {
           showToast(`Realisasi CAPEX disimpan. Over budget aktif.`, 'warning');
@@ -548,12 +558,12 @@ export function RealisasiAnggaranPage() {
       {/* Add Realisasi Modal */}
       <Modal
         open={modalOpen}
-        onClose={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); setFileDokumenName(''); }}
+        onClose={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); setFileDokumen(null); setFileDokumenName(''); }}
         title={editingRealisasiId ? "Edit Realisasi Anggaran" : "Tambah Realisasi Anggaran"}
         subtitle={selectedAlokasi ? `${selectedDosen?.nama} — ${parseKeperluan(selectedAlokasi.keperluan).join(', ')}` : ''}
         footer={
           <div className="flex gap-3 justify-end">
-            <Button variant="secondary" onClick={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); setFileDokumenName(''); }} disabled={isSaving}>Batal</Button>
+            <Button variant="secondary" onClick={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); setFileDokumen(null); setFileDokumenName(''); }} disabled={isSaving}>Batal</Button>
             <Button onClick={handleSubmitRealisasi} disabled={!!nominalError || isSaving}>
               {isSaving ? 'Menyimpan...' : 'Simpan Realisasi'}
             </Button>
@@ -628,6 +638,7 @@ export function RealisasiAnggaranPage() {
                 onChange={(e) => {
                   const file = e.target.files?.[0];
                   if (file) {
+                    setFileDokumen(file);
                     setFileDokumenName(file.name);
                   }
                 }} 
