@@ -18,8 +18,15 @@ function parseDosenToken(): string | null {
 }
 
 export default function App() {
-  const [page, setPage] = useState<Page>('login');
+  const [page, setPage] = useState<Page>(() => {
+    const saved = localStorage.getItem('lectra_page');
+    return (saved as Page) || 'login';
+  });
   const [isAuthed, setIsAuthed] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('lectra_page', page);
+  }, [page]);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [dosenToken, setDosenToken] = useState<string | null>(parseDosenToken);
 
@@ -40,12 +47,13 @@ export default function App() {
         const session = await AuthService.getSession();
         if (session && session.user.app_metadata?.role === 'admin') {
           setIsAuthed(true);
-          if (page === 'login') {
-            setPage('dashboard');
-          }
+          setPage(prev => prev === 'login' ? 'dashboard' : prev);
+        } else {
+          setPage(prev => (prev !== 'login' && prev !== 'public') ? 'login' : prev);
         }
       } catch (err) {
         console.error('Error checking auth:', err);
+        setPage(prev => (prev !== 'login' && prev !== 'public') ? 'login' : prev);
       } finally {
         setIsAuthLoading(false);
       }
