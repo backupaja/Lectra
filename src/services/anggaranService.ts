@@ -7,17 +7,27 @@ import type { Dosen, AlokasiAnggaran } from '../types';
  */
 export const AnggaranService = {
   
-  // 1. Ambil data dosen
   getDosen: async (): Promise<Dosen[]> => {
-    const { data, error } = await supabase
-      .from('dosen')
-      .select('*')
-      .limit(5000)
-      .order('nama', { ascending: true });
-      
-    if (error) throw error;
+    let allData: any[] = [];
+    let from = 0;
+    const step = 999;
     
-    return data.map((d: any) => ({
+    while (true) {
+      const { data, error } = await supabase
+        .from('dosen')
+        .select('*')
+        .order('nama', { ascending: true })
+        .range(from, from + step);
+        
+      if (error) throw error;
+      if (!data || data.length === 0) break;
+      
+      allData = allData.concat(data);
+      if (data.length <= step) break; // Reached the end
+      from += step + 1;
+    }
+    
+    return allData.map((d: any) => ({
       id: d.id,
       nama: d.nama,
       nip: d.nip,
