@@ -36,33 +36,26 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
   return (
     <div className="h-screen w-full flex overflow-hidden bg-white font-sans">
       {/* Left side - Animation & Branding */}
-      <div className="hidden lg:flex lg:w-1/2 relative bg-[#FAFAFA] flex-col justify-between overflow-hidden">
-        {/* Abstract Background Element */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-[#8F2438]/5 to-transparent blur-3xl" />
-          <div className="absolute -bottom-[20%] -right-[10%] w-[80%] h-[80%] rounded-full bg-gradient-to-tl from-[#8F2438]/5 to-transparent blur-3xl" />
+      <div className="hidden lg:flex lg:w-1/2 relative bg-gradient-to-br from-[#FFF3F5] via-white to-[#FCE7F3] flex-col justify-center items-center overflow-hidden">
+        {/* Massive Gradient Orbs for Mesh Effect */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Top left maroon glow */}
+          <div className="absolute -top-[20%] -left-[10%] w-[70%] h-[70%] rounded-full bg-gradient-to-br from-[#8F2438]/20 to-transparent blur-[100px] animate-pulse mix-blend-multiply" />
+          
+          {/* Bottom right soft rose glow */}
+          <div className="absolute -bottom-[20%] -right-[10%] w-[80%] h-[80%] rounded-full bg-gradient-to-tl from-[#E47B8F]/30 to-transparent blur-[120px] mix-blend-multiply" />
+          
+          {/* Center-left subtle peach glow */}
+          <div className="absolute top-[30%] -left-[20%] w-[50%] h-[50%] rounded-full bg-gradient-to-r from-[#FFD3DA]/40 to-transparent blur-[90px] mix-blend-multiply" />
         </div>
 
-        <div className="relative z-10 p-12 flex flex-col h-full">
-          
-          <div className="flex-1 flex flex-col justify-center items-center min-h-0">
-            <div className="w-full max-w-lg aspect-square relative hover:scale-[1.02] transition-transform duration-700 cursor-default">
-              <DotLottieReact
-                src="/employee-content.json"
-                loop
-                autoplay
-                className="w-full h-full object-contain drop-shadow-xl"
-              />
-            </div>
-          </div>
-          
-          <div className="mt-auto">
-            <h2 className="text-2xl font-bold text-[#1F2937] mb-2">Lecturer Budget System</h2>
-            <p className="text-[#667085] leading-relaxed max-w-md text-sm">
-              Platform transparansi dan manajemen anggaran dosen terintegrasi.
-              Kelola alokasi, realisasi, dan pantau pencapaian JAD dengan mudah.
-            </p>
-          </div>
+        <div className="relative z-10 w-full max-w-xl aspect-square hover:scale-[1.03] transition-transform duration-700 cursor-default p-8">
+          <DotLottieReact
+            src="/employee-content.json"
+            loop
+            autoplay
+            className="w-full h-full object-contain drop-shadow-2xl"
+          />
         </div>
       </div>
 
