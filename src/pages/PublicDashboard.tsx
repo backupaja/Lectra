@@ -667,7 +667,7 @@ export function PublicDashboard({ onLogin, showLoginButton }: PublicDashboardPro
                 <th className="py-2 px-2 text-[10px] font-semibold text-[#667085] text-right whitespace-nowrap">Nominal</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E4E7EC]">
+            <tbody className="">
               {isJadLoading ? (
                 <tr><td colSpan={6} className="py-8 text-center text-xs text-[#98A2B3]">Memuat...</td></tr>
               ) : filteredPenerima.length > 0 ? (
@@ -680,8 +680,12 @@ export function PublicDashboard({ onLogin, showLoginButton }: PublicDashboardPro
                 ).map((group, groupIdx) => (
                   <React.Fragment key={`group-${groupIdx}`}>
                     {group.map((item, idx) => (
-                      <tr key={`${item.alokasi_id}-${item.dosen_id}`} className="hover:bg-gray-50 transition-colors">
-                        <td className="py-2 px-2 text-[11px] text-[#667085] text-center whitespace-nowrap">{groupIdx + 1}{group.length > 1 ? `.${idx + 1}` : ''}</td>
+                      <tr key={`${item.alokasi_id}-${item.dosen_id}`} className={`hover:bg-gray-50 transition-colors ${idx === group.length - 1 ? 'border-b border-[#E4E7EC]' : ''}`}>
+                        {idx === 0 && (
+                          <td rowSpan={group.length} className={`py-2 px-2 text-[11px] text-[#667085] text-center whitespace-nowrap ${group.length > 1 ? 'align-top pt-2' : ''}`}>
+                            {groupIdx + 1}
+                          </td>
+                        )}
                         <td className="py-2 px-2 text-[11px] text-[#667085] whitespace-nowrap">{item.nip}</td>
                         <td className="py-2 px-2 text-[11px] font-medium whitespace-nowrap">
                           <span className="text-[#1F2937] font-semibold">{item.nama}</span>
@@ -689,9 +693,9 @@ export function PublicDashboard({ onLogin, showLoginButton }: PublicDashboardPro
                         <td className="py-2 px-2 text-[11px] text-[#1F2937] whitespace-nowrap">{item.fakultas}</td>
                         <td className="py-2 px-2 text-[11px] text-[#667085] whitespace-nowrap">{item.program_studi}</td>
                         {idx === 0 && (
-                          <>
-                            <td rowSpan={group.length} className={`py-2 px-2 text-[11px] font-medium text-[#1F2937] text-right whitespace-nowrap align-top pt-2 ${group.length > 1 ? 'border-l border-[#E4E7EC] bg-gray-50/50' : ''}`}>{formatRupiah(item.nominal_anggaran)}</td>
-                          </>
+                          <td rowSpan={group.length} className={`py-2 px-2 text-[11px] font-medium text-[#1F2937] text-right whitespace-nowrap ${group.length > 1 ? 'align-top pt-2 border-l border-[#E4E7EC] bg-gray-50/50' : ''}`}>
+                            {formatRupiah(item.nominal_anggaran)}
+                          </td>
                         )}
                       </tr>
                     ))}
