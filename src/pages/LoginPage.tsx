@@ -43,48 +43,17 @@ export function LoginPage({ onLogin, onPublic }: LoginPageProps) {
           <div className="absolute -bottom-[20%] -right-[10%] w-[80%] h-[80%] rounded-full bg-gradient-to-tl from-[#8F2438]/5 to-transparent blur-3xl" />
         </div>
 
-        <div className="relative z-10 p-12 flex flex-col h-full">
+        <div className="relative z-10 p-12 flex flex-col h-full w-full justify-center items-center">
           
-          <div className="flex-1 flex flex-col justify-center items-center -mt-8">
-            <div className="w-full max-w-lg aspect-square relative hover:scale-[1.02] transition-transform duration-700">
-              <DotLottieReact
-                src="/employee-content.json"
-                loop
-                autoplay
-                className="w-full h-full object-contain scale-110 drop-shadow-2xl"
-              />
-            </div>
+          <div className="w-full max-w-lg aspect-square relative hover:scale-[1.02] transition-transform duration-700 cursor-pointer">
+            <DotLottieReact
+              src="/employee-content.json"
+              loop
+              autoplay
+              className="w-full h-full object-contain scale-110 drop-shadow-2xl"
+            />
           </div>
           
-          {/* Interactive Info Panel */}
-          <div className="mt-auto group cursor-default relative w-full max-w-lg mx-auto">
-            {/* Glowing backdrop */}
-            <div className="absolute -inset-1 bg-gradient-to-r from-[#8F2438]/20 to-[#631826]/20 rounded-2xl blur-lg group-hover:opacity-100 opacity-0 transition duration-500"></div>
-            
-            <div className="relative bg-white/50 backdrop-blur-md border border-white/80 p-7 rounded-2xl shadow-xl hover:-translate-y-1 transition-transform duration-300">
-              <h2 className="text-2xl font-bold text-[#1F2937] mb-2 bg-gradient-to-r from-[#8F2438] to-[#4A0D18] bg-clip-text text-transparent">Lecturer Budget System</h2>
-              <p className="text-[#475467] leading-relaxed text-sm">
-                Platform transparansi dan manajemen anggaran dosen terintegrasi.
-                Kelola alokasi, pantau realisasi, dan track pencapaian JAD secara cerdas.
-              </p>
-              
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-[#8F2438] font-semibold text-xs">
-                <div className="flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                  Real-time Tracking
-                </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-[#D0D5DD]"></div>
-                <div className="flex items-center gap-1.5 group-hover:translate-x-1 transition-transform duration-300 delay-75">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  Secure System
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
