@@ -10,6 +10,7 @@ import { formatRupiah, getDynamicYearOptions } from '../data/mockData';
 import { AnggaranService } from '../services/anggaranService';
 import { RealisasiService } from '../services/realisasiService';
 import { CustomSelect } from '../components/ui/CustomSelect';
+import { LoadingState } from '../components/ui/LoadingState';
 import type { AlokasiAnggaran, RealisasiAnggaran, Dosen } from '../types';
 import { ExportRealisasiModal } from '../components/ExportRealisasiModal';
 
@@ -78,6 +79,7 @@ export function RealisasiAnggaranPage() {
   const [keterangan, setKeterangan] = useState('');
   const [nominalError, setNominalError] = useState('');
   const [capexWarning, setCapexWarning] = useState('');
+  const [fileDokumenName, setFileDokumenName] = useState('');
 
   const showToast = (msg: string, type: 'success' | 'error' | 'warning' = 'success') => {
     setToast({ msg, type });
@@ -180,7 +182,7 @@ export function RealisasiAnggaranPage() {
       setEditingRealisasiId(null);
       setTanggal(''); setNominalInput(''); setSimkug(''); setKeterangan('');
     }
-    setNominalError(''); setCapexWarning('');
+    setNominalError(''); setCapexWarning(''); setFileDokumenName('');
     setModalOpen(true);
   };
 
@@ -319,8 +321,8 @@ export function RealisasiAnggaranPage() {
 
           <div className="flex flex-col gap-2 flex-1 overflow-y-auto pr-1 min-h-0">
             {isLoading ? (
-              <div className="bg-white transition-colors rounded-[14px] border border-[#E4E7EC] p-6 text-center">
-                <p className="text-sm text-[#98A2B3]">Memuat data...</p>
+              <div className="bg-white transition-colors rounded-[14px] border border-[#E4E7EC] flex items-center justify-center min-h-[300px]">
+                <LoadingState message="Mengambil daftar realisasi..." />
               </div>
             ) : filtered.length === 0 ? (
               <div className="bg-white transition-colors rounded-[14px] border border-[#E4E7EC] p-6 text-center">
@@ -540,12 +542,12 @@ export function RealisasiAnggaranPage() {
       {/* Add Realisasi Modal */}
       <Modal
         open={modalOpen}
-        onClose={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); }}
+        onClose={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); setFileDokumenName(''); }}
         title={editingRealisasiId ? "Edit Realisasi Anggaran" : "Tambah Realisasi Anggaran"}
         subtitle={selectedAlokasi ? `${selectedDosen?.nama} — ${parseKeperluan(selectedAlokasi.keperluan).join(', ')}` : ''}
         footer={
           <div className="flex gap-3 justify-end">
-            <Button variant="secondary" onClick={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); }} disabled={isSaving}>Batal</Button>
+            <Button variant="secondary" onClick={() => { setModalOpen(false); setNominalError(''); setCapexWarning(''); setFileDokumenName(''); }} disabled={isSaving}>Batal</Button>
             <Button onClick={handleSubmitRealisasi} disabled={!!nominalError || isSaving}>
               {isSaving ? 'Menyimpan...' : 'Simpan Realisasi'}
             </Button>
@@ -612,12 +614,29 @@ export function RealisasiAnggaranPage() {
           </div>
 
           <FormField label="Dokumen Pendukung" optional>
-            <div className="border border-dashed border-[#E4E7EC] rounded-[8px] py-2 px-3 flex items-center gap-2 hover:border-[#8F2438]/40 transition-colors cursor-pointer bg-[#F7F7F8]">
+            <label className="border border-dashed border-[#E4E7EC] rounded-[8px] py-2 px-3 flex items-center gap-2 hover:border-[#8F2438]/40 transition-colors cursor-pointer bg-[#F7F7F8] w-full">
+              <input 
+                type="file" 
+                className="hidden" 
+                accept=".pdf,.doc,.docx,.xlsx" 
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setFileDokumenName(file.name);
+                  }
+                }} 
+              />
               <svg className="w-4 h-4 text-[#98A2B3] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              <p className="text-xs text-[#667085]">Klik untuk unggah dokumen pendukung <span className="text-[#98A2B3]">(PDF, DOC, XLSX maks. 10MB)</span></p>
-            </div>
+              <div className="text-xs text-[#667085] truncate flex-1">
+                {fileDokumenName ? (
+                  <span className="text-[#1F2937] font-medium">{fileDokumenName}</span>
+                ) : (
+                  <>Klik untuk unggah dokumen pendukung <span className="text-[#98A2B3]">(PDF, DOC, XLSX maks. 10MB)</span></>
+                )}
+              </div>
+            </label>
           </FormField>
         </div>
       </Modal>
