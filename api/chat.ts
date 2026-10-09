@@ -49,54 +49,51 @@ async function get_budget_summary(supabase: any, args: { year?: number, jenis_an
 }
 
 async function get_lecturer_summary(supabase: any, args: { year?: number, jenis_anggaran?: string }) {
-  const { data, error } = await supabase.from('dosen').select(`
-    nama,
-    alokasi_anggaran (
-      tahun,
-      jenis_anggaran,
-      nominal_anggaran,
-      realisasi_anggaran (nominal)
-    )
+  const { data, error } = await supabase.from('alokasi_anggaran').select(`
+    tahun,
+    jenis_anggaran,
+    nominal_anggaran,
+    dosen:dosen_id (nama),
+    realisasi_anggaran (nominal)
   `);
   if (error) throw error;
   
-  const result = data.map((dosen: any) => {
-    let alokasi = dosen.alokasi_anggaran || [];
-    if (args.year) alokasi = alokasi.filter((a: any) => Number(a.tahun) === Number(args.year));
-    if (args.jenis_anggaran) {
-      const jenis = String(args.jenis_anggaran ?? '').toUpperCase();
-      if (jenis === 'OPEX' || jenis === 'CAPEX') {
-        alokasi = alokasi.filter((a: any) => a.jenis_anggaran === jenis);
-      }
+  let filtered = data;
+  if (args.year) filtered = filtered.filter((a: any) => Number(a.tahun) === Number(args.year));
+  if (args.jenis_anggaran) {
+    const jenis = String(args.jenis_anggaran ?? '').toUpperCase();
+    if (jenis === 'OPEX' || jenis === 'CAPEX') {
+      filtered = filtered.filter((a: any) => a.jenis_anggaran === jenis);
+    }
+  }
+  
+  const dosenMap: Record<string, any> = {};
+  
+  filtered.forEach((a: any) => {
+    const nama = a.dosen?.nama || 'Unknown';
+    if (!dosenMap[nama]) {
+      dosenMap[nama] = {
+        nama_dosen: nama,
+        total_anggaran: 0,
+        total_realisasi: 0,
+        jumlah_transaksi: 0,
+      };
     }
     
-    let total_anggaran = 0;
-    let total_realisasi = 0;
-    let jumlah_transaksi = 0;
-    
-    alokasi.forEach((a: any) => {
-      total_anggaran += Number(a.nominal_anggaran);
-      (a.realisasi_anggaran || []).forEach((r: any) => {
-        total_realisasi += Number(r.nominal);
-        jumlah_transaksi++;
-      });
+    dosenMap[nama].total_anggaran += Number(a.nominal_anggaran);
+    (a.realisasi_anggaran || []).forEach((r: any) => {
+      dosenMap[nama].total_realisasi += Number(r.nominal);
+      dosenMap[nama].jumlah_transaksi++;
     });
-    
-    return {
-      nama_dosen: dosen.nama,
-      total_anggaran,
-      total_realisasi,
-      sisa_anggaran: total_anggaran - total_realisasi,
-      jumlah_transaksi,
-      punya_realisasi: total_realisasi > 0
-    };
   });
   
-  // Filter out lecturers who have no budget allocated for the given criteria
-  const activeLecturers = result.filter((r: any) => r.total_anggaran > 0);
+  const result = Object.values(dosenMap).map((d: any) => ({
+    ...d,
+    sisa_anggaran: d.total_anggaran - d.total_realisasi,
+    punya_realisasi: d.total_realisasi > 0
+  }));
   
-  // Sort descending by realisasi as default sensible order
-  return activeLecturers.sort((a: any, b: any) => b.total_realisasi - a.total_realisasi);
+  return result.sort((a: any, b: any) => b.total_realisasi - a.total_realisasi);
 }
 
 async function get_allocation_status(supabase: any, args: { year?: number, status?: string, jenis_anggaran?: string }) {
