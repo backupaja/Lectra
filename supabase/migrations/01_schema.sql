@@ -11,7 +11,7 @@ CREATE TABLE public.dosen (
     fakultas TEXT NOT NULL,
     program_studi TEXT NOT NULL,
     status TEXT NOT NULL,
-    share_token TEXT UNIQUE NOT NULL DEFAULT encode(gen_random_bytes(32), 'hex') CHECK (share_token ~ '^[0-9a-f]{64}$'),
+    share_token TEXT UNIQUE NOT NULL DEFAULT encode(extensions.gen_random_bytes(32), 'hex') CHECK (share_token ~ '^[0-9a-f]{64}$'),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

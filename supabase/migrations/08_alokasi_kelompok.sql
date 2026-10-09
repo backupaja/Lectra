@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS public.alokasi_dosen_tambahan (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     alokasi_id UUID NOT NULL REFERENCES public.alokasi_anggaran(id) ON DELETE CASCADE,
     dosen_id UUID NOT NULL REFERENCES public.dosen(id) ON DELETE CASCADE,
     UNIQUE(alokasi_id, dosen_id)

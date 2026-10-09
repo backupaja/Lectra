@@ -15,7 +15,7 @@ async function get_budget_summary(supabase: any, args: { year?: number, jenis_an
   if (error) throw error;
   
   let filtered = data;
-  if (args.year) filtered = filtered.filter((d: any) => d.tahun === args.year);
+  if (args.year) filtered = filtered.filter((d: any) => Number(d.tahun) === Number(args.year));
   if (args.jenis_anggaran) {
     const jenis = String(args.jenis_anggaran ?? '').toUpperCase();
     if (jenis === 'OPEX' || jenis === 'CAPEX') {
@@ -62,7 +62,7 @@ async function get_lecturer_summary(supabase: any, args: { year?: number, jenis_
   
   const result = data.map((dosen: any) => {
     let alokasi = dosen.alokasi_anggaran || [];
-    if (args.year) alokasi = alokasi.filter((a: any) => a.tahun === args.year);
+    if (args.year) alokasi = alokasi.filter((a: any) => Number(a.tahun) === Number(args.year));
     if (args.jenis_anggaran) {
       const jenis = String(args.jenis_anggaran ?? '').toUpperCase();
       if (jenis === 'OPEX' || jenis === 'CAPEX') {
@@ -111,7 +111,7 @@ async function get_allocation_status(supabase: any, args: { year?: number, statu
   if (error) throw error;
   
   let filtered = data;
-  if (args.year) filtered = filtered.filter((a: any) => a.tahun === args.year);
+  if (args.year) filtered = filtered.filter((a: any) => Number(a.tahun) === Number(args.year));
   if (args.jenis_anggaran) {
     const jenis = String(args.jenis_anggaran ?? '').toUpperCase();
     if (jenis === 'OPEX' || jenis === 'CAPEX') {
@@ -154,7 +154,7 @@ async function get_monthly_realization(supabase: any, args: { year?: number }) {
   if (error) throw error;
   
   let filtered = data;
-  if (args.year) filtered = filtered.filter((r: any) => r.alokasi_anggaran?.tahun === args.year);
+  if (args.year) filtered = filtered.filter((r: any) => Number(r.alokasi_anggaran?.tahun) === Number(args.year));
   
   const monthly: Record<string, number> = {};
   filtered.forEach((r: any) => {

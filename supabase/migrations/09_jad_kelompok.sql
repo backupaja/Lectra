@@ -5,6 +5,13 @@ ALTER TABLE public.alokasi_dosen_tambahan
 ADD COLUMN IF NOT EXISTS jabatan_awal VARCHAR,
 ADD COLUMN IF NOT EXISTS target_jabatan VARCHAR;
 
+-- 1b. Tambah kolom tambahan di tabel alokasi_anggaran
+ALTER TABLE public.alokasi_anggaran
+ADD COLUMN IF NOT EXISTS kelompok_keahlian TEXT,
+ADD COLUMN IF NOT EXISTS jabatan_awal TEXT,
+ADD COLUMN IF NOT EXISTS target_jabatan TEXT,
+ADD COLUMN IF NOT EXISTS pertanggungan TEXT;
+
 -- 2. Update RPC get_public_penerima_anggaran
 DROP FUNCTION IF EXISTS public.get_public_penerima_anggaran(SMALLINT, TEXT);
 
